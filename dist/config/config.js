@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const config = {
     development: {
+        name: "default",
         database: process.env.DB_NAME,
         dialect: process.env.DB_DIALECT,
         host: process.env.DB_HOST,
@@ -10,6 +11,7 @@ const config = {
         username: process.env.DB_USER,
     },
     production: {
+        name: "default",
         database: process.env.DB_NAME,
         dialect: process.env.DB_DIALECT,
         host: process.env.DB_HOST,
@@ -18,6 +20,7 @@ const config = {
         username: process.env.DB_USER,
     },
     stage: {
+        name: "default",
         database: process.env.DB_NAME,
         dialect: process.env.DB_DIALECT,
         host: process.env.DB_HOST,
@@ -26,6 +29,7 @@ const config = {
         username: process.env.DB_USER,
     },
     test: {
+        name: "default",
         database: process.env.DB_NAME,
         dialect: process.env.DB_DIALECT,
         host: process.env.DB_HOST,
@@ -34,6 +38,7 @@ const config = {
         username: process.env.DB_USER,
     },
     uat: {
+        name: "default",
         database: process.env.DB_NAME,
         dialect: process.env.DB_DIALECT,
         host: process.env.DB_HOST,

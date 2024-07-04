@@ -1,4 +1,5 @@
 import { IBaseEntity } from "./baseEntity";
+import { Position } from "./entities/Position";
 
 export interface IUser extends IBaseEntity {
     first: string;
@@ -9,4 +10,6 @@ export interface IUser extends IBaseEntity {
     password: string;
     OTP: string;
     isAdmin: boolean;
+    Position:Position;
+    phoneNumber:string;
 }

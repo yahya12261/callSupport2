@@ -1,4 +1,5 @@
 export interface IDatabase {
+    name:string
     database: string,
     dialect: string,
     host: string,

@@ -37,11 +37,12 @@ const bcrypt = __importStar(require("bcryptjs"));
 const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
+const EntityType_1 = require("../type/EntityType");
 const Position_1 = require("./Position");
 let User = class User extends baseEntity_1.BaseEntity {
     constructor() {
         super();
-        // this.type = EntityType.USER;
+        this.type = EntityType_1.EntityType.USER;
     }
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
@@ -52,17 +53,17 @@ let User = class User extends baseEntity_1.BaseEntity {
 };
 exports.User = User;
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     (0, class_validator_1.Length)(4, 25),
     __metadata("design:type", String)
 ], User.prototype, "first", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     (0, class_validator_1.Length)(4, 25),
     __metadata("design:type", String)
 ], User.prototype, "middle", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     (0, class_validator_1.Length)(4, 25),
     __metadata("design:type", String)
 ], User.prototype, "last", void 0);
@@ -82,7 +83,12 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
+    (0, class_validator_1.Length)(8, 8),
+    __metadata("design:type", String)
+], User.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
     (0, class_validator_1.Length)(4, 4),
     __metadata("design:type", Number)
 ], User.prototype, "OTP", void 0);

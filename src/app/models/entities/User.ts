@@ -18,15 +18,15 @@ import { Position } from './Position';
 @Unique(['email','username'])
 export class User extends BaseEntity{
 
-  @Column()
+  @Column({nullable:true})
   @Length(4, 25)
   public first!: string;
 
-  @Column()
+  @Column({nullable:true})
   @Length(4, 25)
   public middle!: string;
 
-  @Column()
+  @Column({nullable:true})
   @Length(4, 25)
   public last!: string;
 
@@ -42,7 +42,11 @@ export class User extends BaseEntity{
   @Length(4, 100)
   public password!: string;
 
-  @Column()
+  @Column({nullable:true})
+  @Length(8, 8)
+  public phoneNumber!: string;
+
+  @Column({nullable:true})
   @Length(4, 4)
   public OTP!:number;
 
@@ -60,10 +64,13 @@ export class User extends BaseEntity{
 
   @ManyToOne(() => Position, (pos) => pos.users)
     position!: Position | null;
+
+    // add lastLogin
+    // add needChangePass
     
   constructor(){
     super();
-    // this.type = EntityType.USER;
+    this.type = EntityType.USER;
   }
   public hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);

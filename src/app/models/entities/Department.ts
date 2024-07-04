@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './baseEntity';
 import { Position } from './Position';
+import { EntityType } from '../type/EntityType';
 
 @Entity("department")
 @Unique(['name'])
@@ -22,7 +23,10 @@ public name!:String
 @OneToMany(() => Position, (pos) => pos.department)
 positions!: Position[];
 
-
+constructor(){
+  super();
+  this.type = EntityType.DEPARTMENT;
+}
 
 
 }

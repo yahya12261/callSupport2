@@ -12,6 +12,7 @@ import {
 import { BaseEntity } from './baseEntity';
 import { Department } from './Department';
 import { User } from './User';
+import { EntityType } from '../type/EntityType';
 
 @Entity("position")
 @Unique(['name'])
@@ -25,5 +26,10 @@ department!: Department | null;
 
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
+
+constructor(){
+  super();
+  this.type = EntityType.POSITION;
+}
 
 }

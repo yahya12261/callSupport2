@@ -18,18 +18,21 @@ class UserController {
   //     next(new ServerException('error occured'));
   //   })
   // }
-  // public static addNew = (req: Request, res: Response, next: any) => {
-  //   service.add(req.body).then(user => {
-  //     if (user) {
-  //       res.json(Template.success(user, 'Users saved succesfully'));
-  //     }
-  //   }).catch(err => {
-  //     if (err.ErrorID == 2110) {
-  //       next(new APIError(err.message, err.ErrorID));
-  //     }
-  //     next(new ServerException('error occured'));
-  //   })
-  // }
+  public static create = (req: Request, res: Response, next: any) => {
+    service.add(req.body).then(user => {
+      console.log(req.body)
+      if (user) {
+        console.log(user)
+        res.json(Template.success(user, 'Users saved succesfully'));
+      }
+    }).catch(err => {
+      console.log(err)
+      if (err.ErrorID == 2110) {
+        next(new APIError(err.message, err.ErrorID));
+      }
+      next(new ServerException('error occured'));
+    })
+  }
 }
 
 export default UserController;

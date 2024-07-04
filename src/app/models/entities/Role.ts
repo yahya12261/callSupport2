@@ -3,6 +3,7 @@ import { BaseEntity } from "./baseEntity";
 import { User } from "./User";
 import { Position } from "./Position";
 import { MethodTypes } from "../type/MethodTypes";
+import { EntityType } from "../type/EntityType";
 
 @Entity("role")
 export class Role extends BaseEntity{
@@ -33,5 +34,8 @@ users!: User[]
 @JoinTable()
 positions!: Position[]
 
+constructor(){
+  super();
+}
 
 }

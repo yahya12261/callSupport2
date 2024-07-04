@@ -21,7 +21,7 @@ class DatabaseService {
   public static async createConnection() {
     const dbConfig = config[`${process.env.ENV}`];
     return await createConnection({
-      name:'conn',
+      name:'default',
       type: 'mysql',
       host: dbConfig.host,
       port: parseInt(dbConfig.port),
