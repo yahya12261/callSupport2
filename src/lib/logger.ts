@@ -1,7 +1,6 @@
 const { config } = require('../config/environments/' + process.env.ENV);
-import expressWinston from 'express-winston';
-import winston from 'winston';
-const { createLogger, format, transports } = winston;
+import {logger,errorLogger} from 'express-winston';
+import { createLogger, format, transports } from 'winston';
 
 class Logger {
   private logger: any;
@@ -34,13 +33,13 @@ class Logger {
   }
 
   public getRequestLogger() {
-    return expressWinston.logger({
+    return logger({
       transports: [
-        new winston.transports.Console(),
+        new transports.Console(),
       ],
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
+      format: format.combine(
+        format.colorize(),
+       format.simple(),
       ),
       meta: process.env.ENV !== 'production', // optional: control whether you want to log the meta data about the request (default to true)
       msg: 'HTTP {{req.method}} {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
@@ -51,13 +50,13 @@ class Logger {
   }
 
   public getRequestErrorLogger() {
-    return expressWinston.errorLogger({
+    return errorLogger({
       transports: [
-        new winston.transports.Console(),
+        new transports.Console(),
       ],
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
+      format: format.combine(
+       format.colorize(),
+        format.simple(),
       ),
     });
   }

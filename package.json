@@ -52,12 +52,14 @@
     "instrument": true
   },
   "dependencies": {
+    "@types/validator": "^13.12.0",
+    "@types/winston": "^2.4.4",
     "ajv": "^6.10.2",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.7.2",
-    "body-parser": "^1.19.0",
-    "class-validator": "^0.11.0",
+    "body-parser": "^1.20.2",
+    "class-validator": "^0.14.1",
     "core-decorators": "^0.20.0",
     "date-fns": "^2.8.1",
     "dotenv": "^8.2.0",
@@ -69,9 +71,11 @@
     "nodemon": "^2.0.1",
     "reflect-metadata": "^0.1.13",
     "strong-params": "^1.0.0",
+    "supertest": "^7.0.0",
     "tslint-sonarts": "^1.9.0",
     "typeorm": "^0.2.22",
     "typescript": "^3.8.3",
+    "uuid": "^10.0.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -83,7 +87,7 @@
     "@types/mocha": "^5.2.7",
     "@types/morgan": "^1.7.37",
     "@types/node": "^12.12.29",
-    "@types/validator": "^12.0.1",
+    "@types/uuid": "^10.0.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.3.0",
@@ -93,7 +97,6 @@
     "mocha": "^6.2.2",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",
-    "supertest": "^4.0.2",
     "ts-node": "^8.5.4",
     "ts-node-dev": "^1.0.0-pre.44",
     "ts-sinon": "^1.0.24"

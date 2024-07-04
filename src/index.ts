@@ -7,7 +7,7 @@ import { Logger } from './lib/logger';
 // Composition root
 
 const logger: any = new Logger();
-
+DatabaseService.createConnection();
 DatabaseService.getConnection().then(() => {
   const server = http.createServer(app).listen(parseInt(process.env.PORT || '3000', 10));
   server.on('listening', async () => {
