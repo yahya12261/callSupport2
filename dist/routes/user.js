@@ -11,5 +11,7 @@ const upload = (0, multer_1.default)();
 // Get all users
 // router.get('/', UserController.listAll);
 router.post('/', upload.none(), UserController_1.default.create);
+router.post('/login', upload.none(), UserController_1.default.login);
+router.post('/loginByOTP', upload.none(), UserController_1.default.loginByOTP);
 exports.default = router;
 //# sourceMappingURL=user.js.map

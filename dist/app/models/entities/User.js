@@ -47,6 +47,10 @@ let User = class User extends baseEntity_1.BaseEntity {
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
     }
+    makeUsernameAndEmailLowerCase() {
+        this.username = this.username.toLowerCase();
+        this.email = this.email.toLowerCase();
+    }
     checkIfUnencryptedPasswordIsValid(unencryptedPassword) {
         return bcrypt.compareSync(unencryptedPassword, this.password);
     }
@@ -97,6 +101,14 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 0, nullable: true }),
+    __metadata("design:type", Number)
+], User.prototype, "invalidLoginAttempts", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
+    __metadata("design:type", Date)
+], User.prototype, "lastLogin", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => User, (user) => user.createdBy),
     __metadata("design:type", Array)
 ], User.prototype, "createdUsers", void 0);
@@ -113,7 +125,7 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "position", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)("user"),
+    (0, typeorm_1.Entity)("users"),
     (0, typeorm_1.Unique)(['email', 'username']),
     __metadata("design:paramtypes", [])
 ], User);

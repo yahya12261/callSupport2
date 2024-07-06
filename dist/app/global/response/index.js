@@ -55,7 +55,7 @@ const ResponseTemplate = {
         return ResponseTemplate.error('user not found', "the user you're looking for doesn't exist or you dont have permissions to access it.", errorcode_1.default.UserNotFound);
     },
     userAlreadyExist() {
-        return ResponseTemplate.error('user with email already exist', 'User with same email already exist in System, please use another email', errorcode_1.default.EmailAlreadyExists);
+        return ResponseTemplate.error('user with email Or Username already exist', 'User with same email already exist in System, please use another email', errorcode_1.default.EmailAlreadyExists);
     },
     userAlreadyInvited() {
         return ResponseTemplate.error('user with email already invited', 'User with same email already invited, Another link can be send after 24 hours window', errorcode_1.default.DuplicateInvite);

@@ -13,7 +13,12 @@ exports.Department = void 0;
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
 const Position_1 = require("./Position");
+const EntityType_1 = require("../type/EntityType");
 let Department = class Department extends baseEntity_1.BaseEntity {
+    constructor() {
+        super();
+        this.type = EntityType_1.EntityType.DEPARTMENT;
+    }
 };
 exports.Department = Department;
 __decorate([
@@ -25,7 +30,8 @@ __decorate([
     __metadata("design:type", Array)
 ], Department.prototype, "positions", void 0);
 exports.Department = Department = __decorate([
-    (0, typeorm_1.Entity)("department"),
-    (0, typeorm_1.Unique)(['name'])
+    (0, typeorm_1.Entity)("departments"),
+    (0, typeorm_1.Unique)(['name']),
+    __metadata("design:paramtypes", [])
 ], Department);
 //# sourceMappingURL=Department.js.map

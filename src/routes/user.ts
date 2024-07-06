@@ -9,4 +9,8 @@ const upload = multer();
 // router.get('/', UserController.listAll);
 router.post('/', upload.none(), UserController.create);
 
+router.post('/login', upload.none(), UserController.login);
+
+router.post('/loginByOTP', upload.none(), UserController.loginByOTP);
+
 export default router;

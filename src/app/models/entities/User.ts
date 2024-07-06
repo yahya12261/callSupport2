@@ -14,7 +14,7 @@ import { BaseEntity } from './baseEntity';
 import { EntityType } from '../type/EntityType';
 import { Position } from './Position';
 
-@Entity("user")
+@Entity("users")
 @Unique(['email','username'])
 export class User extends BaseEntity{
 
@@ -53,6 +53,13 @@ export class User extends BaseEntity{
   @Column({default:false})
   public isAdmin!:boolean;
 
+  @Column({default:0, nullable:true})
+  public invalidLoginAttempts!:number;
+
+  @Column({ type: 'timestamp', nullable:true})
+  lastLogin!: Date;
+  // add needChangePass
+
   @OneToMany(() => User, (user) => user.createdBy)
   createdUsers!: User[];
 
@@ -65,8 +72,7 @@ export class User extends BaseEntity{
   @ManyToOne(() => Position, (pos) => pos.users)
     position!: Position | null;
 
-    // add lastLogin
-    // add needChangePass
+ 
     
   constructor(){
     super();
@@ -76,6 +82,10 @@ export class User extends BaseEntity{
     this.password = bcrypt.hashSync(this.password, 8);
   }
 
+  public makeUsernameAndEmailLowerCase(){
+    this.username =this.username.toLowerCase();
+    this.email = this.email.toLowerCase(); 
+  }
   public checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
     return bcrypt.compareSync(unencryptedPassword, this.password);
   }

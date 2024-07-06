@@ -14,7 +14,12 @@ const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
 const Department_1 = require("./Department");
 const User_1 = require("./User");
+const EntityType_1 = require("../type/EntityType");
 let Position = class Position extends baseEntity_1.BaseEntity {
+    constructor() {
+        super();
+        this.type = EntityType_1.EntityType.POSITION;
+    }
 };
 exports.Position = Position;
 __decorate([
@@ -30,7 +35,8 @@ __decorate([
     __metadata("design:type", Array)
 ], Position.prototype, "users", void 0);
 exports.Position = Position = __decorate([
-    (0, typeorm_1.Entity)("position"),
-    (0, typeorm_1.Unique)(['name'])
+    (0, typeorm_1.Entity)("positions"),
+    (0, typeorm_1.Unique)(['name']),
+    __metadata("design:paramtypes", [])
 ], Position);
 //# sourceMappingURL=Position.js.map

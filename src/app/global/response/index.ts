@@ -76,7 +76,7 @@ const ResponseTemplate = {
   },
   userAlreadyExist() {
     return ResponseTemplate.error(
-      'user with email already exist',
+      'user with email Or Username already exist',
       'User with same email already exist in System, please use another email',
       Err.EmailAlreadyExists
     );

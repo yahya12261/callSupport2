@@ -32,7 +32,7 @@ class DatabaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const dbConfig = config_1.default[`${process.env.ENV}`];
             return yield (0, typeorm_1.createConnection)({
-                name: 'default',
+                name: dbConfig.name,
                 type: 'mysql',
                 host: dbConfig.host,
                 port: parseInt(dbConfig.port),

@@ -12,4 +12,6 @@ export interface IUser extends IBaseEntity {
     isAdmin: boolean;
     Position:Position;
     phoneNumber:string;
+    invalidLoginAttempts:number;
+    lastLogin:Date;
 }

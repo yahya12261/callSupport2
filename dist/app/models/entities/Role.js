@@ -16,6 +16,9 @@ const User_1 = require("./User");
 const Position_1 = require("./Position");
 const MethodTypes_1 = require("../type/MethodTypes");
 let Role = class Role extends baseEntity_1.BaseEntity {
+    constructor() {
+        super();
+    }
 };
 exports.Role = Role;
 __decorate([
@@ -52,6 +55,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Role.prototype, "positions", void 0);
 exports.Role = Role = __decorate([
-    (0, typeorm_1.Entity)("role")
+    (0, typeorm_1.Entity)("roles"),
+    __metadata("design:paramtypes", [])
 ], Role);
 //# sourceMappingURL=Role.js.map

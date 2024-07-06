@@ -13,7 +13,7 @@ import { BaseEntity } from './baseEntity';
 import { Position } from './Position';
 import { EntityType } from '../type/EntityType';
 
-@Entity("department")
+@Entity("departments")
 @Unique(['name'])
 export class Department extends BaseEntity{
     

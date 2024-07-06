@@ -5,7 +5,7 @@ import { Position } from "./Position";
 import { MethodTypes } from "../type/MethodTypes";
 import { EntityType } from "../type/EntityType";
 
-@Entity("role")
+@Entity("roles")
 export class Role extends BaseEntity{
 
 @Column()
