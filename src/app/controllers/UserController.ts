@@ -21,7 +21,7 @@ class UserController {
       console.log(req.body)
       if (user) {
         console.log(user)
-        res.json(Template.success(user, 'Users saved succesfully'));
+        res.json(Template.success(this.getVisibleUserData(user), 'Users saved succesfully'));
       }
     }).catch(err => {
       console.log(err)
@@ -34,9 +34,9 @@ class UserController {
 })}
 
   public static login = (req: Request, res: Response, next: any) => {
-    service.login(req.body).then(user=>{
+    service.login(req.body,true).then(user=>{
         if(user){
-         res.json(Template.success(user, 'OTP Sent please check your email'));
+         res.json(Template.success(this.getVisibleUserData(user), 'OTP Sent please check your email'));
         }
     }).catch(err => {
       console.log(err)
@@ -48,7 +48,7 @@ class UserController {
 }
 
 public static loginByOTP = (req: Request, res: Response, next: any) => {
-  service.login(req.body).then(JWT=>{
+  service.loginByOTP(req.body).then(JWT=>{
       if(JWT){
        res.json(Template.success(JWT, 'login success'));
       }
@@ -59,6 +59,13 @@ public static loginByOTP = (req: Request, res: Response, next: any) => {
     }
     next(new ServerException('error occured'));
   })
-}}
+}
+private static getVisibleUserData(user:User){
+  return {
+    uuid:user.uuid
+  };
+}
+}
+
 
 export default UserController;

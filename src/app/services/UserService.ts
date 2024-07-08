@@ -10,18 +10,33 @@ import { EmailService } from "./EmailService";
 import { JWTService } from "./JWTService";
 
 export class UserService implements IUserRepository {
+  async changePassword(user: IUser, newPass: string): Promise<User | null> {
+    try {
+      const existingUser = await this.login(user, false);
+      if (existingUser) {
+        existingUser.password = newPass;
+        existingUser.hashPassword();
+        await getRepository(User).save(existingUser);
+        return existingUser;
+      } else {
+        throw new APIError("User not found", Err.UserNotFound);
+      }
+    } catch (err) {
+      throw new APIError("Error changing password", Err.UserNotFound);
+    }
+  }
   public static logger: any = new Logger();
   //  userRepository = getRepository(User);
 
   async checkUserExists(model: IUser): Promise<boolean> {
     const userRepository = getRepository(User);
-    const {email,username}=model;
+    const { email, username } = model;
     try {
       let exists = false;
-      let emailLowerCase =email?.toLocaleLowerCase() 
-      let userLoweCase = username?.toLocaleLowerCase()
+      let emailLowerCase = email?.toLocaleLowerCase();
+      let userLoweCase = username?.toLocaleLowerCase();
       if (email !== undefined) {
-        const count = await userRepository.count({ email:emailLowerCase });
+        const count = await userRepository.count({ email: emailLowerCase });
         exists = count > 0;
       }
 
@@ -57,19 +72,19 @@ export class UserService implements IUserRepository {
       Position,
       dsc,
       note,
-      phoneNumber
+      phoneNumber,
     } = model;
     const user = new User();
     user.username = username;
     user.first = first;
-    user.password =  password;
+    user.password = password;
     user.middle = middle;
     user.last = last;
     user.isAdmin = false;
     user.isActive = true;
     user.position = Position;
     user.email = email;
-    user.phoneNumber = phoneNumber ;
+    user.phoneNumber = phoneNumber;
     user.hashPassword();
     user.makeUsernameAndEmailLowerCase();
     const userRepository = getRepository(User);
@@ -83,53 +98,94 @@ export class UserService implements IUserRepository {
       );
     }
   }
-  async login(model: IUser): Promise<User | null> {
-    const { username, password,email } = model;
-    
-    const userRepository = getRepository(User);
+  async login(model: IUser, otp: boolean): Promise<User | null> {
+    const { username, password } = model;
+    const user = await this.findUser(username);
+    if (!user) {
+      return Promise.reject(
+        new APIError("user not found", Err.UserNotFound)
+      );
+    }
   
+    await this.validateUser(user, password);
+    await this.updateUserLastLogin(user);
+  
+    if (otp) {
+      await this.sendOTP(user);
+    }
+  
+    return user;
+  }
+  
+  private async findUser(username: string): Promise<User | null> {
     try {
-      const user = await userRepository.findOne({   
+      const userRepository = getRepository(User);
+      const user = await userRepository.findOne({
         where: {
-        Or: [
-          { username: username },
-          { email: username }
-        ]
-      },
-    })
-      if (user) {
-        if (!user.isActive) {
-          return Promise.reject(
-            new APIError("Account is locked", Err.InactiveUser)
-          );
-        }
-        if (user.checkIfUnencryptedPasswordIsValid(password)) {
-          user.invalidLoginAttempts = 0;
-          user.lastLogin = new Date();
-          await userRepository.save(user);
-          this.sendOTP(user);
-          return user;
-        } else {
-          user.invalidLoginAttempts++;
-          await userRepository.save(user);
+          username,
+        },
+      });
+      if(user){
+      return user;}
+      else{
+      throw new APIError("user not found", Err.UserNotFound);}
+    } catch (err) {
+      console.log(err);
+      throw new APIError("An error occurred", Err.DatabaseError);
+    }
+  }
   
-          // Check if the user has reached the maximum allowed invalid login attempts
-          if (user.invalidLoginAttempts >= 3) {
-            // Lock the user's account
-            user.isActive = false;
-            await userRepository.save(user);
-            return Promise.reject(
-              new APIError("Account is locked", Err.InactiveUser)
-            );
+  private async validateUser(user: User, password: string): Promise<void> {
+    if (!user.isActive) {
+      throw new APIError("Account is locked", Err.InactiveUser);
+    }
+  
+    if (user.checkIfUnencryptedPasswordIsValid(password)) {
+      user.invalidLoginAttempts = 0;
+    } else {
+      user.invalidLoginAttempts++;
+      if (user.invalidLoginAttempts >= 3) {
+        user.isActive = false;
+        await getRepository(User).save(user);
+        throw new APIError("Account is locked", Err.InactiveUser);
+      } else {
+        throw new APIError("Invalid password", Err.InvalidLoginPassword);
+      }
+    }
+  }
+  
+  private async updateUserLastLogin(user: User): Promise<void> {
+    user.lastLogin = new Date();
+    await getRepository(User).save(user);
+  }
+  async loginByOTP(user: IUser): Promise<String | null> {
+    const { OTP, uuid } = user;
+    const userRepository = getRepository(User);
+    try {
+      if (OTP && uuid) {
+        const user = await userRepository.findOne({
+          where: { uuid: uuid },
+          // { OTP:OTP }
+        });
+        if (user) {
+          if (OTP == user.OTP) {
+            //Generate JWE and send it
+            const token = JWTService.generateJWT(user.uuid);
+            return token;
           } else {
+            this.sendOTP(user);
             return Promise.reject(
-              new APIError("Invalid password", Err.InvalidLoginPassword)
+              new APIError("check your email with new OTP", Err.IncorrectCurrPassword)
             );
           }
+        } else {
+          return Promise.reject(
+            new APIError("User not found", Err.UserNotFound)
+          );
         }
       } else {
         return Promise.reject(
-          new APIError("User not found", Err.UserNotFound)
+          new APIError("An error occurred", Err.EmptyRequestBody)
         );
       }
     } catch (err) {
@@ -139,56 +195,20 @@ export class UserService implements IUserRepository {
       );
     }
   }
-  async loginByOTP(user: IUser): Promise<String | null> {
-    const {OTP,uuid} = user;
+  private sendOTP(user: User) {
     const userRepository = getRepository(User);
-    try{
-      if(OTP&&uuid){
-        const user = await userRepository.findOne({   
-          where: [
-            { uuid: uuid },
-            { OTP:OTP }
-          ]
-      })
-      if(user){
-        //Generate JWE and send it 
-        const token = JWTService.generateJWT(user.uuid);
-        return token
-
-       }else{
-         return Promise.reject(
-           new APIError("User not found", Err.UserNotFound)
-         );
-       }
-      }else{
-        return Promise.reject(
-          new APIError("An error occurred", Err.EmptyRequestBody)
-        );
-      }
-     
-    }catch(err){
-      console.log(err);
-      return Promise.reject(
-        new APIError("An error occurred", Err.DatabaseError)
-      );
-    }
-
-  }
-  private sendOTP(user:User){
-    const userRepository = getRepository(User);
-    try{
+    try {
       let OTP = this.generateOTP();
       user.OTP = Number(OTP);
       userRepository.save(user);
-      // const E_mail = new EmailService();
-      // E_mail.sendEmail(user.email,"2nd Factor Auth",`your OTP : ${OTP}`)
-    }catch(err){
+      const E_mail = new EmailService();
+      E_mail.sendEmail(user.email,"2nd Factor Auth",`your OTP : ${OTP}`)
+    } catch (err) {
       console.log(err);
       return Promise.reject(
         new APIError("An error occurred", Err.DatabaseError)
       );
     }
-  
   }
   private generateOTP(): string {
     // Generate a random 4-digit number

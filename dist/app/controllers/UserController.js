@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserService_1 = require("../services/UserService");
 const response_1 = __importDefault(require("../global/response"));
@@ -9,7 +10,13 @@ const custom_errors_1 = require("../../lib/custom-errors");
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const service = new UserService_1.UserService();
 class UserController {
+    static getVisibleUserData(user) {
+        return {
+            uuid: user.uuid
+        };
+    }
 }
+_a = UserController;
 UserController.create = (req, res, next) => {
     service.checkUserExists(req.body).then((bol) => {
         if (bol === true) {
@@ -19,7 +26,7 @@ UserController.create = (req, res, next) => {
             console.log(req.body);
             if (user) {
                 console.log(user);
-                res.json(response_1.default.success(user, 'Users saved succesfully'));
+                res.json(response_1.default.success(_a.getVisibleUserData(user), 'Users saved succesfully'));
             }
         }).catch(err => {
             console.log(err);
@@ -31,9 +38,9 @@ UserController.create = (req, res, next) => {
     });
 };
 UserController.login = (req, res, next) => {
-    service.login(req.body).then(user => {
+    service.login(req.body, true).then(user => {
         if (user) {
-            res.json(response_1.default.success(user, 'OTP Sent please check your email'));
+            res.json(response_1.default.success(_a.getVisibleUserData(user), 'OTP Sent please check your email'));
         }
     }).catch(err => {
         console.log(err);
@@ -44,7 +51,7 @@ UserController.login = (req, res, next) => {
     });
 };
 UserController.loginByOTP = (req, res, next) => {
-    service.login(req.body).then(JWT => {
+    service.loginByOTP(req.body).then(JWT => {
         if (JWT) {
             res.json(response_1.default.success(JWT, 'login success'));
         }

@@ -14,23 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const apierror_1 = __importDefault(require("../global/response/apierror"));
+const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 class EmailService {
     constructor() {
-        var _a, _b;
         console.log(process.env.EMAIL, process.env.EMAIL_PASSOWRD);
         this.transporter = nodemailer_1.default.createTransport({
             service: process.env.MAILTYPE,
             auth: {
-                user: (_a = process.env.EMAIL) === null || _a === void 0 ? void 0 : _a.toString(),
-                pass: (_b = process.env.EMAIL_PASSOWRD) === null || _b === void 0 ? void 0 : _b.toString()
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASSOWRD
             }
         });
     }
     sendEmail(to, subject, text) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const mailOptions = {
-                from: (_a = process.env.EMAIL) === null || _a === void 0 ? void 0 : _a.toString(),
+                from: process.env.EMAIL,
                 to,
                 subject,
                 text
@@ -40,8 +40,7 @@ class EmailService {
                 console.log('Email sent successfully');
             }
             catch (error) {
-                console.error('Error sending email:', error);
-                throw error;
+                new apierror_1.default("An error occurred", errorcode_1.default.InvalidLoginEmail);
             }
         });
     }

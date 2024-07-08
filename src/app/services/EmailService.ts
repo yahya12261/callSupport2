@@ -1,4 +1,6 @@
 import nodemailer, { Transporter } from 'nodemailer';
+import APIError from '../global/response/apierror';
+import Err from '../global/response/errorcode';
 
 export class EmailService {
   private transporter: Transporter;
@@ -8,8 +10,8 @@ export class EmailService {
     this.transporter = nodemailer.createTransport({
       service: process.env.MAILTYPE,
       auth: {
-        user: process.env.EMAIL?.toString(),
-        pass: process.env.EMAIL_PASSOWRD?.toString()
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSOWRD
       }
     });
 
@@ -17,7 +19,7 @@ export class EmailService {
 
   async sendEmail(to: string, subject: string, text: string): Promise<void> {
     const mailOptions = {
-      from: process.env.EMAIL?.toString(),
+      from: process.env.EMAIL,
       to,
       subject,
       text
@@ -27,8 +29,7 @@ export class EmailService {
       await this.transporter.sendMail(mailOptions);
       console.log('Email sent successfully');
     } catch (error) {
-      console.error('Error sending email:', error);
-      throw error;
+       new APIError("An error occurred", Err.InvalidLoginEmail);
     }
   }
 }

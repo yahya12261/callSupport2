@@ -18,8 +18,28 @@ const typeorm_1 = require("typeorm");
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 const logger_1 = require("../../lib/logger");
+const EmailService_1 = require("./EmailService");
 const JWTService_1 = require("./JWTService");
 class UserService {
+    changePassword(user, newPass) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const existingUser = yield this.login(user, false);
+                if (existingUser) {
+                    existingUser.password = newPass;
+                    existingUser.hashPassword();
+                    yield (0, typeorm_1.getRepository)(User_1.User).save(existingUser);
+                    return existingUser;
+                }
+                else {
+                    throw new apierror_1.default("User not found", errorcode_1.default.UserNotFound);
+                }
+            }
+            catch (err) {
+                throw new apierror_1.default("Error changing password", errorcode_1.default.UserNotFound);
+            }
+        });
+    }
     //  userRepository = getRepository(User);
     checkUserExists(model) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,7 +79,7 @@ class UserService {
     }
     add(model) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { first, middle, last, username, password, email, createdBy, Position, dsc, note, phoneNumber } = model;
+            const { first, middle, last, username, password, email, createdBy, Position, dsc, note, phoneNumber, } = model;
             const user = new User_1.User();
             user.username = username;
             user.first = first;
@@ -84,53 +104,68 @@ class UserService {
             }
         });
     }
-    login(model) {
+    login(model, otp) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { username, password, email } = model;
-            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            const { username, password } = model;
+            const user = yield this.findUser(username);
+            if (!user) {
+                return Promise.reject(new apierror_1.default("user not found", errorcode_1.default.UserNotFound));
+            }
+            yield this.validateUser(user, password);
+            yield this.updateUserLastLogin(user);
+            if (otp) {
+                yield this.sendOTP(user);
+            }
+            return user;
+        });
+    }
+    findUser(username) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
+                const userRepository = (0, typeorm_1.getRepository)(User_1.User);
                 const user = yield userRepository.findOne({
                     where: {
-                        Or: [
-                            { username: username },
-                            { email: username }
-                        ]
+                        username,
                     },
                 });
                 if (user) {
-                    if (!user.isActive) {
-                        return Promise.reject(new apierror_1.default("Account is locked", errorcode_1.default.InactiveUser));
-                    }
-                    if (user.checkIfUnencryptedPasswordIsValid(password)) {
-                        user.invalidLoginAttempts = 0;
-                        user.lastLogin = new Date();
-                        yield userRepository.save(user);
-                        this.sendOTP(user);
-                        return user;
-                    }
-                    else {
-                        user.invalidLoginAttempts++;
-                        yield userRepository.save(user);
-                        // Check if the user has reached the maximum allowed invalid login attempts
-                        if (user.invalidLoginAttempts >= 3) {
-                            // Lock the user's account
-                            user.isActive = false;
-                            yield userRepository.save(user);
-                            return Promise.reject(new apierror_1.default("Account is locked", errorcode_1.default.InactiveUser));
-                        }
-                        else {
-                            return Promise.reject(new apierror_1.default("Invalid password", errorcode_1.default.InvalidLoginPassword));
-                        }
-                    }
+                    return user;
                 }
                 else {
-                    return Promise.reject(new apierror_1.default("User not found", errorcode_1.default.UserNotFound));
+                    throw new apierror_1.default("user not found", errorcode_1.default.UserNotFound);
                 }
             }
             catch (err) {
                 console.log(err);
-                return Promise.reject(new apierror_1.default("An error occurred", errorcode_1.default.DatabaseError));
+                throw new apierror_1.default("An error occurred", errorcode_1.default.DatabaseError);
             }
+        });
+    }
+    validateUser(user, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!user.isActive) {
+                throw new apierror_1.default("Account is locked", errorcode_1.default.InactiveUser);
+            }
+            if (user.checkIfUnencryptedPasswordIsValid(password)) {
+                user.invalidLoginAttempts = 0;
+            }
+            else {
+                user.invalidLoginAttempts++;
+                if (user.invalidLoginAttempts >= 3) {
+                    user.isActive = false;
+                    yield (0, typeorm_1.getRepository)(User_1.User).save(user);
+                    throw new apierror_1.default("Account is locked", errorcode_1.default.InactiveUser);
+                }
+                else {
+                    throw new apierror_1.default("Invalid password", errorcode_1.default.InvalidLoginPassword);
+                }
+            }
+        });
+    }
+    updateUserLastLogin(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            user.lastLogin = new Date();
+            yield (0, typeorm_1.getRepository)(User_1.User).save(user);
         });
     }
     loginByOTP(user) {
@@ -140,15 +175,19 @@ class UserService {
             try {
                 if (OTP && uuid) {
                     const user = yield userRepository.findOne({
-                        where: [
-                            { uuid: uuid },
-                            { OTP: OTP }
-                        ]
+                        where: { uuid: uuid },
+                        // { OTP:OTP }
                     });
                     if (user) {
-                        //Generate JWE and send it 
-                        const token = JWTService_1.JWTService.generateJWT(user.uuid);
-                        return token;
+                        if (OTP == user.OTP) {
+                            //Generate JWE and send it
+                            const token = JWTService_1.JWTService.generateJWT(user.uuid);
+                            return token;
+                        }
+                        else {
+                            this.sendOTP(user);
+                            return Promise.reject(new apierror_1.default("check your email with new OTP", errorcode_1.default.IncorrectCurrPassword));
+                        }
                     }
                     else {
                         return Promise.reject(new apierror_1.default("User not found", errorcode_1.default.UserNotFound));
@@ -170,8 +209,8 @@ class UserService {
             let OTP = this.generateOTP();
             user.OTP = Number(OTP);
             userRepository.save(user);
-            // const E_mail = new EmailService();
-            // E_mail.sendEmail(user.email,"2nd Factor Auth",`your OTP : ${OTP}`)
+            const E_mail = new EmailService_1.EmailService();
+            E_mail.sendEmail(user.email, "2nd Factor Auth", `your OTP : ${OTP}`);
         }
         catch (err) {
             console.log(err);
