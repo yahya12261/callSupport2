@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from './User';
 import {  EntityType } from '../type/EntityType';
 import { IsEnum } from 'class-validator';
+import { IBaseEntity } from '../baseEntity';
 
 @Entity()
 export abstract class BaseEntity {
@@ -27,6 +28,9 @@ export abstract class BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   dsc!: string | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  arabicLabel!: string | null;
+
   @Column({
     type: "enum",
     enum: Object.values(EntityType),
@@ -50,6 +54,12 @@ export abstract class BaseEntity {
 
   constructor() {
     this.uuid = uuidv4();
+  }
+  protected fillEntityFromModel(modal:IBaseEntity){
+   this.arabicLabel = modal.arabicLabel;
+   this.isActive = modal.isActive;
+   this.dsc = modal.dsc;
+   this.note = modal.note;
   }
 
 

@@ -12,6 +12,7 @@ import {
 import { BaseEntity } from './baseEntity';
 import { Position } from './Position';
 import { EntityType } from '../type/EntityType';
+import { IDepartment } from '../Department';
 
 @Entity("departments")
 @Unique(['name'])
@@ -26,6 +27,11 @@ positions!: Position[];
 constructor(){
   super();
   this.type = EntityType.DEPARTMENT;
+
+}
+public fillDepFromModel(modal:IDepartment){
+  this.fillEntityFromModel(modal);
+  this.name = modal.name;
 }
 
 

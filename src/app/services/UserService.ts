@@ -10,6 +10,7 @@ import { EmailService } from "./EmailService";
 import { JWTService } from "./JWTService";
 
 export class UserService implements IUserRepository {
+ public static logger: any = new Logger();
   async changePassword(user: IUser, newPass: string): Promise<User | null> {
     try {
       const existingUser = await this.login(user, false);
@@ -25,9 +26,6 @@ export class UserService implements IUserRepository {
       throw new APIError("Error changing password", Err.UserNotFound);
     }
   }
-  public static logger: any = new Logger();
-  //  userRepository = getRepository(User);
-
   async checkUserExists(model: IUser): Promise<boolean> {
     const userRepository = getRepository(User);
     const { email, username } = model;
@@ -116,7 +114,6 @@ export class UserService implements IUserRepository {
   
     return user;
   }
-  
   private async findUser(username: string): Promise<User | null> {
     try {
       const userRepository = getRepository(User);
@@ -134,7 +131,6 @@ export class UserService implements IUserRepository {
       throw new APIError("An error occurred", Err.DatabaseError);
     }
   }
-  
   private async validateUser(user: User, password: string): Promise<void> {
     if (!user.isActive) {
       throw new APIError("Account is locked", Err.InactiveUser);
@@ -153,7 +149,6 @@ export class UserService implements IUserRepository {
       }
     }
   }
-  
   private async updateUserLastLogin(user: User): Promise<void> {
     user.lastLogin = new Date();
     await getRepository(User).save(user);
