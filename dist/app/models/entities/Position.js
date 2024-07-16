@@ -15,10 +15,16 @@ const baseEntity_1 = require("./baseEntity");
 const Department_1 = require("./Department");
 const User_1 = require("./User");
 const EntityType_1 = require("../type/EntityType");
+const Rule_1 = require("./Rule");
 let Position = class Position extends baseEntity_1.BaseEntity {
     constructor() {
         super();
         this.type = EntityType_1.EntityType.POSITION;
+    }
+    fillFromModel(modal) {
+        this.fillEntityFromModel(modal);
+        this.name = modal.name;
+        this.department = modal.department;
     }
 };
 exports.Position = Position;
@@ -34,6 +40,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => User_1.User, (user) => user.position),
     __metadata("design:type", Array)
 ], Position.prototype, "users", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Rule_1.Rule),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], Position.prototype, "rules", void 0);
 exports.Position = Position = __decorate([
     (0, typeorm_1.Entity)("positions"),
     (0, typeorm_1.Unique)(['name']),

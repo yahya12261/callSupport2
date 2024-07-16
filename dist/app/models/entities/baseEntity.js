@@ -18,6 +18,12 @@ let BaseEntity = class BaseEntity {
     constructor() {
         this.uuid = (0, uuid_1.v4)();
     }
+    fillEntityFromModel(modal) {
+        this.arabicLabel = modal.arabicLabel;
+        this.isActive = modal.isActive;
+        this.dsc = modal.dsc;
+        this.note = modal.note;
+    }
 };
 exports.BaseEntity = BaseEntity;
 __decorate([
@@ -48,6 +54,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
     __metadata("design:type", Object)
 ], BaseEntity.prototype, "dsc", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", Object)
+], BaseEntity.prototype, "arabicLabel", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: "enum",

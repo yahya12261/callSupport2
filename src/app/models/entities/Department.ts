@@ -17,6 +17,7 @@ import { IDepartment } from '../Department';
 @Entity("departments")
 @Unique(['name'])
 export class Department extends BaseEntity{
+
     
 @Column({type:'varchar'})
 public name!:String 
@@ -29,7 +30,7 @@ constructor(){
   this.type = EntityType.DEPARTMENT;
 
 }
-public fillDepFromModel(modal:IDepartment){
+public fillFromModel(modal:IDepartment): void {
   this.fillEntityFromModel(modal);
   this.name = modal.name;
 }

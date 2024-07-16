@@ -31,6 +31,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const bcrypt = __importStar(require("bcryptjs"));
@@ -39,9 +48,34 @@ const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
 const EntityType_1 = require("../type/EntityType");
 const Position_1 = require("./Position");
+const Rule_1 = require("./Rule");
+const RuleService_1 = require("../../services/RuleService");
 let User = class User extends baseEntity_1.BaseEntity {
+    afterInsertHandler() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const rulesCreatedSuccessfully = yield this.ruleServices.addUserRules(this.id);
+                if (rulesCreatedSuccessfully) {
+                    console.log("Rules created successfully");
+                }
+                else {
+                    console.log("Failed to create rules");
+                    this.ruleBack();
+                }
+            }
+            catch (err) {
+                console.error(err);
+                this.ruleBack();
+            }
+        });
+    }
+    ruleBack() {
+        // Add your custom logic to handle the rule creation failure
+        console.log("Performing rule back operation...");
+    }
     constructor() {
         super();
+        this.ruleServices = new RuleService_1.RuleService(Rule_1.Rule);
         this.type = EntityType_1.EntityType.USER;
     }
     hashPassword() {
@@ -53,6 +87,9 @@ let User = class User extends baseEntity_1.BaseEntity {
     }
     checkIfUnencryptedPasswordIsValid(unencryptedPassword) {
         return bcrypt.compareSync(unencryptedPassword, this.password);
+    }
+    fillFromModel(model) {
+        throw new Error('Method not implemented.');
     }
 };
 exports.User = User;
@@ -124,6 +161,17 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => Position_1.Position, (pos) => pos.users),
     __metadata("design:type", Object)
 ], User.prototype, "position", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Rule_1.Rule),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], User.prototype, "rules", void 0);
+__decorate([
+    (0, typeorm_1.AfterInsert)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], User.prototype, "afterInsertHandler", null);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)("users"),
     (0, typeorm_1.Unique)(['email', 'username']),

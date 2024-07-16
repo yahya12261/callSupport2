@@ -4,27 +4,29 @@ import { User } from "./User";
 import { Position } from "./Position";
 import { MethodTypes } from "../type/MethodTypes";
 import { EntityType } from "../type/EntityType";
+import { IRule } from "../Rule";
 
-@Entity("roles")
-export class Role extends BaseEntity{
+@Entity("rules")
+export class Rule extends BaseEntity{
 
 @Column()
 public name!:String;
 
-@Column()
+@Column({nullable: true})
 public route!:String;
 
-@Column()
+@Column({nullable: true})
 public code!:String;
 
 @Column({
     type: "enum",
     enum: Object.values(MethodTypes),
+    nullable: true
   })
 public methodType!:MethodTypes|null;
 
-@Column()
-public MethodName!:String;
+@Column({nullable: true})
+public methodName!:String;
 
 @ManyToMany(() => User)
 @JoinTable()
@@ -36,6 +38,14 @@ positions!: Position[]
 
 constructor(){
   super();
+}
+
+public fillFromModel(modal:IRule){
+  this.fillEntityFromModel(modal);
+  this.name = modal.name;
+  this.code = modal.code;
+  this.methodName = modal.methodName;
+  this.methodType = modal.methodType; 
 }
 
 }

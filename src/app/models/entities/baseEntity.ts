@@ -4,6 +4,8 @@ import { User } from './User';
 import {  EntityType } from '../type/EntityType';
 import { IsEnum } from 'class-validator';
 import { IBaseEntity } from '../baseEntity';
+import { serialize, Serializer } from 'v8';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export abstract class BaseEntity {
@@ -61,6 +63,6 @@ export abstract class BaseEntity {
    this.dsc = modal.dsc;
    this.note = modal.note;
   }
-
+  public abstract fillFromModel(model:IBaseEntity):void; 
 
 }

@@ -40,7 +40,6 @@ class UserService {
             }
         });
     }
-    //  userRepository = getRepository(User);
     checkUserExists(model) {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepository = (0, typeorm_1.getRepository)(User_1.User);

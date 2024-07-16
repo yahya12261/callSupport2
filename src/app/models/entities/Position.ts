@@ -3,6 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,6 +16,7 @@ import { Department } from './Department';
 import { User } from './User';
 import { EntityType } from '../type/EntityType';
 import { IPosition } from '../Position';
+import { Rule } from './Rule';
 
 @Entity("positions")
 @Unique(['name'])
@@ -28,14 +31,17 @@ department!: Department | null;
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
 
+@ManyToMany(() => Rule)
+@JoinTable()
+rules!: Rule[]
+
 constructor(){
   super();
   this.type = EntityType.POSITION;
 }
-public fillPositionFromModel(modal:IPosition){
+public fillFromModel(modal:IPosition): void {
   this.fillEntityFromModel(modal);
   this.name = modal.name;
   this.department = modal.department;
 }
-
 }

@@ -1,9 +1,9 @@
 export enum EntityType {
     BASE = 'Base',
-    USER = 'User',
+    USER = 'user',
     API = 'API',
-    PAGE = 'Page',
-    COMPONENT = 'Component',
-    DEPARTMENT = 'Department',
-    POSITION = 'Position',
+    PAGE = 'page',
+    COMPONENT = 'component',
+    DEPARTMENT = 'department',
+    POSITION = 'position',
   }

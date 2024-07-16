@@ -1,9 +1,6 @@
 import { Position } from "../models/entities/Position";
 import { IPosition } from "../models/Position";
+import { BaseRepository } from "./BaseRepository";
 
-export interface IPositionRepository {
-    getAll(): Promise<Position[] | null>;
-    add(position: IPosition): Promise<Position | null>;
-    update(position: IPosition): Promise<Position | null>;
-    getById(id: number): Promise<Position | null>;
+export interface IPositionRepository extends BaseRepository<Position,IPosition> {
 }

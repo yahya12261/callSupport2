@@ -6,7 +6,7 @@ import { User } from '../models/entities/User';
 import { Testy } from '../models/entities/Testy';
 import { Department } from '../models/entities/Department';
 import { Position } from '../models/entities/Position';
-import { Role } from '../models/entities/Role';
+import { Rule } from '../models/entities/Rule';
 
 class DatabaseService {
   public static emitter: EventEmitter = new EventEmitter();
@@ -29,7 +29,7 @@ class DatabaseService {
       password: dbConfig.password,
       database: dbConfig.database,
       entities: [
-        User,Department,Position,Role
+        User,Department,Position,Rule
       ],
       synchronize:true,
     }).then(() => {

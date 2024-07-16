@@ -20,7 +20,7 @@ const logger_1 = require("../../lib/logger");
 const User_1 = require("../models/entities/User");
 const Department_1 = require("../models/entities/Department");
 const Position_1 = require("../models/entities/Position");
-const Role_1 = require("../models/entities/Role");
+const Rule_1 = require("../models/entities/Rule");
 class DatabaseService {
     static getConnection() {
         return __awaiter(this, arguments, void 0, function* (callback = null, wait = false) {
@@ -40,7 +40,7 @@ class DatabaseService {
                 password: dbConfig.password,
                 database: dbConfig.database,
                 entities: [
-                    User_1.User, Department_1.Department, Position_1.Position, Role_1.Role
+                    User_1.User, Department_1.Department, Position_1.Position, Rule_1.Rule
                 ],
                 synchronize: true,
             }).then(() => {

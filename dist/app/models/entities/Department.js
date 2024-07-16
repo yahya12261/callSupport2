@@ -19,6 +19,10 @@ let Department = class Department extends baseEntity_1.BaseEntity {
         super();
         this.type = EntityType_1.EntityType.DEPARTMENT;
     }
+    fillFromModel(modal) {
+        this.fillEntityFromModel(modal);
+        this.name = modal.name;
+    }
 };
 exports.Department = Department;
 __decorate([

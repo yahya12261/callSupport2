@@ -33,6 +33,7 @@ class UserController {
   
 })}
 
+
   public static login = (req: Request, res: Response, next: any) => {
     service.login(req.body,true).then(user=>{
         if(user){
