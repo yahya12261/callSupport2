@@ -58,9 +58,9 @@ class UserService {
                 }
                 return exists;
             }
-            catch (err) {
-                UserService.logger.error("Error checking user existence:", err);
-                throw err;
+            catch (e) {
+                console.log(e);
+                return Promise.reject(new apierror_1.default("User Already exists", errorcode_1.default.EmailAlreadyExists));
             }
         });
     }
@@ -78,7 +78,7 @@ class UserService {
     }
     add(model) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { first, middle, last, username, password, email, createdBy, Position, dsc, note, phoneNumber, } = model;
+            const { first, middle, last, username, password, email, createdBy, position, dsc, note, phoneNumber, } = model;
             const user = new User_1.User();
             user.username = username;
             user.first = first;
@@ -87,7 +87,8 @@ class UserService {
             user.last = last;
             user.isAdmin = false;
             user.isActive = true;
-            user.position = Position;
+            console.log(position);
+            user.position = position;
             user.email = email;
             user.phoneNumber = phoneNumber;
             user.hashPassword();
@@ -95,6 +96,7 @@ class UserService {
             const userRepository = (0, typeorm_1.getRepository)(User_1.User);
             try {
                 const savedUser = yield userRepository.save(user);
+                // generate rules
                 return savedUser;
             }
             catch (e) {

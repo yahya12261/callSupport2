@@ -35,7 +35,17 @@ class RuleController extends BaseController_1.BaseController {
                 next(new custom_errors_1.ServerException("error occurred"));
             });
         };
-        // public addUserRule = 
+        this.generateUserRulesByPosition = (user) => {
+            this.service
+                .addUserRulesByPosition(user)
+                .then((res) => {
+                if (res)
+                    return res;
+            })
+                .catch((err) => {
+                return false;
+            });
+        };
     }
 }
 exports.default = RuleController;

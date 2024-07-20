@@ -78,34 +78,72 @@ class RuleService extends BaseService_1.default {
             }
         });
     }
-    addUserRules(userId) {
+    // async addUserRules(
+    //   user:User
+    // ): Promise<boolean | null> {
+    //   const position = user.position;
+    //   try {
+    //     // Get the existing User, Position, and Rule entities
+    //     const userRepository = getRepository(User);
+    //     const positionRepository = getRepository(Position);
+    //     const repository = this.getRepository();
+    //     if(userId&&userId>0){
+    //     const position = await positionRepository.findOne({ where: { id:user?.id  }, relations: ['rules'] });
+    //     console.log("position",position);
+    //     if (!position) {
+    //       return false;
+    //     }
+    //     // Get all rules associated with the user's position
+    //     const positionRules = await repository.find({ where: { positions: { id: position.id } } });
+    //     const user = 
+    //     // Filter out the rules that the user is already associated with
+    //     const availableRules = positionRules.filter(rule => !user.rules.some(r => r.id === rule.id));
+    //     console.log("availableRules  : ",availableRules)
+    //     // Add the association between the user and the available rules
+    //     user.rules.push(...availableRules);
+    //     availableRules.forEach(rule => rule.users.push(user));
+    //     // Save the updated entities
+    //     await userRepository.save(user);
+    //     await repository.save(availableRules);
+    //     return true;
+    //   }
+    //   else{
+    //     return false;
+    //   }
+    //   } catch (err) {
+    //     console.error('Error adding user-rule association:', err);
+    //     return Promise.reject(new APIError('Error adding user-rule association', Err.InternalServerError));
+    //   }
+    // }
+    addUserRulesByPosition(user) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            const positionRepository = (0, typeorm_1.getRepository)(Position_1.Position);
+            const ruleRepository = (0, typeorm_1.getRepository)(Rule_1.Rule);
             try {
-                // Get the existing User, Position, and Rule entities
-                const userRepository = (0, typeorm_1.getRepository)(User_1.User);
-                const positionRepository = (0, typeorm_1.getRepository)(Position_1.Position);
-                const repository = this.getRepository();
-                const user = yield userRepository.findOne({ where: { id: userId }, relations: ['position', 'rules'] });
-                const position = yield positionRepository.findOne({ where: { id: (_a = user === null || user === void 0 ? void 0 : user.position) === null || _a === void 0 ? void 0 : _a.id }, relations: ['rules'] });
-                if (!user || !position) {
-                    return false;
+                const position = yield positionRepository.findOne({
+                    where: { id: (_a = user.position) === null || _a === void 0 ? void 0 : _a.id },
+                    relations: ['rules'],
+                });
+                console.log('position', position);
+                if (!position || !position.rules) {
+                    return null;
                 }
-                // Get all rules associated with the user's position
-                const positionRules = yield repository.find({ where: { positions: { id: position.id } } });
-                // Filter out the rules that the user is already associated with
-                const availableRules = positionRules.filter(rule => !user.rules.some(r => r.id === rule.id));
-                // Add the association between the user and the available rules
-                user.rules.push(...availableRules);
-                availableRules.forEach(rule => rule.users.push(user));
-                // Save the updated entities
-                yield userRepository.save(user);
-                yield repository.save(availableRules);
-                return true;
+                // Ensure user.rules is an array before using push()
+                if (!Array.isArray(user.rules)) {
+                    user.rules = [];
+                }
+                const availableRules = position.rules.filter((rule) => !user.rules.some((r) => r.id === rule.id));
+                // availableRules.forEach(rule)
+                console.log("availableRules", availableRules);
+                availableRules.forEach((rule) => user.addRules(rule));
+                const saved = yield userRepository.save(user);
+                return saved ? true : false;
             }
             catch (err) {
-                console.error('Error adding user-rule association:', err);
-                return Promise.reject(new apierror_1.default('Error adding user-rule association', errorcode_1.default.InternalServerError));
+                console.log(err);
+                return false;
             }
         });
     }

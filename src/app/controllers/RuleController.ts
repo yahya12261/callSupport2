@@ -9,6 +9,7 @@ import { BaseController } from "./BaseController";
 import BaseService from "../services/BaseService";
 import { EntityType } from "../models/type/EntityType";
 import { TypeormOptions } from "../models/TypeormOptions";
+import { User } from "../models/entities/User";
 // const service = new RuleService(Rule);
 
 
@@ -36,8 +37,19 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
         next(new ServerException("error occurred"));
       });
   };
-  // public addUserRule = 
 
+  public generateUserRulesByPosition = (user:User) => {
+
+    this.service
+      .addUserRulesByPosition(user)
+      .then((res) => {
+        
+        if (res) return res;
+      })
+      .catch((err) => {
+        return false;
+      });
+  };
 }
 
 export default RuleController;

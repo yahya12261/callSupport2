@@ -53,20 +53,12 @@ const RuleService_1 = require("../../services/RuleService");
 let User = class User extends baseEntity_1.BaseEntity {
     afterInsertHandler() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const rulesCreatedSuccessfully = yield this.ruleServices.addUserRules(this.id);
-                if (rulesCreatedSuccessfully) {
-                    console.log("Rules created successfully");
+            const rulesCreatedSuccessfully = yield this.ruleServices.addUserRulesByPosition(this).then(b => {
+                if (b) {
+                    console.log('Entering afterInsertHandler3');
+                    console.log(b);
                 }
-                else {
-                    console.log("Failed to create rules");
-                    this.ruleBack();
-                }
-            }
-            catch (err) {
-                console.error(err);
-                this.ruleBack();
-            }
+            });
         });
     }
     ruleBack() {
@@ -90,6 +82,9 @@ let User = class User extends baseEntity_1.BaseEntity {
     }
     fillFromModel(model) {
         throw new Error('Method not implemented.');
+    }
+    addRules(rule) {
+        this.rules.push(rule);
     }
 };
 exports.User = User;

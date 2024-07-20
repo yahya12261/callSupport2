@@ -8,7 +8,12 @@ const UserService_1 = require("../services/UserService");
 const response_1 = __importDefault(require("../global/response"));
 const custom_errors_1 = require("../../lib/custom-errors");
 const apierror_1 = __importDefault(require("../global/response/apierror"));
+const RuleService_1 = require("../services/RuleService");
+const RuleController_1 = __importDefault(require("./RuleController"));
+const Rule_1 = require("../models/entities/Rule");
 const service = new UserService_1.UserService();
+const ruleService = new RuleService_1.RuleService(Rule_1.Rule);
+const ruleController = new RuleController_1.default(ruleService);
 class UserController {
     static getVisibleUserData(user) {
         return {
@@ -23,9 +28,11 @@ UserController.create = (req, res, next) => {
             res.json(response_1.default.userAlreadyExist());
         }
         service.add(req.body).then(user => {
-            console.log(req.body);
+            // console.log(req.body)
             if (user) {
-                console.log(user);
+                // //create rules 
+                // ruleController.generateUserRulesByPosition(user.id);
+                // console.log(user)
                 res.json(response_1.default.success(_a.getVisibleUserData(user), 'Users saved succesfully'));
             }
         }).catch(err => {

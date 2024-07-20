@@ -10,7 +10,7 @@ export interface IUser extends IBaseEntity {
     password: string;
     OTP: number;
     isAdmin: boolean;
-    Position:Position;
+    position:Position;
     phoneNumber:string;
     invalidLoginAttempts:number;
     lastLogin:Date;

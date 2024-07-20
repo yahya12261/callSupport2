@@ -38,15 +38,16 @@ export class UserService implements IUserRepository {
         exists = count > 0;
       }
 
-      if (username !== undefined && !exists) {
+      if(username !== undefined && !exists) {
         const count = await userRepository.count({ username: userLoweCase });
         exists = count > 0;
       }
-
       return exists;
-    } catch (err) {
-      UserService.logger.error("Error checking user existence:", err);
-      throw err;
+    }  catch (e) {
+      console.log(e);
+      return Promise.reject(
+        new APIError("User Already exists", Err.EmailAlreadyExists)
+      );
     }
   }
   async getById(id: number): Promise<User | null> {
@@ -67,7 +68,7 @@ export class UserService implements IUserRepository {
       password,
       email,
       createdBy,
-      Position,
+      position,
       dsc,
       note,
       phoneNumber,
@@ -80,7 +81,8 @@ export class UserService implements IUserRepository {
     user.last = last;
     user.isAdmin = false;
     user.isActive = true;
-    user.position = Position;
+    console.log(position);
+    user.position = position;
     user.email = email;
     user.phoneNumber = phoneNumber;
     user.hashPassword();
@@ -88,6 +90,8 @@ export class UserService implements IUserRepository {
     const userRepository = getRepository(User);
     try {
       const savedUser = await userRepository.save(user);
+      // generate rules
+
       return savedUser;
     } catch (e) {
       console.log(e);

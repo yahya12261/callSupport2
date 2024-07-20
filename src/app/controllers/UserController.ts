@@ -7,7 +7,13 @@ import { ServerException } from '../../lib/custom-errors';
 import APIError from '../global/response/apierror';
 import Err from '../global/response/errorcode';
 import { User } from '../models/entities/User';
+import { RuleService } from '../services/RuleService';
+import RuleController from './RuleController';
+import { Rule } from '../models/entities/Rule';
 const service = new UserService();
+const ruleService = new RuleService(Rule);
+const ruleController = new RuleController(ruleService);
+
 class UserController {
 
   public static create = (req: Request, res: Response, next: any) => {
@@ -18,9 +24,11 @@ class UserController {
   
 
     service.add(req.body).then(user => {
-      console.log(req.body)
+      // console.log(req.body)
       if (user) {
-        console.log(user)
+        // //create rules 
+        // ruleController.generateUserRulesByPosition(user.id);
+       // console.log(user)
         res.json(Template.success(this.getVisibleUserData(user), 'Users saved succesfully'));
       }
     }).catch(err => {

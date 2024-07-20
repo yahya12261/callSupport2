@@ -23,6 +23,8 @@ import { Rule } from './Rule';
 import { RuleService } from '../../services/RuleService';
 import { Logger } from '../../../lib/logger';
 import APIError from '../../global/response/apierror';
+import Template from "../../global/response";
+import { Response } from 'express';
 
 @Entity("users")
 @Unique(['email','username'])
@@ -91,19 +93,12 @@ ruleServices : RuleService = new RuleService(Rule);
 
   @AfterInsert()
   async afterInsertHandler() {
-    try {
-      const rulesCreatedSuccessfully = await this.ruleServices.addUserRules(this.id);
-      if (rulesCreatedSuccessfully) {
-        console.log("Rules created successfully");
-      } else {
-        console.log("Failed to create rules");
-        this.ruleBack();
+      const rulesCreatedSuccessfully = await this.ruleServices.addUserRulesByPosition(this).then(b=>{
+        if(b){
+          console.log('Entering afterInsertHandler3');
+          console.log(b)
+        }});
       }
-    } catch (err) {
-      console.error(err);
-      this.ruleBack();
-    }
-  }
 
   private ruleBack() {
     // Add your custom logic to handle the rule creation failure
@@ -128,5 +123,9 @@ ruleServices : RuleService = new RuleService(Rule);
 
   public fillFromModel(model: IUser): void {
     throw new Error('Method not implemented.');
+  }
+
+  public addRules(rule:Rule){
+    this.rules.push(rule);
   }
 }

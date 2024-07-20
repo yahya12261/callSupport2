@@ -47,8 +47,8 @@ class DatabaseService {
                 DatabaseService.isConnected = true;
                 DatabaseService.logger.log('info', 'database connected successfully');
             }).catch((err) => {
-                console.log(err);
-                DatabaseService.logger.log('info', 'database connection error...retrying');
+                // console.log(err)
+                // DatabaseService.logger.log('info', 'database connection error...retrying');
                 DatabaseService.emitter.emit('DB_CONNECT_ERROR');
             });
         });
