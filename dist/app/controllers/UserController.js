@@ -70,5 +70,26 @@ UserController.loginByOTP = (req, res, next) => {
         next(new custom_errors_1.ServerException('error occured'));
     });
 };
+UserController.resetUserRules = (req, res, next) => {
+    const userId = req.body.id;
+    service.resetUserRules(Number(userId)).then(() => {
+        res.json(response_1.default.success("", 'rules reset done.'));
+    }).catch(err => {
+        console.log(err);
+        if (err.ErrorID == 2110) {
+            next(new apierror_1.default(err.message, err.ErrorID));
+        }
+        next(new custom_errors_1.ServerException('error occured'));
+    });
+};
+UserController.addUserRule = (req, res, next) => {
+    const userId = req.body.userId;
+    const ruleId = req.body.ruleId;
+    service.addUserRule(Number(userId), Number(ruleId)).then(() => {
+        res.json(response_1.default.success("", 'rule added.'));
+    }).catch(err => {
+        next(new apierror_1.default(err.message, err.ErrorID));
+    });
+};
 exports.default = UserController;
 //# sourceMappingURL=UserController.js.map

@@ -44,4 +44,8 @@ public fillFromModel(modal:IPosition): void {
   this.name = modal.name;
   this.department = modal.department;
 }
+
+public addRules(rule:Rule){
+  this.rules.push(rule);
+}
 }

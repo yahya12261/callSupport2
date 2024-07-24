@@ -20,18 +20,17 @@ import { IBaseEntity } from '../baseEntity';
 import { IUser } from '../User';
 import { Exclude } from 'class-transformer';
 import { Rule } from './Rule';
-import { RuleService } from '../../services/RuleService';
 import { Logger } from '../../../lib/logger';
 import APIError from '../../global/response/apierror';
 import Template from "../../global/response";
 import { Response } from 'express';
+import { UserService } from '../../services/UserService';
 
 @Entity("users")
 @Unique(['email','username'])
 
 export class User extends BaseEntity{
 
-ruleServices : RuleService = new RuleService(Rule);
   @Column({nullable:true})
   @Length(4, 25)
   public first!: string;
@@ -93,7 +92,7 @@ ruleServices : RuleService = new RuleService(Rule);
 
   @AfterInsert()
   async afterInsertHandler() {
-      const rulesCreatedSuccessfully = await this.ruleServices.addUserRulesByPosition(this).then(b=>{
+      const rulesCreatedSuccessfully = UserService.addUserRulesByPosition(this).then(b=>{
         if(b){
           console.log('Entering afterInsertHandler3');
           console.log(b)

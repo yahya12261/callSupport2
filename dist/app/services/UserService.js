@@ -20,6 +20,8 @@ const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 const logger_1 = require("../../lib/logger");
 const EmailService_1 = require("./EmailService");
 const JWTService_1 = require("./JWTService");
+const Position_1 = require("../models/entities/Position");
+const Rule_1 = require("../models/entities/Rule");
 class UserService {
     changePassword(user, newPass) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -222,6 +224,93 @@ class UserService {
         // Generate a random 4-digit number
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
         return otp;
+    }
+    static addUserRulesByPosition(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            const positionRepository = (0, typeorm_1.getRepository)(Position_1.Position);
+            try {
+                const position = yield positionRepository.findOne({
+                    where: { id: (_a = user.position) === null || _a === void 0 ? void 0 : _a.id },
+                    relations: ["rules"],
+                });
+                if (!position || !position.rules) {
+                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.EmptyRequestBody));
+                }
+                if (!Array.isArray(user.rules)) {
+                    user.rules = [];
+                }
+                const availableRules = position.rules.filter((rule) => !user.rules.some((r) => r.id === rule.id));
+                availableRules.forEach((rule) => user.addRules(rule));
+                const saved = yield userRepository.save(user);
+                return saved;
+            }
+            catch (err) {
+                console.log(err);
+                return Promise.reject(new apierror_1.default("err", errorcode_1.default.DuplicateRequest));
+            }
+        });
+    }
+    resetUserRules(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            const positionRepository = (0, typeorm_1.getRepository)(Position_1.Position);
+            try {
+                const user = yield userRepository.findOne({
+                    where: { id: userId },
+                    relations: ["rules", "position"],
+                });
+                if (!user) {
+                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.UserNotFound));
+                }
+                if (!user.position) {
+                    return Promise.reject(new apierror_1.default("please set position before reset rules! ", 0));
+                }
+                const position = yield positionRepository.findOne({
+                    where: { id: (_a = user.position) === null || _a === void 0 ? void 0 : _a.id },
+                    relations: ["rules"],
+                });
+                if (position === null || position === void 0 ? void 0 : position.rules) {
+                    if (!Array.isArray(position.rules)) {
+                        position.rules = [];
+                    }
+                    user.rules = position.rules;
+                    userRepository.save(user);
+                }
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    addUserRule(userId, ruleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            const ruleRepository = (0, typeorm_1.getRepository)(Rule_1.Rule);
+            try {
+                if (!userId || !ruleId) {
+                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.EmptyRequestBody));
+                }
+                const user = yield userRepository.findOne({
+                    where: { id: userId },
+                    relations: ["rules"],
+                });
+                if (!user) {
+                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.UserNotFound));
+                }
+                const rule = yield ruleRepository.findOne({ id: ruleId });
+                if (!rule) {
+                    return Promise.reject(new apierror_1.default("rule not found ", 0));
+                }
+                user.addRules(rule);
+                userRepository.save(user);
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));
+            }
+        });
     }
 }
 exports.UserService = UserService;

@@ -3,6 +3,7 @@ import multer from 'multer';
 import { DepartmentService } from '../app/services/DepartmentService';
 import { Department } from '../app/models/entities/Department';
 import DepartmentController from '../app/controllers/DepartmentController';
+import { EndPoints } from '../middlewares/EndPoints';
 const router = Router();
 const upload = multer();
 const Service: DepartmentService = new DepartmentService(Department);
@@ -22,4 +23,7 @@ router.post('/', upload.none(), Controller.add);
 // // Delete a department
 // router.delete('/:id',);
 
+
+const allRoutes = EndPoints.getAllRoutes("v1/department",router);
+router.get('/sync',EndPoints.generateRule);
 export default router;

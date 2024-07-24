@@ -4,7 +4,9 @@ import * as http from 'http';
 import { app } from './app';
 import { DatabaseService } from './app/services/databaseService';
 import { Logger } from './lib/logger';
+import { EndPoints } from './middlewares/EndPoints';
 // Composition root
+// Function to get all defined routes
 
 const logger: any = new Logger();
 DatabaseService.createConnection();

@@ -26,6 +26,9 @@ let Position = class Position extends baseEntity_1.BaseEntity {
         this.name = modal.name;
         this.department = modal.department;
     }
+    addRules(rule) {
+        this.rules.push(rule);
+    }
 };
 exports.Position = Position;
 __decorate([

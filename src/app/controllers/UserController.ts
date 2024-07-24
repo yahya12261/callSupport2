@@ -74,6 +74,31 @@ private static getVisibleUserData(user:User){
     uuid:user.uuid
   };
 }
+
+public static resetUserRules = (req: Request, res: Response, next: any) => {
+
+  const userId =req.body.id; 
+  service.resetUserRules(Number(userId)).then(()=>{
+       res.json(Template.success("", 'rules reset done.'));      
+  }).catch(err => {
+    console.log(err)
+    if (err.ErrorID == 2110) {
+      next(new APIError(err.message, err.ErrorID));
+    }
+    next(new ServerException('error occured'));
+  })
+}
+
+public static addUserRule =  (req: Request, res: Response, next: any) => {
+  const userId = req.body.userId ;
+  const ruleId = req.body.ruleId ;
+  service.addUserRule(Number(userId),Number(ruleId)).then(()=>{
+    res.json(Template.success("", 'rule added.')); 
+  }).catch(err => {
+      next(new APIError(err.message, err.ErrorID));
+
+  })
+}
 }
 
 

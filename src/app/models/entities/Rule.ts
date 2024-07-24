@@ -28,14 +28,6 @@ public methodType!:MethodTypes|null;
 @Column({nullable: true})
 public methodName!:String;
 
-@ManyToMany(() => User)
-@JoinTable()
-users!: User[]
-
-@ManyToMany(() => Position)
-@JoinTable()
-positions!: Position[]
-
 constructor(){
   super();
 }

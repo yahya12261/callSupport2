@@ -8,6 +8,7 @@ const multer_1 = __importDefault(require("multer"));
 const DepartmentService_1 = require("../app/services/DepartmentService");
 const Department_1 = require("../app/models/entities/Department");
 const DepartmentController_1 = __importDefault(require("../app/controllers/DepartmentController"));
+const EndPoints_1 = require("../middlewares/EndPoints");
 const router = (0, express_1.Router)();
 const upload = (0, multer_1.default)();
 const Service = new DepartmentService_1.DepartmentService(Department_1.Department);
@@ -20,5 +21,7 @@ router.post('/', upload.none(), Controller.add);
 // router.put('/:id', upload.none(), cont.update);
 // // Delete a department
 // router.delete('/:id',);
+const allRoutes = EndPoints_1.EndPoints.getAllRoutes("v1/rule", router);
+router.get('/sync', EndPoints_1.EndPoints.generateRule);
 exports.default = router;
 //# sourceMappingURL=department.js.map

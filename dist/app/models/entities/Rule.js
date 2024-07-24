@@ -12,8 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rule = void 0;
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
-const User_1 = require("./User");
-const Position_1 = require("./Position");
 const MethodTypes_1 = require("../type/MethodTypes");
 let Rule = class Rule extends baseEntity_1.BaseEntity {
     constructor() {
@@ -52,16 +50,6 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Rule.prototype, "methodName", void 0);
-__decorate([
-    (0, typeorm_1.ManyToMany)(() => User_1.User),
-    (0, typeorm_1.JoinTable)(),
-    __metadata("design:type", Array)
-], Rule.prototype, "users", void 0);
-__decorate([
-    (0, typeorm_1.ManyToMany)(() => Position_1.Position),
-    (0, typeorm_1.JoinTable)(),
-    __metadata("design:type", Array)
-], Rule.prototype, "positions", void 0);
 exports.Rule = Rule = __decorate([
     (0, typeorm_1.Entity)("rules"),
     __metadata("design:paramtypes", [])

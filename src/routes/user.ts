@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import multer from 'multer';
 import UserController from '../app/controllers/UserController';
-
+import {app} from '../app';
+import { EndPoints } from '../middlewares/EndPoints';
 const router = Router();
 const upload = multer();
 
@@ -13,4 +14,9 @@ router.post('/login', upload.none(), UserController.login);
 
 router.post('/loginByOTP', upload.none(), UserController.loginByOTP);
 
+router.post('/resetRules',upload.none(),UserController.resetUserRules);
+
+router.post('/addRule',upload.none(),UserController.addUserRule);
+const allRoutes = EndPoints.getAllRoutes("v1/user",router);
+router.get('/sync',EndPoints.generateRule);
 export default router;

@@ -8,6 +8,8 @@ import Err from "../global/response/errorcode";
 import { Logger } from "../../lib/logger";
 import { EmailService } from "./EmailService";
 import { JWTService } from "./JWTService";
+import { Position } from "../models/entities/Position";
+import { Rule } from "../models/entities/Rule";
 
 export class UserService implements IUserRepository {
  public static logger: any = new Logger();
@@ -214,4 +216,91 @@ export class UserService implements IUserRepository {
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     return otp;
   }
+  static async addUserRulesByPosition(user: User): Promise<User | null> {
+    const userRepository = getRepository(User);
+    const positionRepository = getRepository(Position);
+    try {
+      const position = await positionRepository.findOne({
+        where: { id: user.position?.id },
+        relations: ["rules"],
+      });
+      if (!position || !position.rules) {
+        return Promise.reject(new APIError("err", Err.EmptyRequestBody));
+      }
+      if (!Array.isArray(user.rules)) {
+        user.rules = [];
+      }
+      const availableRules = position.rules.filter(
+        (rule) => !user.rules.some((r) => r.id === rule.id)
+      );
+      availableRules.forEach((rule) => user.addRules(rule));
+      const saved = await userRepository.save(user);
+      return saved;
+    } catch (err) {
+      console.log(err);
+      return Promise.reject(new APIError("err", Err.DuplicateRequest));
+    }
+  }
+  async resetUserRules(userId:number): Promise<void> {
+    const userRepository = getRepository(User);
+    const positionRepository = getRepository(Position);
+    try {
+    const user = await  userRepository.findOne({
+      where: { id: userId },
+      relations: ["rules","position"],
+    });
+    if(!user){
+      return Promise.reject(new APIError("err", Err.UserNotFound));
+    }
+    if(!user.position){
+      return Promise.reject(new APIError("please set position before reset rules! ",0));
+    }
+    const position = await positionRepository.findOne({
+      where: { id: user.position?.id },
+      relations: ["rules"],
+    });
+    if(position?.rules){
+      if(!Array.isArray(position.rules)){
+        position.rules=[];
+      }
+      user.rules = position.rules;
+      userRepository.save(user);
+    }
+  }catch(err){
+    return Promise.reject(new APIError("an error : " + err,Err.UndefinedCode));
+  }
+  }
+  async addUserRule(userId:number,ruleId:number): Promise<void>{
+    const userRepository = getRepository(User);
+    const ruleRepository = getRepository(Rule);
+    try{
+
+
+      if(!userId||!ruleId){
+        return Promise.reject(new APIError("err", Err.EmptyRequestBody));
+      }
+
+      const user = await  userRepository.findOne({
+        where: { id: userId },
+        relations: ["rules"],
+      });
+
+      if(!user){
+        return Promise.reject(new APIError("err", Err.UserNotFound));
+      }
+      const rule = await ruleRepository.findOne({id:ruleId});
+      
+      if(!rule){
+        return Promise.reject(new APIError("rule not found ",0));
+      }
+
+      user.addRules(rule);
+
+      userRepository.save(user);
+
+    }catch(err){
+      return Promise.reject(new APIError("an error : " + err,Err.UndefinedCode));
+    }
+  }
+
 }

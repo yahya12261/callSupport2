@@ -1,14 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const params = require('strong-params');
 const body_parser_1 = require("body-parser");
-const express = require('express');
+// const express = require('express');
 const constants_1 = require("./config/constants");
 const logger_1 = require("./lib/logger");
 const error_handler_1 = require("./middlewares/error.handler");
 const index_1 = require("./routes/index");
-const app = express();
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
 exports.app = app;
 const logger = new logger_1.Logger();
 app.use((0, body_parser_1.json)({ limit: '50mb', type: 'application/json' }));

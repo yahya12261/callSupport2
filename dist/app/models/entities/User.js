@@ -49,11 +49,11 @@ const baseEntity_1 = require("./baseEntity");
 const EntityType_1 = require("../type/EntityType");
 const Position_1 = require("./Position");
 const Rule_1 = require("./Rule");
-const RuleService_1 = require("../../services/RuleService");
+const UserService_1 = require("../../services/UserService");
 let User = class User extends baseEntity_1.BaseEntity {
     afterInsertHandler() {
         return __awaiter(this, void 0, void 0, function* () {
-            const rulesCreatedSuccessfully = yield this.ruleServices.addUserRulesByPosition(this).then(b => {
+            const rulesCreatedSuccessfully = UserService_1.UserService.addUserRulesByPosition(this).then(b => {
                 if (b) {
                     console.log('Entering afterInsertHandler3');
                     console.log(b);
@@ -67,7 +67,6 @@ let User = class User extends baseEntity_1.BaseEntity {
     }
     constructor() {
         super();
-        this.ruleServices = new RuleService_1.RuleService(Rule_1.Rule);
         this.type = EntityType_1.EntityType.USER;
     }
     hashPassword() {

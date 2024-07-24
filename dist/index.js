@@ -40,6 +40,7 @@ const app_1 = require("./app");
 const databaseService_1 = require("./app/services/databaseService");
 const logger_1 = require("./lib/logger");
 // Composition root
+// Function to get all defined routes
 const logger = new logger_1.Logger();
 databaseService_1.DatabaseService.createConnection();
 databaseService_1.DatabaseService.getConnection().then(() => {
