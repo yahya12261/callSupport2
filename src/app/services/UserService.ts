@@ -61,6 +61,19 @@ export class UserService implements IUserRepository {
       return null;
     }
   }
+ async getByUUID(uuid: string): Promise<User | undefined> {
+    const userRepository = getRepository(User);
+    try {
+      const user = await userRepository.findOne({
+        where: { uuid: uuid },
+        relations: ["rules"],
+      });
+      return user;
+    }catch(err:any){
+    return Promise.reject(
+        new APIError(err.message, Err.UndefinedCode)
+      );}
+  }
   async add(model: IUser): Promise<User | null> {
     const {
       first,

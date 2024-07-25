@@ -127,4 +127,11 @@ export class User extends BaseEntity{
   public addRules(rule:Rule){
     this.rules.push(rule);
   }
+
+  public static getUserJson(user:User){
+    return{
+      id:user.id,
+      uuid:user.uuid
+    }
+  }
 }

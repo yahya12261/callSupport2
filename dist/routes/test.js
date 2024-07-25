@@ -5,10 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const TestyController_1 = __importDefault(require("../app/controllers/TestyController"));
-const EndPoints_1 = require("../middlewares/EndPoints");
+const authMiddlewares_1 = require("../middlewares/authMiddlewares");
 const router = (0, express_1.Router)();
-router.post('/', TestyController_1.default.addNew);
-const allRoutes = EndPoints_1.EndPoints.getAllRoutes("v1/rule", router);
-router.get('/sync', EndPoints_1.EndPoints.generateRule);
+router.post('/', authMiddlewares_1.authMiddleware, TestyController_1.default.addNew);
 exports.default = router;
 //# sourceMappingURL=test.js.map

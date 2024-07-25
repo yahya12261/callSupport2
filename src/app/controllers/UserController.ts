@@ -90,6 +90,7 @@ public static resetUserRules = (req: Request, res: Response, next: any) => {
 }
 
 public static addUserRule =  (req: Request, res: Response, next: any) => {
+
   const userId = req.body.userId ;
   const ruleId = req.body.ruleId ;
   service.addUserRule(Number(userId),Number(ruleId)).then(()=>{

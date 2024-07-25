@@ -40,7 +40,8 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implemen
     async add(model: M): Promise<T | null> {
         const repository: Repository<T> = this.getRepository();
         try {
-            const entity = new this.entityConstructor(); // Create an instance of the entity
+            const entity = new this.entityConstructor();
+            // Create an instance of the entity
             entity.fillFromModel(model);
             const saveEntity = await repository.save(entity as DeepPartial<T>);
             return saveEntity;

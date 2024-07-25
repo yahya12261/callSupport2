@@ -85,6 +85,12 @@ let User = class User extends baseEntity_1.BaseEntity {
     addRules(rule) {
         this.rules.push(rule);
     }
+    static getUserJson(user) {
+        return {
+            id: user.id,
+            uuid: user.uuid
+        };
+    }
 };
 exports.User = User;
 __decorate([

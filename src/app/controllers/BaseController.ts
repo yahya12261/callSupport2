@@ -9,6 +9,8 @@ import { EntityType } from "../models/type/EntityType";
 import { TypeormOptions } from "../models/TypeormOptions";
 import { User } from "../models/entities/User";
 import { Position } from "../models/entities/Position";
+import { CustomeRequest } from "../models/CustomeRequest";
+import { EndPointsActionsEnum } from "../models/type/EndPointsActionsEnum";
       class UserSerializer {
         serialize(user: User): SerializedUser {
           return {
@@ -41,7 +43,15 @@ private userSerializer: UserSerializer;
     this.userSerializer = new UserSerializer();
   }
 
-  public add = (req: Request, res: Response, next: any) => {
+  public add = (req: CustomeRequest, res: Response, next: any) => {
+
+    if(Object.is(req.Action,EndPointsActionsEnum.ADD))
+    req.body.createdBy = User.getUserJson(req.createdUser as User);
+    else if(Object.is(req.Action,EndPointsActionsEnum.UPDATE))
+      req.body.modifiedBy = User.getUserJson(req.updatedUser as User);
+    else if(Object.is(req.Action,EndPointsActionsEnum.DELETE))
+      req.body.deletedBy = User.getUserJson(req.deletedUser as User);
+
         this.service
           .add(req.body)
           .then((object) => {
@@ -60,7 +70,7 @@ private userSerializer: UserSerializer;
 
 
       
-    public  getAll = (req: Request, res: Response, next: any) => {
+    public getAll = (req: Request, res: Response, next: any) => {
         
         this.service.getAll(this.option.relations).then((data)=>{
           if(data){

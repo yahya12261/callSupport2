@@ -46,7 +46,8 @@ class BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const repository = this.getRepository();
             try {
-                const entity = new this.entityConstructor(); // Create an instance of the entity
+                const entity = new this.entityConstructor();
+                // Create an instance of the entity
                 entity.fillFromModel(model);
                 const saveEntity = yield repository.save(entity);
                 return saveEntity;

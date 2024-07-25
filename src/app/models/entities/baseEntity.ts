@@ -62,6 +62,9 @@ export abstract class BaseEntity {
    this.isActive = modal.isActive;
    this.dsc = modal.dsc;
    this.note = modal.note;
+   this.createdBy = modal.createdBy;
+   this.modifiedBy = modal.modifiedBy;
+   this.deletedBy = modal.deletedBy;
   }
   public abstract fillFromModel(model:IBaseEntity):void; 
 

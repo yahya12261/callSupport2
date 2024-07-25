@@ -23,6 +23,7 @@ let BaseEntity = class BaseEntity {
         this.isActive = modal.isActive;
         this.dsc = modal.dsc;
         this.note = modal.note;
+        this.createdBy = modal.createdBy;
     }
 };
 exports.BaseEntity = BaseEntity;

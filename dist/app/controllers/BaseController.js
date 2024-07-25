@@ -7,6 +7,8 @@ exports.BaseController = void 0;
 const response_1 = __importDefault(require("../global/response"));
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const custom_errors_1 = require("../../lib/custom-errors");
+const User_1 = require("../models/entities/User");
+const EndPointsActionsEnum_1 = require("../models/type/EndPointsActionsEnum");
 class UserSerializer {
     serialize(user) {
         return {
@@ -22,6 +24,12 @@ class UserSerializer {
 class BaseController {
     constructor(service) {
         this.add = (req, res, next) => {
+            if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.ADD))
+                req.body.createdBy = User_1.User.getUserJson(req.createdUser);
+            else if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.UPDATE))
+                req.body.createdBy = User_1.User.getUserJson(req.updatedUser);
+            else if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.DELETE))
+                req.body.createdBy = User_1.User.getUserJson(req.deletedUser);
             this.service
                 .add(req.body)
                 .then((object) => {

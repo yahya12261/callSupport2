@@ -23,6 +23,7 @@ class UserController {
 }
 _a = UserController;
 UserController.create = (req, res, next) => {
+    console.log(req.originalUrl);
     service.checkUserExists(req.body).then((bol) => {
         if (bol === true) {
             res.json(response_1.default.userAlreadyExist());

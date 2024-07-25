@@ -78,6 +78,21 @@ class UserService {
             }
         });
     }
+    getByUUID(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            try {
+                const user = yield userRepository.findOne({
+                    where: { uuid: uuid },
+                    relations: ["rules"],
+                });
+                return user;
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default(err.message, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
     add(model) {
         return __awaiter(this, void 0, void 0, function* () {
             const { first, middle, last, username, password, email, createdBy, position, dsc, note, phoneNumber, } = model;

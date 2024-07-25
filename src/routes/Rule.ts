@@ -12,7 +12,6 @@ const ruleController = new RuleController(ruleService);
 router.get('/', ruleController.getAll);
 
 router.post('/', upload.none(), ruleController.add);
-const allRoutes = EndPoints.getAllRoutes("v1/rule",router);
-router.get('/sync',EndPoints.generateRule);
+
 
 export default router;

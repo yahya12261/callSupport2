@@ -21,6 +21,7 @@ const User_1 = require("../models/entities/User");
 const Department_1 = require("../models/entities/Department");
 const Position_1 = require("../models/entities/Position");
 const Rule_1 = require("../models/entities/Rule");
+const routes_1 = require("../../routes");
 class DatabaseService {
     static getConnection() {
         return __awaiter(this, arguments, void 0, function* (callback = null, wait = false) {
@@ -46,6 +47,7 @@ class DatabaseService {
             }).then(() => {
                 DatabaseService.isConnected = true;
                 DatabaseService.logger.log('info', 'database connected successfully');
+                routes_1.endPoint.getAllRoutes();
             }).catch((err) => {
                 // console.log(err)
                 // DatabaseService.logger.log('info', 'database connection error...retrying');

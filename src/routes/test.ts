@@ -2,10 +2,9 @@ import { Router } from 'express';
 import UserController from '../app/controllers/UserController';
 import TestController from '../app/controllers/TestyController';
 import { EndPoints } from '../middlewares/EndPoints';
+import { authMiddleware } from '../middlewares/authMiddlewares';
 
 const router = Router();
-router.post('/', TestController.addNew);
+router.post('/',authMiddleware, TestController.addNew);
 
-const allRoutes = EndPoints.getAllRoutes("v1/test",router);
-router.get('/sync',EndPoints.generateRule);
 export default router;
