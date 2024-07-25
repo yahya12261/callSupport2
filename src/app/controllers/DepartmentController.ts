@@ -8,8 +8,8 @@ import { DepartmentService } from "../services/DepartmentService";
 import { BaseController } from "./BaseController";
 import { Department } from "../models/entities/Department";
 import { IDepartment } from "../models/Department";
-import { EntityType } from "../models/type/EntityType";
-import { TypeormOptions } from "../models/TypeormOptions";
+import { EntityType } from "../enum/EntityType";
+import { TypeormOptions } from "../interface/TypeormOptions";
 class DepartmentController extends BaseController<Department,IDepartment,DepartmentService>{
   option: TypeormOptions = {
     relations:["createdBy"]

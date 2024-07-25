@@ -3,7 +3,7 @@ import multer from 'multer';
 import { DepartmentService } from '../app/services/DepartmentService';
 import { Department } from '../app/models/entities/Department';
 import DepartmentController from '../app/controllers/DepartmentController';
-import { EndPoints } from '../middlewares/EndPoints';
+import { EndPoints } from '../app/extra/EndPoints';
 import { authMiddleware } from '../middlewares/authMiddlewares';
 const router = Router();
 const upload = multer();

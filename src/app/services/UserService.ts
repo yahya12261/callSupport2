@@ -6,8 +6,8 @@ import { IUser } from "../models/User";
 import APIError from "../global/response/apierror";
 import Err from "../global/response/errorcode";
 import { Logger } from "../../lib/logger";
-import { EmailService } from "./EmailService";
-import { JWTService } from "./JWTService";
+import { EmailService } from "../extra/EmailService";
+import { JWTService } from "../extra/JWTService";
 import { Position } from "../models/entities/Position";
 import { Rule } from "../models/entities/Rule";
 

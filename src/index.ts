@@ -4,7 +4,7 @@ import * as http from 'http';
 import { app } from './app';
 import { DatabaseService } from './app/services/databaseService';
 import { Logger } from './lib/logger';
-import { EndPoints } from './middlewares/EndPoints';
+import { EndPoints } from './app/extra/EndPoints';
 import { endPoint } from './routes';
 // Composition root
 // Function to get all defined routes

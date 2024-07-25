@@ -1,5 +1,5 @@
 import { User } from "./entities/User";
-import { EntityType } from "./type/EntityType";
+import { EntityType } from "../enum/EntityType";
 export  interface IBaseEntity{
     id:number,
     uuid:string,

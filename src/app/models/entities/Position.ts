@@ -14,7 +14,7 @@ import {
 import { BaseEntity } from './baseEntity';
 import { Department } from './Department';
 import { User } from './User';
-import { EntityType } from '../type/EntityType';
+import { EntityType } from '../../enum/EntityType';
 import { IPosition } from '../Position';
 import { Rule } from './Rule';
 

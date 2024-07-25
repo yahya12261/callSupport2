@@ -7,7 +7,7 @@ import { Logger } from './lib/logger';
 import { middlewares } from './middlewares/error.handler';
 import { routes as apiRoutes } from './routes/index';
 import express,{ NextFunction, Request, Response, Router } from 'express';
-import { EndPoints } from './middlewares/EndPoints';
+import { EndPoints } from './app/extra/EndPoints';
 const app = express();
 const logger = new Logger();
 

@@ -1,7 +1,7 @@
 import { PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, VersionColumn, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from './User';
-import {  EntityType } from '../type/EntityType';
+import {  EntityType } from '../../enum/EntityType';
 import { IsEnum } from 'class-validator';
 import { IBaseEntity } from '../baseEntity';
 import { serialize, Serializer } from 'v8';

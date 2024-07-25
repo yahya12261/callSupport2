@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './baseEntity';
 import { Position } from './Position';
-import { EntityType } from '../type/EntityType';
+import { EntityType } from '../../enum/EntityType';
 import { IDepartment } from '../Department';
 
 @Entity("departments")

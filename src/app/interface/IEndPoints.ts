@@ -1,4 +1,4 @@
-import { MethodTypes } from "./MethodTypes";
+import { MethodTypes } from "../enum/MethodTypes";
 
 export interface IEndPoints{
     path:string,

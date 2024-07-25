@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import UserController from '../app/controllers/UserController';
 import {app} from '../app';
-import { EndPoints } from '../middlewares/EndPoints';
+import { EndPoints } from '../app/extra/EndPoints';
 const router = Router();
 const upload = multer();
 

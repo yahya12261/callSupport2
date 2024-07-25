@@ -1,6 +1,6 @@
 import { Request } from "express";
-import { User } from "./entities/User";
-import { EndPointsActionsEnum } from "./type/EndPointsActionsEnum";
+import { User } from "../models/entities/User";
+import { EndPointsActionsEnum } from "../enum/EndPointsActionsEnum";
 
 export interface CustomeRequest extends Request {
     createdUser?: User;

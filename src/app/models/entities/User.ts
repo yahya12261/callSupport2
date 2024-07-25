@@ -14,7 +14,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BaseEntity } from './baseEntity';
-import { EntityType } from '../type/EntityType';
+import { EntityType } from '../../enum/EntityType';
 import { Position } from './Position';
 import { IBaseEntity } from '../baseEntity';
 import { IUser } from '../User';

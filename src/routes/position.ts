@@ -3,10 +3,10 @@ import multer from 'multer';
 import PositionController from '../app/controllers/PositionController';
 import { PositionService } from '../app/services/PositionService';
 import { Position } from '../app/models/entities/Position';
-import { EndPoints } from '../middlewares/EndPoints';
+import { EndPoints } from '../app/extra/EndPoints';
 import { authMiddleware } from '../middlewares/authMiddlewares';
 import { EndPointsActions } from '../middlewares/EndPointsActions';
-import { EndPointsActionsEnum } from '../app/models/type/EndPointsActionsEnum';
+import { EndPointsActionsEnum } from '../app/enum/EndPointsActionsEnum';
 
 const router = Router();
 const upload = multer();

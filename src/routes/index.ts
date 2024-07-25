@@ -4,7 +4,7 @@ import test from './test';
 import department from './department';
 import position from './position';
 import Rule from './Rule'
-import { EndPoints } from '../middlewares/EndPoints';
+import { EndPoints } from '../app/extra/EndPoints';
 
 const routes = Router();
 const routers: Map<string, express.Router> =new Map();

@@ -8,10 +8,10 @@ import { Position } from "../models/entities/Position";
 import APIError from "../global/response/apierror";
 import Err from "../global/response/errorcode";
 import { User } from "../models/entities/User";
-import { EntityType } from "../models/type/EntityType";
+import { EntityType } from "../enum/EntityType";
 import { IUser } from "../models/User";
-import { MethodTypes } from "../models/type/MethodTypes";
-import { IEndPoints } from "../models/type/IEndPoints";
+import { MethodTypes } from "../enum/MethodTypes";
+import { IEndPoints } from "../interface/IEndPoints";
 class RuleService extends BaseService<Rule, IRule> {
   protected getEntityClass(): typeof Rule {
     return Rule;

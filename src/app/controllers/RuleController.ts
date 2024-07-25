@@ -7,11 +7,11 @@ import { ServerException } from "../../lib/custom-errors";
 import { IRule } from "../models/Rule";
 import { BaseController } from "./BaseController";
 import BaseService from "../services/BaseService";
-import { EntityType } from "../models/type/EntityType";
-import { TypeormOptions } from "../models/TypeormOptions";
+import { EntityType } from "../enum/EntityType";
+import { TypeormOptions } from "../interface/TypeormOptions";
 import { User } from "../models/entities/User";
-import { EndPoints } from "../../middlewares/EndPoints";
-import { IEndPoints } from "../models/type/IEndPoints";
+import { EndPoints } from "../extra/EndPoints";
+import { IEndPoints } from "../interface/IEndPoints";
 // const service = new RuleService(Rule);
 
 // const ruleService = new RuleService(Rule);

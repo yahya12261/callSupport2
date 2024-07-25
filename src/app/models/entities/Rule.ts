@@ -2,8 +2,8 @@ import { Column, Entity, JoinTable, ManyToMany } from "typeorm";
 import { BaseEntity } from "./baseEntity";
 import { User } from "./User";
 import { Position } from "./Position";
-import { MethodTypes } from "../type/MethodTypes";
-import { EntityType } from "../type/EntityType";
+import { MethodTypes } from "../../enum/MethodTypes";
+import { EntityType } from "../../enum/EntityType";
 import { IRule } from "../Rule";
 
 @Entity("rules")

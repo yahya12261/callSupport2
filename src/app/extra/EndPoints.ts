@@ -1,11 +1,11 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
-import { RuleService } from '../app/services/RuleService';
-import { Rule } from '../app/models/entities/Rule';
-import { EntityType } from '../app/models/type/EntityType';
-import { getMethodType, MethodTypes } from '../app/models/type/MethodTypes';
-import { IRule } from "../app/models/Rule";
-import { IEndPoints } from '../app/models/type/IEndPoints';
-import RuleController from '../app/controllers/RuleController';
+import { RuleService } from '../services/RuleService';
+import { Rule } from '../models/entities/Rule';
+import { EntityType } from '../enum/EntityType';
+import { getMethodType, MethodTypes } from '../enum/MethodTypes';
+import { IRule } from "../models/Rule";
+import { IEndPoints } from '../interface/IEndPoints';
+import RuleController from '../controllers/RuleController';
 
 export class EndPoints {
   private router: Map<string, express.Router> = new Map();

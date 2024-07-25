@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { Rule } from '../app/models/entities/Rule';
-import { JWTService } from '../app/services/JWTService';
+import { JWTService } from '../app/extra/JWTService';
 import APIError from '../app/global/response/apierror';
 import { UserService } from '../app/services/UserService';
-import { CustomeRequest } from '../app/models/CustomeRequest';
-import { EndPointsActionsEnum } from '../app/models/type/EndPointsActionsEnum';
+import { CustomeRequest } from '../app/interface/CustomeRequest';
+import { EndPointsActionsEnum } from '../app/enum/EndPointsActionsEnum';
 
 export const authMiddleware = async (req: CustomeRequest, res: Response, next: NextFunction) => {
   try {

@@ -5,12 +5,12 @@ import { Request, Response } from "express";
 import Template from "../global/response";
 import APIError from "../global/response/apierror";
 import { ServerException } from "../../lib/custom-errors";
-import { EntityType } from "../models/type/EntityType";
-import { TypeormOptions } from "../models/TypeormOptions";
+import { EntityType } from "../enum/EntityType";
+import { TypeormOptions } from "../interface/TypeormOptions";
 import { User } from "../models/entities/User";
 import { Position } from "../models/entities/Position";
-import { CustomeRequest } from "../models/CustomeRequest";
-import { EndPointsActionsEnum } from "../models/type/EndPointsActionsEnum";
+import { CustomeRequest } from "../interface/CustomeRequest";
+import { EndPointsActionsEnum } from "../enum/EndPointsActionsEnum";
       class UserSerializer {
         serialize(user: User): SerializedUser {
           return {

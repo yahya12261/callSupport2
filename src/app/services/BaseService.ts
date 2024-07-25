@@ -4,7 +4,7 @@ import { BaseEntity } from "../models/entities/baseEntity";
 import APIError from "../global/response/apierror";
 import Err from "../global/response/errorcode";
 import { BaseRepository } from "../repository/BaseRepository";
-import { EntityType } from "../models/type/EntityType";
+import { EntityType } from "../enum/EntityType";
 
 abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implements BaseRepository<T, M> {
     update(model: M): Promise<T | null> {
