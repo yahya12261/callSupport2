@@ -8,9 +8,11 @@ const UserService_1 = require("../services/UserService");
 const response_1 = __importDefault(require("../global/response"));
 const custom_errors_1 = require("../../lib/custom-errors");
 const apierror_1 = __importDefault(require("../global/response/apierror"));
+const User_1 = require("../models/entities/User");
 const RuleService_1 = require("../services/RuleService");
 const RuleController_1 = __importDefault(require("./RuleController"));
 const Rule_1 = require("../models/entities/Rule");
+const EndPointsActionsEnum_1 = require("../enum/EndPointsActionsEnum");
 const service = new UserService_1.UserService();
 const ruleService = new RuleService_1.RuleService(Rule_1.Rule);
 const ruleController = new RuleController_1.default(ruleService);
@@ -23,7 +25,12 @@ class UserController {
 }
 _a = UserController;
 UserController.create = (req, res, next) => {
-    console.log(req.originalUrl);
+    if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.ADD))
+        req.body.createdBy = User_1.User.getUserJson(req.createdUser);
+    else if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.UPDATE))
+        req.body.modifiedBy = User_1.User.getUserJson(req.updatedUser);
+    else if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.DELETE))
+        req.body.deletedBy = User_1.User.getUserJson(req.deletedUser);
     service.checkUserExists(req.body).then((bol) => {
         if (bol === true) {
             res.json(response_1.default.userAlreadyExist());

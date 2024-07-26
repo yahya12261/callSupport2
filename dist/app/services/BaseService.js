@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const errorcode_1 = __importDefault(require("../global/response/errorcode"));
+const WhereOperations_1 = require("../enum/WhereOperations");
 class BaseService {
     update(model) {
         throw new Error("Method not implemented.");
@@ -28,19 +29,143 @@ class BaseService {
     constructor(entityConstructor) {
         this.entityConstructor = entityConstructor;
     }
-    getAll(relations) {
+    getAll(requestElement) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 const repository = this.getRepository();
-                console.log(relations);
-                const entities = yield repository.find(relations ? { relations: relations } : {});
-                return entities;
+                console.log(requestElement.relations);
+                requestElement.page = requestElement.page ? requestElement.page : 1;
+                requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
+                const order = this.buildOrder(requestElement);
+                const whereConditions = this.buildWhereConditions(requestElement);
+                const [data, total] = yield repository.findAndCount({
+                    where: whereConditions,
+                    relations: (_a = requestElement.relations) !== null && _a !== void 0 ? _a : [],
+                    skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
+                    take: requestElement.pageSize,
+                    order,
+                });
+                console.log(data);
+                const result = {
+                    data: data,
+                    currentPage: requestElement.page,
+                    total: total,
+                    pageSize: requestElement.pageSize
+                };
+                return {
+                    result
+                };
             }
             catch (e) {
                 console.error('Error fetching entities:', e);
-                return []; // Return an empty array or handle the error differently
+                const result = {
+                    data: [],
+                    currentPage: 0,
+                    total: 0,
+                    pageSize: requestElement.pageSize
+                };
+                return {
+                    result
+                };
             }
         });
+    }
+    buildWhereConditions(requestElement) {
+        const whereConditions = {};
+        if (requestElement.search) {
+            requestElement.search.forEach(searchField => {
+                const { name, type, operation, value } = searchField;
+                if (value) {
+                    const fieldNames = name.split('.');
+                    let currentConditions = whereConditions;
+                    for (let i = 0; i < fieldNames.length; i++) {
+                        const fieldName = fieldNames[i];
+                        if (i === fieldNames.length - 1) {
+                            // Last field name, apply the condition
+                            switch (operation) {
+                                case WhereOperations_1.QueryOperator.EQUAL:
+                                    currentConditions[fieldName] = value;
+                                    break;
+                                case WhereOperations_1.QueryOperator.NOT_EQUAL:
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)(value);
+                                    break;
+                                case WhereOperations_1.QueryOperator.GREATER_THAN:
+                                    currentConditions[fieldName] = (0, typeorm_1.MoreThan)(value);
+                                    break;
+                                case WhereOperations_1.QueryOperator.GREATER_THAN_OR_EQUAL:
+                                    currentConditions[fieldName] = (0, typeorm_1.MoreThanOrEqual)(value);
+                                    break;
+                                case WhereOperations_1.QueryOperator.LESS_THAN:
+                                    currentConditions[fieldName] = (0, typeorm_1.LessThan)(value);
+                                    break;
+                                case WhereOperations_1.QueryOperator.LESS_THAN_OR_EQUAL:
+                                    currentConditions[fieldName] = (0, typeorm_1.LessThanOrEqual)(value);
+                                    break;
+                                case WhereOperations_1.QueryOperator.LIKE:
+                                    currentConditions[fieldName] = (0, typeorm_1.Like)(`%${value}%`);
+                                    break;
+                                case WhereOperations_1.QueryOperator.ILIKE:
+                                    currentConditions[fieldName] = (0, typeorm_1.Like)(`%${value}%`);
+                                    break;
+                                case WhereOperations_1.QueryOperator.NOT_LIKE:
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.Like)(`%${value}%`));
+                                    break;
+                                case WhereOperations_1.QueryOperator.NOT_ILIKE:
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.Like)(`%${value}%`));
+                                    break;
+                                case WhereOperations_1.QueryOperator.BEGINS_WITH:
+                                    currentConditions[fieldName] = (0, typeorm_1.Like)(`${value}%`);
+                                    break;
+                                case WhereOperations_1.QueryOperator.ENDS_WITH:
+                                    currentConditions[fieldName] = (0, typeorm_1.Like)(`%${value}`);
+                                    break;
+                                case WhereOperations_1.QueryOperator.IN:
+                                    currentConditions[fieldName] = (0, typeorm_1.In)(value + "".split(',').map(v => v.trim()));
+                                    break;
+                                case WhereOperations_1.QueryOperator.NOT_IN:
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.In)(value + "".split(',').map(v => v.trim())));
+                                    break;
+                                case WhereOperations_1.QueryOperator.BETWEEN:
+                                    const [start, end] = value + "".split(',').map(v => v.trim());
+                                    currentConditions[fieldName] = (0, typeorm_1.Between)(start, end);
+                                    break;
+                                case WhereOperations_1.QueryOperator.NOT_BETWEEN:
+                                    const [notStart, notEnd] = value + "".split(',').map(v => v.trim());
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.Between)(notStart, notEnd));
+                                    break;
+                                case WhereOperations_1.QueryOperator.IS:
+                                    currentConditions[fieldName] = (0, typeorm_1.IsNull)();
+                                    break;
+                                case WhereOperations_1.QueryOperator.IS_NOT:
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.IsNull)());
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else {
+                            // Nested field, create a new object to hold the condition
+                            if (!currentConditions[fieldName]) {
+                                currentConditions[fieldName] = {};
+                            }
+                            currentConditions = currentConditions[fieldName];
+                        }
+                    }
+                }
+            });
+        }
+        console.log(whereConditions);
+        return whereConditions;
+    }
+    buildOrder(requestElement) {
+        var _a, _b;
+        const order = {};
+        const orderBy = (_b = (_a = requestElement.orderBy) === null || _a === void 0 ? void 0 : _a.split(',').map(field => field.trim())) !== null && _b !== void 0 ? _b : ['createdAt'];
+        orderBy.forEach(field => {
+            order[field] = requestElement.order;
+        });
+        return order;
     }
     add(model) {
         return __awaiter(this, void 0, void 0, function* () {

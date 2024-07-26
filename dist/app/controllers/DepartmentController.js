@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseController_1 = require("./BaseController");
-const EntityType_1 = require("../models/type/EntityType");
+const EntityType_1 = require("../enum/EntityType");
 class DepartmentController extends BaseController_1.BaseController {
     constructor() {
         super(...arguments);

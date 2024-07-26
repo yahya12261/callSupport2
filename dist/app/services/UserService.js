@@ -18,8 +18,8 @@ const typeorm_1 = require("typeorm");
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 const logger_1 = require("../../lib/logger");
-const EmailService_1 = require("./EmailService");
-const JWTService_1 = require("./JWTService");
+const EmailService_1 = require("../extra/EmailService");
+const JWTService_1 = require("../extra/JWTService");
 const Position_1 = require("../models/entities/Position");
 const Rule_1 = require("../models/entities/Rule");
 class UserService {

@@ -13,7 +13,7 @@ exports.Department = void 0;
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
 const Position_1 = require("./Position");
-const EntityType_1 = require("../type/EntityType");
+const EntityType_1 = require("../../enum/EntityType");
 let Department = class Department extends baseEntity_1.BaseEntity {
     constructor() {
         super();

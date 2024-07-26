@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rule = void 0;
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
-const MethodTypes_1 = require("../type/MethodTypes");
+const MethodTypes_1 = require("../../enum/MethodTypes");
 let Rule = class Rule extends baseEntity_1.BaseEntity {
     constructor() {
         super();

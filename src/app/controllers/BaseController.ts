@@ -11,6 +11,12 @@ import { User } from "../models/entities/User";
 import { Position } from "../models/entities/Position";
 import { CustomeRequest } from "../interface/CustomeRequest";
 import { EndPointsActionsEnum } from "../enum/EndPointsActionsEnum";
+import { RequestElement } from "../interface/RequestElement";
+import { ResponseElement } from "../interface/ResponseElement";
+import { validateOrderOperation } from "../enum/OrderByOperation";
+import { SearchFields } from "../interface/SearchFields";
+import { FieldTypes } from "../enum/FieldTypes";
+import { getQueryOperatorFromString, QueryOperator } from "../enum/WhereOperations";
       class UserSerializer {
         serialize(user: User): SerializedUser {
           return {
@@ -33,15 +39,23 @@ import { EndPointsActionsEnum } from "../enum/EndPointsActionsEnum";
         position:Position|null;
       }
 export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity, S extends BaseService<T, M>> {
-  protected service: S;
-abstract entity:EntityType;
-abstract option:TypeormOptions;
-private userSerializer: UserSerializer;
+    protected service: S;
+    
+    abstract entity:EntityType;
+    abstract option:TypeormOptions;
 
-  constructor(service: S) {
+    private userSerializer: UserSerializer;
+    protected reqElm :RequestElement = {} as RequestElement ;
+    protected childSearchableFields:SearchFields[]={} as SearchFields[] ;
+    constructor(service: S,searchFields?:SearchFields[]) {
     this.service = service;
     this.userSerializer = new UserSerializer();
+    if(searchFields){
+    this.searchFields = this.searchFields.concat(searchFields);
+    this.childSearchableFields = searchFields}
   }
+  public searchFields:SearchFields[]=this.getDefaultSearchableFields();
+
 
   public add = (req: CustomeRequest, res: Response, next: any) => {
 
@@ -69,13 +83,22 @@ private userSerializer: UserSerializer;
       };
 
 
-      
+      public getScheme = (req: Request, res: Response, next: any) => {
+        res.json(Template.success(this.getDefaultSearchableFields(), ""));
+      }
     public getAll = (req: Request, res: Response, next: any) => {
-        
-        this.service.getAll(this.option.relations).then((data)=>{
-          if(data){
-            this.serializeFields(data);
-            res.json(Template.success(data, ""));
+      this.reqElm.page = Number(req.query.page);
+      this.reqElm.pageSize = Number(req.query.pageSize);
+      this.reqElm.orderBy = req.query.orderBy?String(req.query.orderBy):"createdAt";
+      this.reqElm.order = req.query.order?validateOrderOperation(String(req.query.order)):"DESC";
+      this.reqElm.relations = this.option.relations;
+      this.fillSearchableFieldFromRequest(req)
+      this.reqElm.search = this.searchFields;
+        this.service.getAll(this.reqElm).then(({result})=>{
+          if(result){
+            this.serializeFields(result.data);
+           this.searchFields = this.getDefaultSearchableFields();
+            res.json(Template.success(result, ""));
           }
         })
         .catch((err) => {
@@ -99,5 +122,95 @@ private userSerializer: UserSerializer;
         if (item[fieldName]) {
           item[fieldName] = this.userSerializer.serialize(item[fieldName]);
         }
+      }
+
+
+      protected fillSearchableFieldFromRequest(req: Request): void {
+        console.log(this.searchFields);
+        this.searchFields.forEach((field) => {
+          const fieldName = field.name;
+          const operationName = `${fieldName}OP`;
+      
+          // Check if the field exists in the request query
+          if (req.query[fieldName] !== undefined) {
+            // Ensure the value is a string
+            if (Array.isArray(req.query[fieldName])) {
+              field.value = req.query[fieldName][0] as string;
+              
+            } else {
+              field.value = req.query[fieldName] as string;
+            }
+            field.value = this.valueToType(field.value,field.type);
+          }
+      
+          // Check if the operation exists in the request query
+          if (req.query[operationName] !== undefined) {
+            field.operation = getQueryOperatorFromString(req.query[operationName] as string) ;
+          }
+        });
+
+    
+        // Remove fields that don't have a value
+        this.searchFields = this.searchFields.filter((field) => field.value !== undefined);
+        console.log( this.searchFields)
+      }
+      private valueToType(value:string,type:FieldTypes):any{
+        if(Object.is(type,FieldTypes.TEXT))
+          return value+"";
+        else if(Object.is(type,FieldTypes.NUMBER))
+         return Number(value);
+        else if(Object.is(type,FieldTypes.DATE))
+          return value+"";
+        else if(Object.is(type,FieldTypes.BOOLEAN))
+          return Boolean(value);
+      }
+
+     private getDefaultSearchableFields():SearchFields[]{
+        return [
+          {
+            name:"id",
+            type:FieldTypes.NUMBER,
+          },
+          {
+            name:"uuid",
+            type:FieldTypes.TEXT
+          },
+          {
+            name:"createdAt",
+            type:FieldTypes.DATE
+          },
+          {
+            name:"updatedAt",
+            type:FieldTypes.DATE
+          },
+          {
+            name:"deletedAt",
+            type:FieldTypes.DATE
+          },
+          {
+            name:"arabicLabel",
+            type:FieldTypes.TEXT
+          },
+          {
+            name:"type",
+            type:FieldTypes.TEXT
+          },
+          {
+            name:"isActive",
+            type:FieldTypes.TEXT
+          },
+          {
+            name:"createdBy.id",
+            type:FieldTypes.NUMBER
+          },
+          {
+            name:"modifiedBy.id",
+            type:FieldTypes.NUMBER
+          },
+          {
+            name:"deletedBy.id",
+            type:FieldTypes.NUMBER
+          }
+        ].concat(this.childSearchableFields);
       }
 }

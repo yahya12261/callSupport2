@@ -18,7 +18,7 @@ const Rule_1 = require("../models/entities/Rule");
 const BaseService_1 = __importDefault(require("./BaseService"));
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const errorcode_1 = __importDefault(require("../global/response/errorcode"));
-const EntityType_1 = require("../models/type/EntityType");
+const EntityType_1 = require("../enum/EntityType");
 class RuleService extends BaseService_1.default {
     getEntityClass() {
         return Rule_1.Rule;

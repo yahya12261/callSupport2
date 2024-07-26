@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
-const JWTService_1 = require("../app/services/JWTService");
+const JWTService_1 = require("../app/extra/JWTService");
 const apierror_1 = __importDefault(require("../app/global/response/apierror"));
 const UserService_1 = require("../app/services/UserService");
-const EndPointsActionsEnum_1 = require("../app/models/type/EndPointsActionsEnum");
+const EndPointsActionsEnum_1 = require("../app/enum/EndPointsActionsEnum");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {

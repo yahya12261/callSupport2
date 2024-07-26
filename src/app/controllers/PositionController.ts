@@ -9,14 +9,24 @@ import { Request, Response } from "express";
 import Template from "../global/response";
 import APIError from "../global/response/apierror";
 import { ServerException } from "../../lib/custom-errors";
+import { SearchFields } from "../interface/SearchFields";
+import { FieldTypes } from "../enum/FieldTypes";
+const service = new PositionService(Position);
 class PositionController extends BaseController<Position,IPosition,PositionService>{
-
 
   option: TypeormOptions = {
     relations:[EntityType.DEPARTMENT,"createdBy"]
-  } ;
-
-  
+  };
+  constructor() {
+    super(service,
+      [
+        {
+          name: 'name',
+          type: FieldTypes.TEXT
+        },
+      ],
+    );
+  }
   entity: EntityType = EntityType.POSITION;
   public addPostitonRule = (req: Request, res: Response, next: any) => {
     this.service

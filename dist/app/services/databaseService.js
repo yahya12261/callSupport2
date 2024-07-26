@@ -43,6 +43,7 @@ class DatabaseService {
                 entities: [
                     User_1.User, Department_1.Department, Position_1.Position, Rule_1.Rule
                 ],
+                logging: true,
                 synchronize: true,
             }).then(() => {
                 DatabaseService.isConnected = true;

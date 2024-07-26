@@ -12,10 +12,11 @@ const router = Router();
 const upload = multer();
 
 const Service: PositionService = new PositionService(Position);
-const Controller = new PositionController(Service);
+const Controller = new PositionController();
 
 
 router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getAll);
+router.get('/scheme',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getScheme);
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
 router.post("/rule-position",Controller.addPostitonRule);
 // // Get a department by ID

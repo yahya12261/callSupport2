@@ -13,7 +13,7 @@ exports.BaseEntity = void 0;
 const typeorm_1 = require("typeorm");
 const uuid_1 = require("uuid");
 const User_1 = require("./User");
-const EntityType_1 = require("../type/EntityType");
+const EntityType_1 = require("../../enum/EntityType");
 let BaseEntity = class BaseEntity {
     constructor() {
         this.uuid = (0, uuid_1.v4)();
@@ -24,6 +24,8 @@ let BaseEntity = class BaseEntity {
         this.dsc = modal.dsc;
         this.note = modal.note;
         this.createdBy = modal.createdBy;
+        this.modifiedBy = modal.modifiedBy;
+        this.deletedBy = modal.deletedBy;
     }
 };
 exports.BaseEntity = BaseEntity;

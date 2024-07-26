@@ -3,14 +3,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const PositionService_1 = require("../services/PositionService");
 const BaseController_1 = require("./BaseController");
-const EntityType_1 = require("../models/type/EntityType");
+const Position_1 = require("../models/entities/Position");
+const EntityType_1 = require("../enum/EntityType");
 const response_1 = __importDefault(require("../global/response"));
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const custom_errors_1 = require("../../lib/custom-errors");
+const FieldTypes_1 = require("../enum/FieldTypes");
+const service = new PositionService_1.PositionService(Position_1.Position);
 class PositionController extends BaseController_1.BaseController {
     constructor() {
-        super(...arguments);
+        super(service, [
+            {
+                name: 'name',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+        ]);
         this.option = {
             relations: [EntityType_1.EntityType.DEPARTMENT, "createdBy"]
         };
