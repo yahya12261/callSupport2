@@ -12,9 +12,16 @@ const logger_1 = require("./lib/logger");
 const error_handler_1 = require("./middlewares/error.handler");
 const index_1 = require("./routes/index");
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 exports.app = app;
 const logger = new logger_1.Logger();
+const corsOptions = {
+    origin: ['http://localhost:4200'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use((0, cors_1.default)(corsOptions));
 app.use((0, body_parser_1.json)({ limit: '50mb', type: 'application/json' }));
 app.use(params.expressMiddleware());
 app.use(logger.getRequestLogger());

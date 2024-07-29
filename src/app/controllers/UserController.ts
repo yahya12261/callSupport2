@@ -56,21 +56,24 @@ class UserController {
   public static login = (req: Request, res: Response, next: any) => {
     service.login(req.body,true).then(user=>{
         if(user){
-         res.json(Template.success(this.getVisibleUserData(user), 'OTP Sent please check your email'));
+         res.json(Template.success(this.getVisibleUserData(user), ' تم إرسال رمز للمرة الواحدة عبر البريد الألكتروني '));
         }
     }).catch(err => {
       console.log(err)
       if (err.ErrorID == 2110) {
         next(new APIError(err.message, err.ErrorID));
       }
-      next(new ServerException('error occured'));
+      if(err.ErrorID ==5200){
+        next(new APIError("اسم المستخدم أو كلمة المرور غير صحيحة", err.ErrorID));
+      }
+      next(new ServerException('خطأ'));
     })
 }
 
 public static loginByOTP = (req: Request, res: Response, next: any) => {
   service.loginByOTP(req.body).then(JWT=>{
       if(JWT){
-       res.json(Template.success(JWT, 'login success'));
+       res.json(Template.success(JWT, 'تم التسجيل بنجاح'));
       }
   }).catch(err => {
     console.log(err)

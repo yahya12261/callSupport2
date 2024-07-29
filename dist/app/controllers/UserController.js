@@ -55,20 +55,23 @@ UserController.create = (req, res, next) => {
 UserController.login = (req, res, next) => {
     service.login(req.body, true).then(user => {
         if (user) {
-            res.json(response_1.default.success(_a.getVisibleUserData(user), 'OTP Sent please check your email'));
+            res.json(response_1.default.success(_a.getVisibleUserData(user), ' تم إرسال رمز للمرة الواحدة عبر البريد الألكتروني '));
         }
     }).catch(err => {
         console.log(err);
         if (err.ErrorID == 2110) {
             next(new apierror_1.default(err.message, err.ErrorID));
         }
-        next(new custom_errors_1.ServerException('error occured'));
+        if (err.ErrorID == 5200) {
+            next(new apierror_1.default("اسم المستخدم أو كلمة المرور غير صحيحة", err.ErrorID));
+        }
+        next(new custom_errors_1.ServerException('خطأ'));
     });
 };
 UserController.loginByOTP = (req, res, next) => {
     service.loginByOTP(req.body).then(JWT => {
         if (JWT) {
-            res.json(response_1.default.success(JWT, 'login success'));
+            res.json(response_1.default.success(JWT, 'تم التسجيل بنجاح'));
         }
     }).catch(err => {
         console.log(err);

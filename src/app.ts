@@ -8,9 +8,15 @@ import { middlewares } from './middlewares/error.handler';
 import { routes as apiRoutes } from './routes/index';
 import express,{ NextFunction, Request, Response, Router } from 'express';
 import { EndPoints } from './app/extra/EndPoints';
+import cors, { CorsOptions } from 'cors';
 const app = express();
 const logger = new Logger();
-
+const corsOptions: CorsOptions = {
+  origin: ['http://localhost:4200'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 app.use(json({ limit: '50mb', type: 'application/json' }));
 app.use(params.expressMiddleware());
 app.use(logger.getRequestLogger());
@@ -19,8 +25,6 @@ app.use('/api', apiRoutes);
 app.get('/health', (req:Request, res:Response) => res.json({ status: true, message: 'Health OK!' }));
 
 app.use(logger.getRequestErrorLogger());
-
-
 
 
 app.use((req:Request, res:Response, next:NextFunction) => {
