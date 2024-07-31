@@ -57,15 +57,26 @@ export abstract class BaseEntity {
   constructor() {
     this.uuid = uuidv4();
   }
-  protected fillEntityFromModel(modal:IBaseEntity){
+  protected fillEntityFromModel(modal:IBaseEntity,isUpdate?:boolean){
    this.arabicLabel = modal.arabicLabel;
    this.isActive = modal.isActive;
    this.dsc = modal.dsc;
    this.note = modal.note;
-   this.createdBy = modal.createdBy;
+   if(!isUpdate){
+    this.createdBy =modal.createdBy;
+   }
    this.modifiedBy = modal.modifiedBy;
    this.deletedBy = modal.deletedBy;
   }
+
+  protected updateBaseEntity(Base:BaseEntity){
+    this.arabicLabel = Base.arabicLabel;
+    this.dsc= Base.dsc;
+    this.isActive= Base.isActive;
+    this.note= Base.note;
+  }
+  public abstract updateEntity(entity:BaseEntity):void;
+  
   public abstract fillFromModel(model:IBaseEntity):void; 
 
 }

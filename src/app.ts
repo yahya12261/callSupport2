@@ -1,5 +1,5 @@
 const params = require('strong-params');
-import {json} from 'body-parser';
+import bodyParser, {json} from 'body-parser';
 
 // const express = require('express');
 import { NOT_FOUND_STATUS_CODE, NOT_FOUND_STATUS_MESSAGE } from './config/constants';
@@ -11,9 +11,10 @@ import { EndPoints } from './app/extra/EndPoints';
 import cors, { CorsOptions } from 'cors';
 const app = express();
 const logger = new Logger();
+app.use(bodyParser.urlencoded({ extended: true }));
 const corsOptions: CorsOptions = {
   origin: ['http://localhost:4200'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors(corsOptions));

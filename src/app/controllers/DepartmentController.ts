@@ -10,12 +10,23 @@ import { Department } from "../models/entities/Department";
 import { IDepartment } from "../models/Department";
 import { EntityType } from "../enum/EntityType";
 import { TypeormOptions } from "../interface/TypeormOptions";
+import { FieldTypes } from "../enum/FieldTypes";
+const service =  new DepartmentService(Department);
 class DepartmentController extends BaseController<Department,IDepartment,DepartmentService>{
   option: TypeormOptions = {
     relations:["createdBy"]
   } ;
   entity: EntityType = EntityType.DEPARTMENT;
-
+  constructor() {
+    super(service,
+      [
+        {
+          name: 'name',
+          type: FieldTypes.TEXT
+        },
+      ],
+    );
+  }
 }
 
 export default DepartmentController;

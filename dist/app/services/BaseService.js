@@ -17,9 +17,6 @@ const apierror_1 = __importDefault(require("../global/response/apierror"));
 const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 const WhereOperations_1 = require("../enum/WhereOperations");
 class BaseService {
-    update(model) {
-        throw new Error("Method not implemented.");
-    }
     getById(id) {
         throw new Error("Method not implemented.");
     }
@@ -34,7 +31,7 @@ class BaseService {
             var _a;
             try {
                 const repository = this.getRepository();
-                console.log(requestElement.relations);
+                // console.log(requestElement.relations);
                 requestElement.page = requestElement.page ? requestElement.page : 1;
                 requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
                 const order = this.buildOrder(requestElement);
@@ -46,7 +43,7 @@ class BaseService {
                     take: requestElement.pageSize,
                     order,
                 });
-                console.log(data);
+                // console.log(data)
                 const result = {
                     data: data,
                     currentPage: requestElement.page,
@@ -155,7 +152,7 @@ class BaseService {
                 }
             });
         }
-        console.log(whereConditions);
+        // console.log(whereConditions);
         return whereConditions;
     }
     buildOrder(requestElement) {
@@ -174,12 +171,51 @@ class BaseService {
                 const entity = new this.entityConstructor();
                 // Create an instance of the entity
                 entity.fillFromModel(model);
+                console.log(model);
                 const saveEntity = yield repository.save(entity);
                 return saveEntity;
             }
             catch (e) {
                 console.error('Error adding entity:', e);
                 return Promise.reject(new apierror_1.default('Already exists', errorcode_1.default.DuplicateRequest));
+            }
+        });
+    }
+    update(model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                if (model.id) {
+                    const existingEntity = yield repository.findOne({ id: model.id });
+                    if (!existingEntity) {
+                        return Promise.reject(new apierror_1.default('غير موجود', errorcode_1.default.UndefinedCode));
+                    }
+                    Object.keys(model).forEach((key) => {
+                        var _a;
+                        existingEntity[key] = (_a = model[key]) !== null && _a !== void 0 ? _a : existingEntity[key];
+                    });
+                    const updatedEntity = yield repository.save(existingEntity);
+                    return updatedEntity;
+                }
+                else if (model.uuid) {
+                    const existingEntity = yield repository.findOne({ uuid: model.uuid });
+                    if (!existingEntity) {
+                        return Promise.reject(new apierror_1.default('غير موجود', errorcode_1.default.UndefinedCode));
+                    }
+                    Object.keys(model).forEach((key) => {
+                        var _a;
+                        existingEntity[key] = (_a = model[key]) !== null && _a !== void 0 ? _a : existingEntity[key];
+                    });
+                    const updatedEntity = yield repository.save(existingEntity);
+                    return updatedEntity;
+                }
+                else {
+                    return Promise.reject(new apierror_1.default('primary Key not exist', errorcode_1.default.UndefinedCode));
+                }
+            }
+            catch (e) {
+                console.error('Error updating entity:', e);
+                return Promise.reject(new apierror_1.default('Failed to update entity ' + e, errorcode_1.default.UndefinedCode));
             }
         });
     }

@@ -8,6 +8,9 @@ import { IRule } from "../Rule";
 
 @Entity("rules")
 export class Rule extends BaseEntity{
+public updateEntity(entity: BaseEntity): void {
+  throw new Error("Method not implemented.");
+}
 
 @Column()
 public name!:String;

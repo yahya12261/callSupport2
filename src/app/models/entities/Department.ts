@@ -18,6 +18,7 @@ import { IDepartment } from '../Department';
 @Unique(['name'])
 export class Department extends BaseEntity{
 
+
     
 @Column({type:'varchar'})
 public name!:String 
@@ -30,10 +31,16 @@ constructor(){
   this.type = EntityType.DEPARTMENT;
 
 }
-public fillFromModel(modal:IDepartment): void {
-  this.fillEntityFromModel(modal);
-  this.name = modal.name;
-}
+public fillFromModel(modal:IDepartment,isUpdate?:boolean): void {
+  this.fillEntityFromModel(modal,isUpdate);
+  if(!isUpdate){
+    this.name = modal.name;
+  }
 
+}
+public updateEntity(entity: BaseEntity): void {
+  this.updateBaseEntity(entity);
+  this.positions = this.positions;
+}
 
 }

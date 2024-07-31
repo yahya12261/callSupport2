@@ -29,7 +29,25 @@ class BaseController {
         this.reqElm = {};
         this.childSearchableFields = {};
         this.searchFields = this.getDefaultSearchableFields();
+        this.update = (req, res, next) => {
+            req.body.modifiedBy = User_1.User.getUserJson(req.updatedUser);
+            this.service
+                .update(req.body)
+                .then((object) => {
+                if (object) {
+                    res.json(response_1.default.success(object, this.entity + " تم التعديل"));
+                }
+            })
+                .catch((err) => {
+                console.log(err);
+                if (err.ErrorID == 2110) {
+                    next(new apierror_1.default(err.message, err.ErrorID));
+                }
+                next(new custom_errors_1.ServerException("error occurred"));
+            });
+        };
         this.add = (req, res, next) => {
+            console.log(req.body);
             if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.ADD))
                 req.body.createdBy = User_1.User.getUserJson(req.createdUser);
             else if (Object.is(req.Action, EndPointsActionsEnum_1.EndPointsActionsEnum.UPDATE))
@@ -97,7 +115,7 @@ class BaseController {
         }
     }
     fillSearchableFieldFromRequest(req) {
-        console.log(this.searchFields);
+        // console.log(this.searchFields);
         this.searchFields.forEach((field) => {
             const fieldName = field.name;
             const operationName = `${fieldName}OP`;
@@ -119,7 +137,7 @@ class BaseController {
         });
         // Remove fields that don't have a value
         this.searchFields = this.searchFields.filter((field) => field.value !== undefined);
-        console.log(this.searchFields);
+        // console.log( this.searchFields)
     }
     valueToType(value, type) {
         if (Object.is(type, FieldTypes_1.FieldTypes.TEXT))

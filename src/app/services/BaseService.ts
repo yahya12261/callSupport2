@@ -11,9 +11,7 @@ import { OrderByOperation } from "../enum/OrderByOperation";
 import { QueryOperator } from "../enum/WhereOperations";
 
 abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implements BaseRepository<T, M> {
-    update(model: M): Promise<T | null> {
-        throw new Error("Method not implemented.");
-    }
+
     getById(id: number): Promise<T | null> {
         throw new Error("Method not implemented.");
     }
@@ -32,7 +30,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implemen
     async getAll(requestElement:RequestElement): Promise<{result:ResponseElement<T>}> {
         try {
             const repository: Repository<T> = this.getRepository();
-            console.log(requestElement.relations);
+            // console.log(requestElement.relations);
             requestElement.page = requestElement.page?requestElement.page:1;
             requestElement.pageSize = requestElement.pageSize?requestElement.pageSize:20;
             const order: Record<string, 'ASC' | 'DESC'> = this.buildOrder(requestElement)
@@ -45,7 +43,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implemen
                   take: requestElement.pageSize,
                   order,
                 });
-                console.log(data)
+                // console.log(data)
               const result:ResponseElement<T> = {
                 data:data,
                 currentPage: requestElement.page,
@@ -68,7 +66,6 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implemen
               }; 
         }
     }
-
     protected buildWhereConditions(requestElement: RequestElement): Record<string, any> {
       const whereConditions: Record<string, unknown> = {};
     
@@ -156,7 +153,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implemen
         });
       }
     
-      console.log(whereConditions);
+      // console.log(whereConditions);
       return whereConditions;
     }
     protected buildOrder(requestElement: RequestElement): Record<string, "DESC"|"ASC"> {
@@ -173,12 +170,44 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity> implemen
             const entity = new this.entityConstructor();
             // Create an instance of the entity
             entity.fillFromModel(model);
+            console.log(model)
             const saveEntity = await repository.save(entity as DeepPartial<T>);
             return saveEntity;
         } catch (e) {
             console.error('Error adding entity:', e);
             return Promise.reject(new APIError('Already exists', Err.DuplicateRequest));
         }
+    }
+    async update<U extends T>(model: Partial<U>): Promise<U | null> {
+      const repository: Repository<T> = this.getRepository();
+      try {
+        if (model.id) {
+          const existingEntity = await repository.findOne({ id: model.id });
+          if (!existingEntity) {
+            return Promise.reject(new APIError('غير موجود' ,Err.UndefinedCode));
+          }
+          Object.keys(model).forEach((key) => {
+            (existingEntity as U)[key as keyof U] = model[key as keyof U] ?? (existingEntity as U)[key as keyof U];
+          });
+          const updatedEntity = await repository.save(existingEntity as DeepPartial<T>);
+          return updatedEntity as U;
+        } else if (model.uuid) {
+          const existingEntity = await repository.findOne({ uuid: model.uuid });
+          if (!existingEntity) {
+            return Promise.reject(new APIError('غير موجود' ,Err.UndefinedCode));
+          }
+          Object.keys(model).forEach((key) => {
+            (existingEntity as U)[key as keyof U] = model[key as keyof U] ?? (existingEntity as U)[key as keyof U];
+          });
+          const updatedEntity = await repository.save(existingEntity as DeepPartial<T>);
+          return updatedEntity as U;
+        } else {
+          return Promise.reject(new APIError('primary Key not exist' ,Err.UndefinedCode));
+        }
+      } catch (e) {
+        console.error('Error updating entity:', e);
+        return Promise.reject(new APIError('Failed to update entity ' + e,Err.UndefinedCode));
+      }
     }
 }
 

@@ -14,6 +14,9 @@ const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
 const MethodTypes_1 = require("../../enum/MethodTypes");
 let Rule = class Rule extends baseEntity_1.BaseEntity {
+    updateEntity(entity) {
+        throw new Error("Method not implemented.");
+    }
     constructor() {
         super();
     }

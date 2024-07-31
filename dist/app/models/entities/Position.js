@@ -17,6 +17,9 @@ const User_1 = require("./User");
 const EntityType_1 = require("../../enum/EntityType");
 const Rule_1 = require("./Rule");
 let Position = class Position extends baseEntity_1.BaseEntity {
+    updateEntity(entity) {
+        throw new Error('Method not implemented.');
+    }
     constructor() {
         super();
         this.type = EntityType_1.EntityType.POSITION;

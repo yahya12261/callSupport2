@@ -51,6 +51,9 @@ const Position_1 = require("./Position");
 const Rule_1 = require("./Rule");
 const UserService_1 = require("../../services/UserService");
 let User = class User extends baseEntity_1.BaseEntity {
+    updateEntity(entity) {
+        throw new Error('Method not implemented.');
+    }
     afterInsertHandler() {
         return __awaiter(this, void 0, void 0, function* () {
             const rulesCreatedSuccessfully = UserService_1.UserService.addUserRulesByPosition(this).then(b => {

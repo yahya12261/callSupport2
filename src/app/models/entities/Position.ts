@@ -21,6 +21,9 @@ import { Rule } from './Rule';
 @Entity("positions")
 @Unique(['name'])
 export class Position extends BaseEntity{
+public updateEntity(entity: BaseEntity): void {
+  throw new Error('Method not implemented.');
+}
     
 @Column({type:'varchar'})
 public name!:String 
@@ -48,4 +51,5 @@ public fillFromModel(modal:IPosition): void {
 public addRules(rule:Rule){
   this.rules.push(rule);
 }
+
 }

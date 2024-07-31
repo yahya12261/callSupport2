@@ -57,8 +57,27 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
   public searchFields:SearchFields[]=this.getDefaultSearchableFields();
 
 
-  public add = (req: CustomeRequest, res: Response, next: any) => {
 
+  public update = (req: CustomeRequest, res: Response, next: any) =>{
+    req.body.modifiedBy = User.getUserJson(req.updatedUser as User);
+    this.service
+    .update(req.body)
+    .then((object) => {
+      if (object) {
+        res.json(Template.success(object, this.entity +  " تم التعديل"));
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.ErrorID == 2110) {
+        next(new APIError(err.message, err.ErrorID));
+      }
+      next(new ServerException("error occurred"));
+    });
+};
+
+  public add = (req: CustomeRequest, res: Response, next: any) => {
+    console.log(req.body)
     if(Object.is(req.Action,EndPointsActionsEnum.ADD))
     req.body.createdBy = User.getUserJson(req.createdUser as User);
     else if(Object.is(req.Action,EndPointsActionsEnum.UPDATE))
@@ -126,7 +145,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
 
 
       protected fillSearchableFieldFromRequest(req: Request): void {
-        console.log(this.searchFields);
+        // console.log(this.searchFields);
         this.searchFields.forEach((field) => {
           const fieldName = field.name;
           const operationName = `${fieldName}OP`;
@@ -152,7 +171,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
     
         // Remove fields that don't have a value
         this.searchFields = this.searchFields.filter((field) => field.value !== undefined);
-        console.log( this.searchFields)
+        // console.log( this.searchFields)
       }
       private valueToType(value:string,type:FieldTypes):any{
         if(Object.is(type,FieldTypes.TEXT))

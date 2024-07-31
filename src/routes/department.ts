@@ -10,11 +10,12 @@ import { EndPointsActionsEnum } from '../app/enum/EndPointsActionsEnum';
 const router = Router();
 const upload = multer();
 const Service: DepartmentService = new DepartmentService(Department);
-const Controller = new DepartmentController(Service);
-
+const Controller = new DepartmentController();
 
 router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getAll);
 
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
+
+router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
 
 export default router;

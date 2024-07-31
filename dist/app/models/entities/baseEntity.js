@@ -18,14 +18,22 @@ let BaseEntity = class BaseEntity {
     constructor() {
         this.uuid = (0, uuid_1.v4)();
     }
-    fillEntityFromModel(modal) {
+    fillEntityFromModel(modal, isUpdate) {
         this.arabicLabel = modal.arabicLabel;
         this.isActive = modal.isActive;
         this.dsc = modal.dsc;
         this.note = modal.note;
-        this.createdBy = modal.createdBy;
+        if (!isUpdate) {
+            this.createdBy = modal.createdBy;
+        }
         this.modifiedBy = modal.modifiedBy;
         this.deletedBy = modal.deletedBy;
+    }
+    updateBaseEntity(Base) {
+        this.arabicLabel = Base.arabicLabel;
+        this.dsc = Base.dsc;
+        this.isActive = Base.isActive;
+        this.note = Base.note;
     }
 };
 exports.BaseEntity = BaseEntity;

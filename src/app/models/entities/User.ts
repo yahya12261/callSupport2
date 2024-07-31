@@ -30,6 +30,9 @@ import { UserService } from '../../services/UserService';
 @Unique(['email','username'])
 
 export class User extends BaseEntity{
+  public updateEntity(entity: BaseEntity): void {
+    throw new Error('Method not implemented.');
+  }
 
   @Column({nullable:true})
   @Length(4, 25)

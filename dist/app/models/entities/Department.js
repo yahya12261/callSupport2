@@ -19,9 +19,15 @@ let Department = class Department extends baseEntity_1.BaseEntity {
         super();
         this.type = EntityType_1.EntityType.DEPARTMENT;
     }
-    fillFromModel(modal) {
-        this.fillEntityFromModel(modal);
-        this.name = modal.name;
+    fillFromModel(modal, isUpdate) {
+        this.fillEntityFromModel(modal, isUpdate);
+        if (!isUpdate) {
+            this.name = modal.name;
+        }
+    }
+    updateEntity(entity) {
+        this.updateBaseEntity(entity);
+        this.positions = this.positions;
     }
 };
 exports.Department = Department;
