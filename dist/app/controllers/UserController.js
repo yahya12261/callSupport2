@@ -15,7 +15,7 @@ const Rule_1 = require("../models/entities/Rule");
 const EndPointsActionsEnum_1 = require("../enum/EndPointsActionsEnum");
 const service = new UserService_1.UserService();
 const ruleService = new RuleService_1.RuleService(Rule_1.Rule);
-const ruleController = new RuleController_1.default(ruleService);
+const ruleController = new RuleController_1.default();
 class UserController {
     static getVisibleUserData(user) {
         return {

@@ -24,6 +24,10 @@ class PositionController extends BaseController<Position,IPosition,PositionServi
           name: 'name',
           type: FieldTypes.TEXT
         },
+        {
+          name: 'department.id',
+          type: FieldTypes.NUMBER
+        },
       ],
     );
   }

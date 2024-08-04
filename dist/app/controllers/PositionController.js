@@ -19,6 +19,10 @@ class PositionController extends BaseController_1.BaseController {
                 name: 'name',
                 type: FieldTypes_1.FieldTypes.TEXT
             },
+            {
+                name: 'department.id',
+                type: FieldTypes_1.FieldTypes.NUMBER
+            },
         ]);
         this.option = {
             relations: [EntityType_1.EntityType.DEPARTMENT, "createdBy"]

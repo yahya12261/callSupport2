@@ -33,12 +33,14 @@ class BaseService {
                 const repository = this.getRepository();
                 // console.log(requestElement.relations);
                 requestElement.page = requestElement.page ? requestElement.page : 1;
-                requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
+                requestElement.pageSize = requestElement.pageSize
+                    ? requestElement.pageSize
+                    : 20;
                 const order = this.buildOrder(requestElement);
                 const whereConditions = this.buildWhereConditions(requestElement);
                 const [data, total] = yield repository.findAndCount({
-                    where: whereConditions,
                     relations: (_a = requestElement.relations) !== null && _a !== void 0 ? _a : [],
+                    where: whereConditions,
                     skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
                     take: requestElement.pageSize,
                     order,
@@ -48,33 +50,49 @@ class BaseService {
                     data: data,
                     currentPage: requestElement.page,
                     total: total,
-                    pageSize: requestElement.pageSize
+                    pageSize: requestElement.pageSize,
                 };
                 return {
-                    result
+                    result,
                 };
             }
             catch (e) {
-                console.error('Error fetching entities:', e);
+                console.error("Error fetching entities:", e);
                 const result = {
                     data: [],
                     currentPage: 0,
                     total: 0,
-                    pageSize: requestElement.pageSize
+                    pageSize: requestElement.pageSize,
                 };
                 return {
-                    result
+                    result,
                 };
+            }
+        });
+    }
+    getSelectOption() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const repository = this.getRepository();
+                const data = yield repository.find({
+                    where: { isActive: true },
+                    select: ["id", "arabicLabel"],
+                });
+                return data;
+            }
+            catch (e) {
+                console.error("Error fetching entities:", e);
+                return Promise.reject(new apierror_1.default("cann't fetch data" + e, errorcode_1.default.UndefinedCode));
             }
         });
     }
     buildWhereConditions(requestElement) {
         const whereConditions = {};
         if (requestElement.search) {
-            requestElement.search.forEach(searchField => {
+            requestElement.search.forEach((searchField) => {
                 const { name, type, operation, value } = searchField;
                 if (value) {
-                    const fieldNames = name.split('.');
+                    const fieldNames = name.split(".");
                     let currentConditions = whereConditions;
                     for (let i = 0; i < fieldNames.length; i++) {
                         const fieldName = fieldNames[i];
@@ -118,17 +136,17 @@ class BaseService {
                                     currentConditions[fieldName] = (0, typeorm_1.Like)(`%${value}`);
                                     break;
                                 case WhereOperations_1.QueryOperator.IN:
-                                    currentConditions[fieldName] = (0, typeorm_1.In)(value + "".split(',').map(v => v.trim()));
+                                    currentConditions[fieldName] = (0, typeorm_1.In)(value + "".split(",").map((v) => v.trim()));
                                     break;
                                 case WhereOperations_1.QueryOperator.NOT_IN:
-                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.In)(value + "".split(',').map(v => v.trim())));
+                                    currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.In)(value + "".split(",").map((v) => v.trim())));
                                     break;
                                 case WhereOperations_1.QueryOperator.BETWEEN:
-                                    const [start, end] = value + "".split(',').map(v => v.trim());
+                                    const [start, end] = value.split(',').map((v) => v.trim());
                                     currentConditions[fieldName] = (0, typeorm_1.Between)(start, end);
                                     break;
                                 case WhereOperations_1.QueryOperator.NOT_BETWEEN:
-                                    const [notStart, notEnd] = value + "".split(',').map(v => v.trim());
+                                    const [notStart, notEnd] = value + "".split(",").map((v) => v.trim());
                                     currentConditions[fieldName] = (0, typeorm_1.Not)((0, typeorm_1.Between)(notStart, notEnd));
                                     break;
                                 case WhereOperations_1.QueryOperator.IS:
@@ -158,8 +176,8 @@ class BaseService {
     buildOrder(requestElement) {
         var _a, _b;
         const order = {};
-        const orderBy = (_b = (_a = requestElement.orderBy) === null || _a === void 0 ? void 0 : _a.split(',').map(field => field.trim())) !== null && _b !== void 0 ? _b : ['createdAt'];
-        orderBy.forEach(field => {
+        const orderBy = (_b = (_a = requestElement.orderBy) === null || _a === void 0 ? void 0 : _a.split(",").map((field) => field.trim())) !== null && _b !== void 0 ? _b : ["createdAt"];
+        orderBy.forEach((field) => {
             order[field] = requestElement.order;
         });
         return order;
@@ -176,8 +194,8 @@ class BaseService {
                 return saveEntity;
             }
             catch (e) {
-                console.error('Error adding entity:', e);
-                return Promise.reject(new apierror_1.default('Already exists', errorcode_1.default.DuplicateRequest));
+                console.error("Error adding entity:", e);
+                return Promise.reject(new apierror_1.default("Already exists", errorcode_1.default.DuplicateRequest));
             }
         });
     }
@@ -188,11 +206,12 @@ class BaseService {
                 if (model.id) {
                     const existingEntity = yield repository.findOne({ id: model.id });
                     if (!existingEntity) {
-                        return Promise.reject(new apierror_1.default('غير موجود', errorcode_1.default.UndefinedCode));
+                        return Promise.reject(new apierror_1.default("غير موجود", errorcode_1.default.UndefinedCode));
                     }
                     Object.keys(model).forEach((key) => {
                         var _a;
-                        existingEntity[key] = (_a = model[key]) !== null && _a !== void 0 ? _a : existingEntity[key];
+                        existingEntity[key] =
+                            (_a = model[key]) !== null && _a !== void 0 ? _a : existingEntity[key];
                     });
                     const updatedEntity = yield repository.save(existingEntity);
                     return updatedEntity;
@@ -200,22 +219,23 @@ class BaseService {
                 else if (model.uuid) {
                     const existingEntity = yield repository.findOne({ uuid: model.uuid });
                     if (!existingEntity) {
-                        return Promise.reject(new apierror_1.default('غير موجود', errorcode_1.default.UndefinedCode));
+                        return Promise.reject(new apierror_1.default("غير موجود", errorcode_1.default.UndefinedCode));
                     }
                     Object.keys(model).forEach((key) => {
                         var _a;
-                        existingEntity[key] = (_a = model[key]) !== null && _a !== void 0 ? _a : existingEntity[key];
+                        existingEntity[key] =
+                            (_a = model[key]) !== null && _a !== void 0 ? _a : existingEntity[key];
                     });
                     const updatedEntity = yield repository.save(existingEntity);
                     return updatedEntity;
                 }
                 else {
-                    return Promise.reject(new apierror_1.default('primary Key not exist', errorcode_1.default.UndefinedCode));
+                    return Promise.reject(new apierror_1.default("primary Key not exist", errorcode_1.default.UndefinedCode));
                 }
             }
             catch (e) {
-                console.error('Error updating entity:', e);
-                return Promise.reject(new apierror_1.default('Failed to update entity ' + e, errorcode_1.default.UndefinedCode));
+                console.error("Error updating entity:", e);
+                return Promise.reject(new apierror_1.default("Failed to update entity " + e, errorcode_1.default.UndefinedCode));
             }
         });
     }

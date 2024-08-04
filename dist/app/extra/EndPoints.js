@@ -5,8 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EndPoints = void 0;
 const express_1 = __importDefault(require("express"));
-const RuleService_1 = require("../services/RuleService");
-const Rule_1 = require("../models/entities/Rule");
 const MethodTypes_1 = require("../enum/MethodTypes");
 const RuleController_1 = __importDefault(require("../controllers/RuleController"));
 class EndPoints {
@@ -31,8 +29,8 @@ class EndPoints {
                 };
                 routes.push(routeInfo);
                 // Generate rule
-                const ruleService = new RuleService_1.RuleService(Rule_1.Rule);
-                const ruleController = new RuleController_1.default(ruleService);
+                // const ruleService: RuleService = new RuleService(Rule);
+                const ruleController = new RuleController_1.default();
                 const rule = {
                     methodType: (0, MethodTypes_1.getMethodType)(routeInfo.method),
                     path: routeInfo.path,

@@ -12,6 +12,8 @@ import { EntityType } from "../enum/EntityType";
 import { IUser } from "../models/User";
 import { MethodTypes } from "../enum/MethodTypes";
 import { IEndPoints } from "../interface/IEndPoints";
+import { RequestElement } from "../interface/RequestElement";
+import { ResponseElement } from "../interface/ResponseElement";
 class RuleService extends BaseService<Rule, IRule> {
   protected getEntityClass(): typeof Rule {
     return Rule;
@@ -40,7 +42,126 @@ class RuleService extends BaseService<Rule, IRule> {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
   }
- 
+
+  async addPageApiRule(pageId:number,apiId:number): Promise<void>{
+    try {
+      const page =await this.getRepository().findOne({
+        where: { id: pageId },
+        relations: ["rules"],
+      });
+      if(!page){
+        return Promise.reject(new APIError("invalid page rule", Err.UndefinedCode));
+      }
+      if (!Array.isArray(page.rules)) {
+        page.rules = [];
+      }
+      if(!(page.type===EntityType.PAGE)){
+        return Promise.reject(new APIError("main rule not page", Err.UndefinedCode));
+      }
+      const api =await this.getRepository().findOne({
+        where: { id: apiId },
+      });
+      if(!api){
+        return Promise.reject(new APIError("api not exist", Err.UndefinedCode));
+      }
+      if(!(api.type===EntityType.API)){
+        return Promise.reject(new APIError("Cannt set rule not api", Err.UndefinedCode));
+      }
+
+      page.addRules(api);
+      this.getRepository().save(page);
+    }
+    catch(err){
+       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
+    }
+  }
+
+  async deleteApiFromPage(pageId: number, apiId: number): Promise<void> {
+    try {
+      const page = await this.getRepository().findOne({
+        where: { id: pageId },
+        relations: ['rules'],
+      });
+  
+      if (!page) {
+        return Promise.reject(new APIError('Invalid page rule', Err.UndefinedCode));
+      }
+  
+      if (!Array.isArray(page.rules)) {
+        page.rules = [];
+      }
+  
+      if (!(page.type === EntityType.PAGE)) {
+        return Promise.reject(new APIError('Main rule not page', Err.UndefinedCode));
+      }
+  
+      const api = await this.getRepository().findOne({
+        where: { id: apiId },
+      });
+  
+      if (!api) {
+        return Promise.reject(new APIError('API not exist', Err.UndefinedCode));
+      }
+  
+      if (!(api.type === EntityType.API)) {
+        return Promise.reject(new APIError('Cannot set rule not API', Err.UndefinedCode));
+      }
+  
+      // Remove the rule from the page's rules array
+      page.rules = page.rules.filter((rule) => rule.id !== api.id);
+  
+      await this.getRepository().save(page);
+    } catch (err) {
+      return Promise.reject(new APIError(`An error occurred: ${err}`, Err.UndefinedCode));
+    }
+  }
+
+  async getAllRulesByPageId(
+    requestElement: RequestElement,
+    pageId: number
+  ): Promise<{ result: ResponseElement<Rule> }> {
+    try {
+      const repository: Repository<Rule> = this.getRepository();
+      requestElement.page = requestElement.page ? requestElement.page : 1;
+      requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
+      const order: Record<string, "ASC" | "DESC"> = this.buildOrder(requestElement);
+      const whereConditions: Record<string, any> = {
+        ...this.buildWhereConditions(requestElement),
+        id: pageId,
+      };
+  
+      const [data, total] = await repository.findAndCount({
+        relations: ["rules"],
+        where: whereConditions,
+        skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
+        take: requestElement.pageSize,
+        order,
+      });
+  
+      const result: ResponseElement<Rule> = {
+        data: data,
+        currentPage: requestElement.page,
+        total: total,
+        pageSize: requestElement.pageSize,
+      };
+  
+      return {
+        result,
+      };
+    } catch (e) {
+      console.error("Error fetching rules:", e);
+      const result: ResponseElement<Rule> = {
+        data: [],
+        currentPage: 0,
+        total: 0,
+        pageSize: requestElement.pageSize,
+      };
+      return {
+        result,
+      };
+    }
+  }
+
 
 
   

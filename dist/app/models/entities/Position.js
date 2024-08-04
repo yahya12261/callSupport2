@@ -39,8 +39,9 @@ __decorate([
     __metadata("design:type", String)
 ], Position.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Department_1.Department, (dep) => dep.positions),
-    __metadata("design:type", Object)
+    (0, typeorm_1.ManyToOne)(() => Department_1.Department, (department) => department.positions),
+    (0, typeorm_1.JoinColumn)({ name: 'departmentId', referencedColumnName: 'id' }),
+    __metadata("design:type", Department_1.Department)
 ], Position.prototype, "department", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => User_1.User, (user) => user.position),
@@ -48,7 +49,7 @@ __decorate([
 ], Position.prototype, "users", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Rule_1.Rule),
-    (0, typeorm_1.JoinTable)(),
+    (0, typeorm_1.JoinColumn)({ name: 'ruleId', referencedColumnName: 'id' }),
     __metadata("design:type", Array)
 ], Position.prototype, "rules", void 0);
 exports.Position = Position = __decorate([

@@ -14,7 +14,7 @@ import { EndPointsActionsEnum } from '../enum/EndPointsActionsEnum';
 import { CustomeRequest } from '../interface/CustomeRequest';
 const service = new UserService();
 const ruleService = new RuleService(Rule);
-const ruleController = new RuleController(ruleService);
+const ruleController = new RuleController();
 
 class UserController {
 

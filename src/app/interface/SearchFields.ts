@@ -5,5 +5,6 @@ export interface SearchFields {
     name:string,
     type:FieldTypes,
     operation?:QueryOperator,
-    value?:any
+    value?:any,
+    value2?:any
 } 

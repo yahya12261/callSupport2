@@ -7,5 +7,6 @@ var EndPointsActionsEnum;
     EndPointsActionsEnum["DELETE"] = "delete";
     EndPointsActionsEnum["UPDATE"] = "update";
     EndPointsActionsEnum["SELECT"] = "select";
+    EndPointsActionsEnum["OTHER"] = "other";
 })(EndPointsActionsEnum || (exports.EndPointsActionsEnum = EndPointsActionsEnum = {}));
 //# sourceMappingURL=EndPointsActionsEnum.js.map

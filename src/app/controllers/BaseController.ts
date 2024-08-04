@@ -101,7 +101,22 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           });
       };
 
+//getSelectOption
 
+      public getSelectOption = (req: Request, res: Response, next: any)=>{
+        this.service.getSelectOption().then((result)=>{
+          if(result){
+            res.json(Template.success(result, ""));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.ErrorID == 2110) {
+            next(new APIError(err.message, err.ErrorID));
+          }
+          next(new ServerException("error occurred"));
+        });
+      }
       public getScheme = (req: Request, res: Response, next: any) => {
         res.json(Template.success(this.getDefaultSearchableFields(), ""));
       }
@@ -129,7 +144,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
         });
       }
 
-      private serializeFields(data: any[]) {
+      protected serializeFields(data: any[]) {
         for (const item of data) {
           this.serializeField(item, 'createdBy');
           this.serializeField(item, 'modifiedBy');
@@ -142,10 +157,9 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           item[fieldName] = this.userSerializer.serialize(item[fieldName]);
         }
       }
-
-
       protected fillSearchableFieldFromRequest(req: Request): void {
-        // console.log(this.searchFields);
+        console.log( this.searchFields)
+        this.searchFields=this.getDefaultSearchableFields();
         this.searchFields.forEach((field) => {
           const fieldName = field.name;
           const operationName = `${fieldName}OP`;
@@ -166,12 +180,17 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           if (req.query[operationName] !== undefined) {
             field.operation = getQueryOperatorFromString(req.query[operationName] as string) ;
           }
+          if(field.value&&field.type === FieldTypes.DATE&&field.operation=== QueryOperator.EQUAL){
+            field.operation = QueryOperator.BETWEEN;
+            field.value =this.updateFieldValue(field.value);
+          }
+
         });
 
     
         // Remove fields that don't have a value
-        this.searchFields = this.searchFields.filter((field) => field.value !== undefined);
-        // console.log( this.searchFields)
+        this.searchFields = this.searchFields.filter((field) => field.value !== undefined||field.value !== "undefined,Invalid Date");
+        console.log( this.searchFields)
       }
       private valueToType(value:string,type:FieldTypes):any{
         if(Object.is(type,FieldTypes.TEXT))
@@ -184,52 +203,76 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           return Boolean(value);
       }
 
-     private getDefaultSearchableFields():SearchFields[]{
-        return [
+      protected getDefaultSearchableFields(): SearchFields[] {
+        const defaultFields = [
           {
-            name:"id",
-            type:FieldTypes.NUMBER,
+            name: "id",
+            type: FieldTypes.NUMBER,
           },
           {
-            name:"uuid",
-            type:FieldTypes.TEXT
+            name: "uuid",
+            type: FieldTypes.TEXT,
           },
           {
-            name:"createdAt",
-            type:FieldTypes.DATE
+            name: "createdAt",
+            type: FieldTypes.DATE,
           },
           {
-            name:"updatedAt",
-            type:FieldTypes.DATE
+            name: "updatedAt",
+            type: FieldTypes.DATE,
           },
           {
-            name:"deletedAt",
-            type:FieldTypes.DATE
+            name: "deletedAt",
+            type: FieldTypes.DATE,
           },
           {
-            name:"arabicLabel",
-            type:FieldTypes.TEXT
+            name: "arabicLabel",
+            type: FieldTypes.TEXT,
           },
           {
-            name:"type",
-            type:FieldTypes.TEXT
+            name: "type",
+            type: FieldTypes.TEXT,
           },
           {
-            name:"isActive",
-            type:FieldTypes.TEXT
+            name: "isActive",
+            type: FieldTypes.TEXT,
           },
           {
-            name:"createdBy.id",
-            type:FieldTypes.NUMBER
+            name: "createdBy.id",
+            type: FieldTypes.NUMBER,
           },
           {
-            name:"modifiedBy.id",
-            type:FieldTypes.NUMBER
+            name: "modifiedBy.id",
+            type: FieldTypes.NUMBER,
           },
           {
-            name:"deletedBy.id",
-            type:FieldTypes.NUMBER
-          }
-        ].concat(this.childSearchableFields);
+            name: "deletedBy.id",
+            type: FieldTypes.NUMBER,
+          },
+        ];
+    
+        const filteredChildSearchableFields = Array.isArray(this.childSearchableFields)?this.childSearchableFields.map(({ value,operation, ...rest }) => rest):[];
+      
+
+      
+        return defaultFields.concat(filteredChildSearchableFields as SearchFields[]);
+      }
+      private updateFieldValue( value: string ): string {
+        // Split the field.value by the comma
+      
+        // Convert the startDay string to a Date object
+        const startDate = new Date(value);
+        startDate.setHours(0, 0, 0, 0);
+        // Set the start time to 00:00:00
+      
+        // Set the end time to 23:59:59
+        const endDate = new Date(startDate.getTime() + 86399999);
+        endDate.setHours(23, 59,59, 0);
+        // Format the startDate and endDate in the desired format
+        const startDateTime = startDate.toISOString().replace('T', ' ').slice(0, 24);
+        const endDateTime = endDate.toISOString().replace('T', ' ').slice(0, 24);
+      
+        // Return the new value in the desired format
+        return `${startDateTime},${endDateTime}`;
       }
 }

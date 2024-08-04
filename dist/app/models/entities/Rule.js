@@ -13,12 +13,14 @@ exports.Rule = void 0;
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
 const MethodTypes_1 = require("../../enum/MethodTypes");
+const EntityType_1 = require("../../enum/EntityType");
 let Rule = class Rule extends baseEntity_1.BaseEntity {
     updateEntity(entity) {
         throw new Error("Method not implemented.");
     }
     constructor() {
         super();
+        this.type = EntityType_1.EntityType.PAGE;
     }
     fillFromModel(modal) {
         this.fillEntityFromModel(modal);
@@ -26,6 +28,12 @@ let Rule = class Rule extends baseEntity_1.BaseEntity {
         this.code = modal.code;
         this.methodName = modal.methodName;
         this.methodType = modal.methodType;
+    }
+    addRules(rule) {
+        // Check if the rule already exists in the rules array
+        if (!this.rules.some((r) => r.id === rule.id)) {
+            this.rules.push(rule);
+        }
     }
 };
 exports.Rule = Rule;
@@ -53,6 +61,21 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Rule.prototype, "methodName", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Rule, (rule) => rule.rules),
+    (0, typeorm_1.JoinTable)({
+        name: 'api_page',
+        joinColumn: {
+            name: 'pageId',
+            referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+            name: 'apiId',
+            referencedColumnName: 'id'
+        }
+    }),
+    __metadata("design:type", Array)
+], Rule.prototype, "rules", void 0);
 exports.Rule = Rule = __decorate([
     (0, typeorm_1.Entity)("rules"),
     __metadata("design:paramtypes", [])

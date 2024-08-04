@@ -2,5 +2,6 @@ export enum EndPointsActionsEnum {
     ADD = 'add',
     DELETE = 'delete',
     UPDATE = 'update',
-    SELECT= 'select'
+    SELECT= 'select',
+    OTHER = 'other'
   }

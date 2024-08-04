@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -28,14 +29,15 @@ public updateEntity(entity: BaseEntity): void {
 @Column({type:'varchar'})
 public name!:String 
 
-@ManyToOne(() => Department, (dep) => dep.positions)
-department!: Department | null;
+@ManyToOne(() => Department, (department) => department.positions)
+  @JoinColumn({ name: 'departmentId', referencedColumnName: 'id' })
+  department!: Department;
 
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
 
 @ManyToMany(() => Rule)
-@JoinTable()
+@JoinColumn({ name: 'ruleId', referencedColumnName: 'id' })
 rules!: Rule[]
 
 constructor(){

@@ -16,8 +16,13 @@ const Controller = new PositionController();
 
 
 router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getAll);
+
 router.get('/scheme',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getScheme);
+
+router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
+
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
+
 router.post("/rule-position",Controller.addPostitonRule);
 // // Get a department by ID
 // router.get('/:id',cont.getById);

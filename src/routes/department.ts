@@ -18,4 +18,6 @@ router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, uploa
 
 router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
 
+router.get('/selectOption',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getSelectOption);
+
 export default router;

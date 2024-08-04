@@ -33,8 +33,8 @@ export class EndPoints {
         routes.push(routeInfo);
 
         // Generate rule
-        const ruleService: RuleService = new RuleService(Rule);
-        const ruleController = new RuleController(ruleService);
+        // const ruleService: RuleService = new RuleService(Rule);
+        const ruleController = new RuleController();
         const rule: IEndPoints = {
           methodType: getMethodType(routeInfo.method),
           path: routeInfo.path,
