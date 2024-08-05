@@ -36,8 +36,18 @@ public name!:String
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
 
-@ManyToMany(() => Rule)
-@JoinColumn({ name: 'ruleId', referencedColumnName: 'id' })
+@ManyToMany(() => Rule, (rule) => rule.rules)
+@JoinTable({
+  name: 'position_rule',
+  joinColumn: {
+    name: 'positionId',
+    referencedColumnName: 'id'
+  },
+  inverseJoinColumn: {
+    name: 'ruleId',
+    referencedColumnName: 'id'
+  }
+})
 rules!: Rule[]
 
 constructor(){

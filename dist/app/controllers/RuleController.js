@@ -60,9 +60,10 @@ class RuleController extends BaseController_1.BaseController {
             this.reqElm.search = this.searchFields;
             this.service.getAllRulesByPageId(this.reqElm, Number(ruleId)).then(({ result }) => {
                 if (result) {
+                    const rulesRes = { currentPage: result.currentPage, data: result.data[0].rules, pageSize: result.pageSize, total: result.total };
                     this.serializeFields(result.data);
                     this.searchFields = this.getDefaultSearchableFields();
-                    res.json(response_1.default.success(result, ""));
+                    res.json(response_1.default.success(rulesRes, ""));
                 }
             })
                 .catch((err) => {

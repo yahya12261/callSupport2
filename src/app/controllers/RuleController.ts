@@ -14,6 +14,7 @@ import { EndPoints } from "../extra/EndPoints";
 import { IEndPoints } from "../interface/IEndPoints";
 import { FieldTypes } from "../enum/FieldTypes";
 import { validateOrderOperation } from "../enum/OrderByOperation";
+import { ResponseElement } from "../interface/ResponseElement";
 const service = new RuleService(Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController<Rule, IRule, RuleService> {
@@ -66,9 +67,10 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
     this.reqElm.search = this.searchFields;
     this.service.getAllRulesByPageId(this.reqElm,Number(ruleId)).then(({result})=>{
       if(result){
+        const rulesRes = {currentPage:result.currentPage,data:result.data[0].rules ,pageSize:result.pageSize,total:result.total } as ResponseElement<Rule> 
         this.serializeFields(result.data);
        this.searchFields = this.getDefaultSearchableFields();
-        res.json(Template.success(result, ""));
+        res.json(Template.success(rulesRes, ""));
       }
     })
     .catch((err) => {

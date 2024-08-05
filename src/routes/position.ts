@@ -19,11 +19,16 @@ router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Con
 
 router.get('/scheme',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getScheme);
 
+router.get('/positionRules/:id',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getPagesApis);
+
 router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
 
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
 
-router.post("/rule-position",Controller.addPostitonRule);
+router.post("/rule-position",EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware, upload.none(),Controller.addPositionRule);
+
+router.post('/delete_rule_position',EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware,upload.none(), Controller.deletePositionRule);
+
 // // Get a department by ID
 // router.get('/:id',cont.getById);
 

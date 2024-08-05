@@ -48,8 +48,18 @@ __decorate([
     __metadata("design:type", Array)
 ], Position.prototype, "users", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => Rule_1.Rule),
-    (0, typeorm_1.JoinColumn)({ name: 'ruleId', referencedColumnName: 'id' }),
+    (0, typeorm_1.ManyToMany)(() => Rule_1.Rule, (rule) => rule.rules),
+    (0, typeorm_1.JoinTable)({
+        name: 'position_rule',
+        joinColumn: {
+            name: 'positionId',
+            referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+            name: 'ruleId',
+            referencedColumnName: 'id'
+        }
+    }),
     __metadata("design:type", Array)
 ], Position.prototype, "rules", void 0);
 exports.Position = Position = __decorate([

@@ -27,7 +27,7 @@ class RuleService extends BaseService<Rule, IRule> {
       }
   
       // Check if a rule with the same name already exists
-      const existingRule = await ruleRepository.findOne({ name: endPoints.path });
+      const existingRule = await ruleRepository.findOne({ name: endPoints.path,methodType:endPoints.methodType });
       if (existingRule) {
         // If a rule with the same name exists, do nothing and return
         return;
@@ -43,79 +43,114 @@ class RuleService extends BaseService<Rule, IRule> {
     }
   }
 
-  async addPageApiRule(pageId:number,apiId:number): Promise<void>{
-    try {
-      const page =await this.getRepository().findOne({
-        where: { id: pageId },
-        relations: ["rules"],
-      });
-      if(!page){
-        return Promise.reject(new APIError("invalid page rule", Err.UndefinedCode));
-      }
-      if (!Array.isArray(page.rules)) {
-        page.rules = [];
-      }
-      if(!(page.type===EntityType.PAGE)){
-        return Promise.reject(new APIError("main rule not page", Err.UndefinedCode));
-      }
-      const api =await this.getRepository().findOne({
-        where: { id: apiId },
-      });
-      if(!api){
-        return Promise.reject(new APIError("api not exist", Err.UndefinedCode));
-      }
-      if(!(api.type===EntityType.API)){
-        return Promise.reject(new APIError("Cannt set rule not api", Err.UndefinedCode));
-      }
+  // async addPageApiRule(pageId:number,apiId:number): Promise<void>{
+  //   try {
+  //     const page =await this.getRepository().findOne({
+  //       where: { id: pageId },
+  //       relations: ["rules"],
+  //     });
+  //     if(!page){
+  //       return Promise.reject(new APIError("invalid page rule", Err.UndefinedCode));
+  //     }
+  //     if (!Array.isArray(page.rules)) {
+  //       page.rules = [];
+  //     }
+  //     if(!(page.type===EntityType.PAGE)){
+  //       return Promise.reject(new APIError("main rule not page", Err.UndefinedCode));
+  //     }
+  //     const api =await this.getRepository().findOne({
+  //       where: { id: apiId },
+  //     });
+  //     if(!api){
+  //       return Promise.reject(new APIError("api not exist", Err.UndefinedCode));
+  //     }
+  //     if(!(api.type===EntityType.API)){
+  //       return Promise.reject(new APIError("Cannt set rule not api", Err.UndefinedCode));
+  //     }
 
-      page.addRules(api);
-      this.getRepository().save(page);
-    }
-    catch(err){
-       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
-    }
-  }
+  //     if (!page.rules.some((rule) => rule.id === api.id)) {
+  //       page.rules.push(api);
+  //       await this.getRepository().save(page);
+  //     }
 
+  //   }
+  //   catch(err){
+  //      return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
+  //   }
+  // }
+
+  // async deleteApiFromPage(pageId: number, apiId: number): Promise<void> {
+  //   try {
+  //     const page = await this.getRepository().findOne({
+  //       where: { id: pageId },
+  //       relations: ['rules'],
+  //     });
+  
+  //     if (!page) {
+  //       return Promise.reject(new APIError('Invalid page rule', Err.UndefinedCode));
+  //     }
+  
+  //     if (!Array.isArray(page.rules)) {
+  //       page.rules = [];
+  //     }
+  
+  //     if (!(page.type === EntityType.PAGE)) {
+  //       return Promise.reject(new APIError('Main rule not page', Err.UndefinedCode));
+  //     }
+  
+  //     const api = await this.getRepository().findOne({
+  //       where: { id: apiId },
+  //     });
+  
+  //     if (!api) {
+  //       return Promise.reject(new APIError('API not exist', Err.UndefinedCode));
+  //     }
+  
+  //     if (!(api.type === EntityType.API)) {
+  //       return Promise.reject(new APIError('Cannot set rule not API', Err.UndefinedCode));
+  //     }
+  
+  //     // Remove the rule from the page's rules array
+  //     page.rules = page.rules.filter((rule) => rule.id !== api.id);
+  
+  //     await this.getRepository().save(page);
+  //   } catch (err) {
+  //     return Promise.reject(new APIError(`An error occurred: ${err}`, Err.UndefinedCode));
+  //   }
+  // }
   async deleteApiFromPage(pageId: number, apiId: number): Promise<void> {
     try {
-      const page = await this.getRepository().findOne({
-        where: { id: pageId },
-        relations: ['rules'],
-      });
-  
-      if (!page) {
-        return Promise.reject(new APIError('Invalid page rule', Err.UndefinedCode));
-      }
-  
-      if (!Array.isArray(page.rules)) {
-        page.rules = [];
-      }
-  
-      if (!(page.type === EntityType.PAGE)) {
-        return Promise.reject(new APIError('Main rule not page', Err.UndefinedCode));
-      }
-  
-      const api = await this.getRepository().findOne({
-        where: { id: apiId },
-      });
-  
-      if (!api) {
-        return Promise.reject(new APIError('API not exist', Err.UndefinedCode));
-      }
-  
-      if (!(api.type === EntityType.API)) {
-        return Promise.reject(new APIError('Cannot set rule not API', Err.UndefinedCode));
-      }
-  
-      // Remove the rule from the page's rules array
-      page.rules = page.rules.filter((rule) => rule.id !== api.id);
-  
-      await this.getRepository().save(page);
+      // Check if the (pageId, apiId) combination exists in the api_page table
+      // const existingRelation = await getRepository("api_page").findOne({
+      //   where: { pageId:pageId, apiId: apiId },
+      // });
+      
+      // if (existingRelation) {
+        // Delete the record from the api_page table
+        await getRepository("api_page").delete({ pageId, apiId });
+
+      // } else {
+      //   // If the record doesn't exist, throw an error
+      //   return Promise.reject(new APIError("Relation not found", Err.UndefinedCode));
+      // }
     } catch (err) {
-      return Promise.reject(new APIError(`An error occurred: ${err}`, Err.UndefinedCode));
+      return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
   }
-
+  async addPageApiRule(pageId: number, apiId: number): Promise<void> {
+    try {
+      // Check if the (pageId, apiId) combination already exists in the api_page table
+      const existingRelation = await getRepository("api_page").findOne({
+        where: { pageId, apiId },
+      });
+  
+      if (!existingRelation) {
+        await getRepository("api_page").insert({ pageId, apiId });
+      }
+    } catch (err) {
+      return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
+    }
+  }
   async getAllRulesByPageId(
     requestElement: RequestElement,
     pageId: number

@@ -315,5 +315,6 @@ export class UserService implements IUserRepository {
       return Promise.reject(new APIError("an error : " + err,Err.UndefinedCode));
     }
   }
+  //getAllUsers
 
 }

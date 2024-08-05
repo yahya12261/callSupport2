@@ -17,7 +17,7 @@ export class EndPoints {
 
   private traverseRoutes(routeName: string, r: express.Router, path: string = ''): Array<RouteInfo> {
     const routes: Array<RouteInfo> = [];
-
+    
     r.stack.forEach((middleWare) => {
       if (middleWare.route) { // Route
         const route = middleWare.route;
@@ -31,7 +31,7 @@ export class EndPoints {
           params: route.paramNames,
         };
         routes.push(routeInfo);
-
+        
         // Generate rule
         // const ruleService: RuleService = new RuleService(Rule);
         const ruleController = new RuleController();

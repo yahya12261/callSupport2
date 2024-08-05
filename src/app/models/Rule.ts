@@ -1,6 +1,7 @@
 import { IBaseEntity } from "./baseEntity"
 import { Position } from "./entities/Position"
 import { MethodTypes } from "../enum/MethodTypes"
+import { Rule } from "./entities/Rule"
 
 export interface IRule extends IBaseEntity {
     name:String,
@@ -9,4 +10,5 @@ export interface IRule extends IBaseEntity {
     methodType:MethodTypes,
     methodName:String,
     position:Position[]
+    rules:Rule[],
   }

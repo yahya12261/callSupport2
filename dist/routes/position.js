@@ -17,9 +17,11 @@ const Service = new PositionService_1.PositionService(Position_1.Position);
 const Controller = new PositionController_1.default();
 router.get('/', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.SELECT), authMiddlewares_1.authMiddleware, Controller.getAll);
 router.get('/scheme', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.SELECT), authMiddlewares_1.authMiddleware, Controller.getScheme);
+router.get('/positionRules/:id', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.SELECT), authMiddlewares_1.authMiddleware, Controller.getPagesApis);
 router.patch('/', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.UPDATE), authMiddlewares_1.authMiddleware, upload.none(), Controller.update);
 router.post('/', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.ADD), authMiddlewares_1.authMiddleware, upload.none(), Controller.add);
-router.post("/rule-position", Controller.addPostitonRule);
+router.post("/rule-position", (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.OTHER), authMiddlewares_1.authMiddleware, upload.none(), Controller.addPositionRule);
+router.post('/delete_rule_position', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.OTHER), authMiddlewares_1.authMiddleware, upload.none(), Controller.deletePositionRule);
 // // Get a department by ID
 // router.get('/:id',cont.getById);
 // // Update a department
