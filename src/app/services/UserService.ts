@@ -10,8 +10,13 @@ import { EmailService } from "../extra/EmailService";
 import { JWTService } from "../extra/JWTService";
 import { Position } from "../models/entities/Position";
 import { Rule } from "../models/entities/Rule";
+import BaseService from "./BaseService";
+import { BaseEntity } from "../models/entities/baseEntity";
 
-export class UserService implements IUserRepository {
+export class UserService extends BaseService<User,IUser> implements IUserRepository  {
+  protected getEntityClass(): typeof User {
+    return User;
+  }
  public static logger: any = new Logger();
   async changePassword(user: IUser, newPass: string): Promise<User | null> {
     try {
@@ -315,6 +320,5 @@ export class UserService implements IUserRepository {
       return Promise.reject(new APIError("an error : " + err,Err.UndefinedCode));
     }
   }
-  //getAllUsers
 
 }

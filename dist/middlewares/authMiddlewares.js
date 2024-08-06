@@ -17,6 +17,7 @@ const JWTService_1 = require("../app/extra/JWTService");
 const apierror_1 = __importDefault(require("../app/global/response/apierror"));
 const UserService_1 = require("../app/services/UserService");
 const EndPointsActionsEnum_1 = require("../app/enum/EndPointsActionsEnum");
+const User_1 = require("../app/models/entities/User");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -29,7 +30,7 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         if (!userUUID) {
             return res.status(401).json(new apierror_1.default('Unauthorized', 401));
         }
-        const userService = new UserService_1.UserService();
+        const userService = new UserService_1.UserService(User_1.User);
         const user = yield userService.getByUUID(userUUID);
         if (!user) {
             return res.status(401).json(new apierror_1.default('Unauthorized', 401));

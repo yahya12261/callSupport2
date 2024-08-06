@@ -5,6 +5,7 @@ import APIError from '../app/global/response/apierror';
 import { UserService } from '../app/services/UserService';
 import { CustomeRequest } from '../app/interface/CustomeRequest';
 import { EndPointsActionsEnum } from '../app/enum/EndPointsActionsEnum';
+import { User } from '../app/models/entities/User';
 
 export const authMiddleware = async (req: CustomeRequest, res: Response, next: NextFunction) => {
   try {
@@ -19,7 +20,7 @@ export const authMiddleware = async (req: CustomeRequest, res: Response, next: N
     if (!userUUID) {
       return res.status(401).json(new APIError('Unauthorized', 401));
     }
-    const userService = new UserService();
+    const userService = new UserService(User);
     const user = await userService.getByUUID(userUUID);
     if (!user) {
       return res.status(401).json(new APIError('Unauthorized', 401));

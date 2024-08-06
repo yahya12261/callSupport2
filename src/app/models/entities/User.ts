@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -86,6 +87,7 @@ export class User extends BaseEntity{
   deletedUsers!: User[];
 
   @ManyToOne(() => Position, (pos) => pos.users)
+  @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
     position!: Position | null;
 
   @ManyToMany(() => Rule)

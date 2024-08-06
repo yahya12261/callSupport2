@@ -12,11 +12,66 @@ import RuleController from './RuleController';
 import { Rule } from '../models/entities/Rule';
 import { EndPointsActionsEnum } from '../enum/EndPointsActionsEnum';
 import { CustomeRequest } from '../interface/CustomeRequest';
-const service = new UserService();
+import { IUser } from '../models/User';
+import { BaseController } from './BaseController';
+import { EntityType } from '../enum/EntityType';
+import { TypeormOptions } from '../interface/TypeormOptions';
+import { FieldTypes } from '../enum/FieldTypes';
+const service = new UserService(User);
 const ruleService = new RuleService(Rule);
 const ruleController = new RuleController();
 
-class UserController {
+class UserController extends BaseController<User, IUser, UserService>{
+  option: TypeormOptions = {
+    relations: ["createdBy","position"],
+  };
+  entity: EntityType = EntityType.USER;
+
+  constructor() {
+      super(service,
+        [
+          {
+            name: 'first',
+            type: FieldTypes.TEXT
+          },
+          {
+            name: 'middle',
+            type: FieldTypes.TEXT
+          },
+          {
+            name: 'last',
+            type: FieldTypes.TEXT
+          },
+          {
+            name: 'email',
+            type: FieldTypes.TEXT
+          },
+          {
+            name: 'username',
+            type: FieldTypes.TEXT
+          },
+          {
+            name: 'lastLogin',
+            type: FieldTypes.TEXT
+          },
+          {
+            name: 'position.id',
+            type: FieldTypes.NUMBER
+          },
+          {
+            name: 'phoneNumber',
+            type: FieldTypes.TEXT
+          },
+//           
+// 
+// 
+// 
+// 
+// 
+// 
+        ],
+      );
+    }
 
   public static create = (req: CustomeRequest, res: Response, next: any) => {
 

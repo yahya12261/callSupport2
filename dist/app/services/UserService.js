@@ -22,7 +22,11 @@ const EmailService_1 = require("../extra/EmailService");
 const JWTService_1 = require("../extra/JWTService");
 const Position_1 = require("../models/entities/Position");
 const Rule_1 = require("../models/entities/Rule");
-class UserService {
+const BaseService_1 = __importDefault(require("./BaseService"));
+class UserService extends BaseService_1.default {
+    getEntityClass() {
+        return User_1.User;
+    }
     changePassword(user, newPass) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

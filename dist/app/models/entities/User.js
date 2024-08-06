@@ -162,6 +162,7 @@ __decorate([
 ], User.prototype, "deletedUsers", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Position_1.Position, (pos) => pos.users),
+    (0, typeorm_1.JoinColumn)({ name: 'positionId', referencedColumnName: 'id' }),
     __metadata("design:type", Object)
 ], User.prototype, "position", void 0);
 __decorate([

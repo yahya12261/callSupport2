@@ -13,10 +13,60 @@ const RuleService_1 = require("../services/RuleService");
 const RuleController_1 = __importDefault(require("./RuleController"));
 const Rule_1 = require("../models/entities/Rule");
 const EndPointsActionsEnum_1 = require("../enum/EndPointsActionsEnum");
-const service = new UserService_1.UserService();
+const BaseController_1 = require("./BaseController");
+const EntityType_1 = require("../enum/EntityType");
+const FieldTypes_1 = require("../enum/FieldTypes");
+const service = new UserService_1.UserService(User_1.User);
 const ruleService = new RuleService_1.RuleService(Rule_1.Rule);
 const ruleController = new RuleController_1.default();
-class UserController {
+class UserController extends BaseController_1.BaseController {
+    constructor() {
+        super(service, [
+            {
+                name: 'first',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'middle',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'last',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'email',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'username',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'lastLogin',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'position.id',
+                type: FieldTypes_1.FieldTypes.NUMBER
+            },
+            {
+                name: 'phoneNumber',
+                type: FieldTypes_1.FieldTypes.TEXT
+            },
+            //           
+            // 
+            // 
+            // 
+            // 
+            // 
+            // 
+        ]);
+        this.option = {
+            relations: ["createdBy", "position"],
+        };
+        this.entity = EntityType_1.EntityType.USER;
+    }
     static getVisibleUserData(user) {
         return {
             uuid: user.uuid
