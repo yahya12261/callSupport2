@@ -248,6 +248,13 @@ class BaseController {
         // Return the new value in the desired format
         return `${startDateTime},${endDateTime}`;
     }
+    removeField(data, fieldName) {
+        data.forEach((item, index) => {
+            const itemWithIndex = item;
+            const _a = itemWithIndex, _b = fieldName, _ = _a[_b], rest = __rest(_a, [typeof _b === "symbol" ? _b : _b + ""]);
+            data[index] = rest;
+        });
+    }
 }
 exports.BaseController = BaseController;
 //# sourceMappingURL=BaseController.js.map

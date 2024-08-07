@@ -38,6 +38,12 @@ export class UserService extends BaseService<User,IUser> implements IUserReposit
     const { email, username } = model;
     try {
       let exists = false;
+      console.log("email",email);
+      console.log("username",username);
+      if(!email || !username){
+        new APIError("غير موجود", Err.EmailAlreadyExists)
+      }
+    
       let emailLowerCase = email?.toLocaleLowerCase();
       let userLoweCase = username?.toLocaleLowerCase();
       if (email !== undefined) {
@@ -66,7 +72,7 @@ export class UserService extends BaseService<User,IUser> implements IUserReposit
       return null;
     }
   }
- async getByUUID(uuid: string): Promise<User | undefined> {
+  async getByUUID(uuid: string): Promise<User | undefined> {
     const userRepository = getRepository(User);
     try {
       const user = await userRepository.findOne({
@@ -92,6 +98,7 @@ export class UserService extends BaseService<User,IUser> implements IUserReposit
       dsc,
       note,
       phoneNumber,
+      arabicLabel
     } = model;
     const user = new User();
     user.username = username;
@@ -105,6 +112,7 @@ export class UserService extends BaseService<User,IUser> implements IUserReposit
     user.position = position;
     user.email = email;
     user.phoneNumber = phoneNumber;
+    user.arabicLabel = arabicLabel;
     user.hashPassword();
     user.makeUsernameAndEmailLowerCase();
     const userRepository = getRepository(User);
@@ -242,15 +250,18 @@ export class UserService extends BaseService<User,IUser> implements IUserReposit
         where: { id: user.position?.id },
         relations: ["rules"],
       });
+      console.log(position);
       if (!position || !position.rules) {
         return Promise.reject(new APIError("err", Err.EmptyRequestBody));
       }
       if (!Array.isArray(user.rules)) {
         user.rules = [];
       }
+
       const availableRules = position.rules.filter(
         (rule) => !user.rules.some((r) => r.id === rule.id)
       );
+
       availableRules.forEach((rule) => user.addRules(rule));
       const saved = await userRepository.save(user);
       return saved;
@@ -289,33 +300,21 @@ export class UserService extends BaseService<User,IUser> implements IUserReposit
   }
   }
   async addUserRule(userId:number,ruleId:number): Promise<void>{
-    const userRepository = getRepository(User);
-    const ruleRepository = getRepository(Rule);
     try{
-
-
       if(!userId||!ruleId){
         return Promise.reject(new APIError("err", Err.EmptyRequestBody));
       }
-
-      const user = await  userRepository.findOne({
-        where: { id: userId },
-        relations: ["rules"],
-      });
-
-      if(!user){
-        return Promise.reject(new APIError("err", Err.UserNotFound));
+      getRepository("user_rule").insert({userId:userId,ruleId:ruleId});
+    }catch(err){
+      return Promise.reject(new APIError("an error : " + err,Err.UndefinedCode));
+    }
+  }
+  async deleteUserRule(userId:number,ruleId:number): Promise<void>{
+    try{
+      if(!userId||!ruleId){
+        return Promise.reject(new APIError("err", Err.EmptyRequestBody));
       }
-      const rule = await ruleRepository.findOne({id:ruleId});
-      
-      if(!rule){
-        return Promise.reject(new APIError("rule not found ",0));
-      }
-
-      user.addRules(rule);
-
-      userRepository.save(user);
-
+      getRepository("user_rule").delete({userId:userId,ruleId:ruleId});
     }catch(err){
       return Promise.reject(new APIError("an error : " + err,Err.UndefinedCode));
     }

@@ -29,6 +29,8 @@ router.post("/rule-position",EndPointsActions(EndPointsActionsEnum.OTHER),authMi
 
 router.post('/delete_rule_position',EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware,upload.none(), Controller.deletePositionRule);
 
+router.get('/selectOption',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getSelectOption);
+
 // // Get a department by ID
 // router.get('/:id',cont.getById);
 

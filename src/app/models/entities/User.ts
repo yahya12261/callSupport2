@@ -70,11 +70,15 @@ export class User extends BaseEntity{
   @Column({default:false})
   public isAdmin!:boolean;
 
+  @Column({default:true})
+  public changePassword!:boolean;
+
   @Column({default:0, nullable:true})
   public invalidLoginAttempts!:number;
 
   @Column({ type: 'timestamp', nullable:true})
   lastLogin!: Date;
+  
   // add needChangePass
 
   @OneToMany(() => User, (user) => user.createdBy)
@@ -91,7 +95,17 @@ export class User extends BaseEntity{
     position!: Position | null;
 
   @ManyToMany(() => Rule)
-  @JoinTable()
+  @JoinTable({
+    name: 'user_rule',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn: {
+      name: 'ruleId',
+      referencedColumnName: 'id'
+    }
+  })
   rules!:Rule[]
  
 
@@ -114,7 +128,8 @@ export class User extends BaseEntity{
     this.type = EntityType.USER;
   }
   public hashPassword() {
-    this.password = bcrypt.hashSync(this.password, 8);
+    if(this.password){
+    this.password = bcrypt.hashSync(this.password, 8);}
   }
 
   public makeUsernameAndEmailLowerCase(){

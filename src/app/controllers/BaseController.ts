@@ -120,7 +120,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
       public getScheme = (req: Request, res: Response, next: any) => {
         res.json(Template.success(this.getDefaultSearchableFields(), ""));
       }
-    public getAll = (req: Request, res: Response, next: any) => {
+      public getAll = (req: Request, res: Response, next: any) => {
       this.reqElm.page = Number(req.query.page);
       this.reqElm.pageSize = Number(req.query.pageSize);
       this.reqElm.orderBy = req.query.orderBy?String(req.query.orderBy):"createdAt";
@@ -143,7 +143,6 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           next(new ServerException("error occurred"));
         });
       }
-
       protected serializeFields(data: any[]) {
         for (const item of data) {
           this.serializeField(item, 'createdBy');
@@ -151,7 +150,6 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           this.serializeField(item, 'deletedBy');
         }
       }
-      
       private serializeField(item: any, fieldName: string) {
         if (item[fieldName]) {
           item[fieldName] = this.userSerializer.serialize(item[fieldName]);
@@ -202,7 +200,6 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
         else if(Object.is(type,FieldTypes.BOOLEAN))
           return Boolean(value);
       }
-
       protected getDefaultSearchableFields(): SearchFields[] {
         const defaultFields = [
           {
@@ -274,5 +271,12 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
       
         // Return the new value in the desired format
         return `${startDateTime},${endDateTime}`;
+      }
+      protected removeField<T>(data: T[], fieldName: string): void {
+        data.forEach((item, index) => {
+          const itemWithIndex = item as { [key: string]: any };
+          const { [fieldName]: _, ...rest } = itemWithIndex;
+          data[index] = rest as T;
+        });
       }
 }

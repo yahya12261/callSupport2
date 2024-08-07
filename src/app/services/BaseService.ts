@@ -187,7 +187,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
       });
     }
 
-    // console.log(whereConditions);
+    console.log(whereConditions);
     return whereConditions;
   }
   protected buildOrder(

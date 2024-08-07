@@ -17,13 +17,15 @@ import { BaseController } from './BaseController';
 import { EntityType } from '../enum/EntityType';
 import { TypeormOptions } from '../interface/TypeormOptions';
 import { FieldTypes } from '../enum/FieldTypes';
+import { override } from 'core-decorators';
+import { validateOrderOperation } from '../enum/OrderByOperation';
 const service = new UserService(User);
 const ruleService = new RuleService(Rule);
 const ruleController = new RuleController();
 
 class UserController extends BaseController<User, IUser, UserService>{
   option: TypeormOptions = {
-    relations: ["createdBy","position"],
+    relations: ["createdBy","position","position.department"],
   };
   entity: EntityType = EntityType.USER;
 
@@ -62,6 +64,16 @@ class UserController extends BaseController<User, IUser, UserService>{
             name: 'phoneNumber',
             type: FieldTypes.TEXT
           },
+
+          {
+            name: 'position.id',
+            type: FieldTypes.NUMBER
+          },
+          
+          {
+            name: 'position.department.id',
+            type: FieldTypes.NUMBER
+          },
 //           
 // 
 // 
@@ -82,7 +94,7 @@ class UserController extends BaseController<User, IUser, UserService>{
       req.body.modifiedBy = User.getUserJson(req.updatedUser as User);
     else if(Object.is(req.Action,EndPointsActionsEnum.DELETE))
       req.body.deletedBy = User.getUserJson(req.deletedUser as User);
-    
+      this.buildUserName(req.body);
     service.checkUserExists(req.body).then((bol:boolean)=>{
       if(bol===true){
         res.json(Template.userAlreadyExist()); 
@@ -105,10 +117,8 @@ class UserController extends BaseController<User, IUser, UserService>{
       next(new ServerException('error occured'));
     })
   
-})}
-
-
-  public static login = (req: Request, res: Response, next: any) => {
+    })}
+public static login = (req: Request, res: Response, next: any) => {
     service.login(req.body,true).then(user=>{
         if(user){
          res.json(Template.success(this.getVisibleUserData(user), ' تم إرسال رمز للمرة الواحدة عبر البريد الألكتروني '));
@@ -124,7 +134,6 @@ class UserController extends BaseController<User, IUser, UserService>{
       next(new ServerException('خطأ'));
     })
 }
-
 public static loginByOTP = (req: Request, res: Response, next: any) => {
   service.loginByOTP(req.body).then(JWT=>{
       if(JWT){
@@ -169,6 +178,37 @@ public static addUserRule =  (req: Request, res: Response, next: any) => {
 
   })
 }
+
+  public getAll = (req: Request, res: Response, next: any) => {
+  this.reqElm.page = Number(req.query.page);
+  this.reqElm.pageSize = Number(req.query.pageSize);
+  this.reqElm.orderBy = req.query.orderBy?String(req.query.orderBy):"createdAt";
+  this.reqElm.order = req.query.order?validateOrderOperation(String(req.query.order)):"DESC";
+  this.reqElm.relations = this.option.relations;
+  this.fillSearchableFieldFromRequest(req)
+  this.reqElm.search = this.searchFields;
+    this.service.getAll(this.reqElm).then(({result})=>{
+      if(result){
+        this.serializeFields(result.data);
+        this.removeField(result.data,"password");
+        this.removeField(result.data,"OTP");
+        this.searchFields = this.getDefaultSearchableFields();
+        res.json(Template.success(result, ""));
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.ErrorID == 2110) {
+        next(new APIError(err.message, err.ErrorID));
+      }
+      next(new ServerException("error occurred"));
+    });
+  }
+  private static buildUserName(user : IUser){
+      if(user&&user.first&&user.middle&&user.last&&user.phoneNumber){
+        user.username  = `${user.last+''?.toLocaleUpperCase()}${user.first+''.substring(0,2).toLocaleUpperCase()}${user.middle+''.substring(0,1).toLocaleUpperCase()}${user.phoneNumber+''.substring(3,5)}`
+      }      
+  }
 }
 
 

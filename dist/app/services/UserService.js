@@ -21,7 +21,6 @@ const logger_1 = require("../../lib/logger");
 const EmailService_1 = require("../extra/EmailService");
 const JWTService_1 = require("../extra/JWTService");
 const Position_1 = require("../models/entities/Position");
-const Rule_1 = require("../models/entities/Rule");
 const BaseService_1 = __importDefault(require("./BaseService"));
 class UserService extends BaseService_1.default {
     getEntityClass() {
@@ -52,6 +51,11 @@ class UserService extends BaseService_1.default {
             const { email, username } = model;
             try {
                 let exists = false;
+                console.log("email", email);
+                console.log("username", username);
+                if (!email || !username) {
+                    new apierror_1.default("غير موجود", errorcode_1.default.EmailAlreadyExists);
+                }
                 let emailLowerCase = email === null || email === void 0 ? void 0 : email.toLocaleLowerCase();
                 let userLoweCase = username === null || username === void 0 ? void 0 : username.toLocaleLowerCase();
                 if (email !== undefined) {
@@ -99,7 +103,7 @@ class UserService extends BaseService_1.default {
     }
     add(model) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { first, middle, last, username, password, email, createdBy, position, dsc, note, phoneNumber, } = model;
+            const { first, middle, last, username, password, email, createdBy, position, dsc, note, phoneNumber, arabicLabel } = model;
             const user = new User_1.User();
             user.username = username;
             user.first = first;
@@ -112,6 +116,7 @@ class UserService extends BaseService_1.default {
             user.position = position;
             user.email = email;
             user.phoneNumber = phoneNumber;
+            user.arabicLabel = arabicLabel;
             user.hashPassword();
             user.makeUsernameAndEmailLowerCase();
             const userRepository = (0, typeorm_1.getRepository)(User_1.User);
@@ -254,6 +259,7 @@ class UserService extends BaseService_1.default {
                     where: { id: (_a = user.position) === null || _a === void 0 ? void 0 : _a.id },
                     relations: ["rules"],
                 });
+                console.log(position);
                 if (!position || !position.rules) {
                     return Promise.reject(new apierror_1.default("err", errorcode_1.default.EmptyRequestBody));
                 }
@@ -306,25 +312,24 @@ class UserService extends BaseService_1.default {
     }
     addUserRule(userId, ruleId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
-            const ruleRepository = (0, typeorm_1.getRepository)(Rule_1.Rule);
             try {
                 if (!userId || !ruleId) {
                     return Promise.reject(new apierror_1.default("err", errorcode_1.default.EmptyRequestBody));
                 }
-                const user = yield userRepository.findOne({
-                    where: { id: userId },
-                    relations: ["rules"],
-                });
-                if (!user) {
-                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.UserNotFound));
+                (0, typeorm_1.getRepository)("user_rule").insert({ userId: userId, ruleId: ruleId });
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    deleteUserRule(userId, ruleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!userId || !ruleId) {
+                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.EmptyRequestBody));
                 }
-                const rule = yield ruleRepository.findOne({ id: ruleId });
-                if (!rule) {
-                    return Promise.reject(new apierror_1.default("rule not found ", 0));
-                }
-                user.addRules(rule);
-                userRepository.save(user);
+                (0, typeorm_1.getRepository)("user_rule").delete({ userId: userId, ruleId: ruleId });
             }
             catch (err) {
                 return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));

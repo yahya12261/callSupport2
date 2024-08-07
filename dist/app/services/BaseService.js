@@ -170,7 +170,7 @@ class BaseService {
                 }
             });
         }
-        // console.log(whereConditions);
+        console.log(whereConditions);
         return whereConditions;
     }
     buildOrder(requestElement) {

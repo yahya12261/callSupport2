@@ -73,7 +73,9 @@ let User = class User extends baseEntity_1.BaseEntity {
         this.type = EntityType_1.EntityType.USER;
     }
     hashPassword() {
-        this.password = bcrypt.hashSync(this.password, 8);
+        if (this.password) {
+            this.password = bcrypt.hashSync(this.password, 8);
+        }
     }
     makeUsernameAndEmailLowerCase() {
         this.username = this.username.toLowerCase();
@@ -141,6 +143,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: true }),
+    __metadata("design:type", Boolean)
+], User.prototype, "changePassword", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], User.prototype, "invalidLoginAttempts", void 0);
@@ -167,7 +173,17 @@ __decorate([
 ], User.prototype, "position", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Rule_1.Rule),
-    (0, typeorm_1.JoinTable)(),
+    (0, typeorm_1.JoinTable)({
+        name: 'user_rule',
+        joinColumn: {
+            name: 'userId',
+            referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+            name: 'ruleId',
+            referencedColumnName: 'id'
+        }
+    }),
     __metadata("design:type", Array)
 ], User.prototype, "rules", void 0);
 __decorate([
