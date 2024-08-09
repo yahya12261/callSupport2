@@ -56,23 +56,30 @@ class UserController extends BaseController_1.BaseController {
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: 'position.id',
-                type: FieldTypes_1.FieldTypes.NUMBER
-            },
-            {
                 name: 'position.department.id',
                 type: FieldTypes_1.FieldTypes.NUMBER
             },
-            //           
-            // 
-            // 
-            // 
-            // 
-            // 
-            // 
+            // {
+            //   queryConfig:{
+            //     alias:"u",
+            //     relations: ['position', 'department'],
+            //     whereClause: 'department.id IN (:...whereValue)',
+            //     whereValues: [],
+            //     selectColumns: ['u.id']
+            //   },
+            //   name:"dep",
+            //   type:FieldTypes.NUMBER
+            // }
         ]);
         this.option = {
-            relations: ["createdBy", "position", "position.department"],
+            relations: {
+                position: {
+                    eager: true,
+                },
+                "position.department": {
+                    eager: true,
+                },
+            }
         };
         this.entity = EntityType_1.EntityType.USER;
         this.getAll = (req, res, next) => {
@@ -83,6 +90,7 @@ class UserController extends BaseController_1.BaseController {
             this.reqElm.relations = this.option.relations;
             this.fillSearchableFieldFromRequest(req);
             this.reqElm.search = this.searchFields;
+            this.reqElm.join = this.option.join;
             this.service.getAll(this.reqElm).then(({ result }) => {
                 if (result) {
                     this.serializeFields(result.data);

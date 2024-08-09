@@ -25,7 +25,17 @@ const ruleController = new RuleController();
 
 class UserController extends BaseController<User, IUser, UserService>{
   option: TypeormOptions = {
-    relations: ["createdBy","position","position.department"],
+    relations: {
+      position:{
+        eager:true,        
+      },
+      "position.department": {
+        eager: true,
+      },
+
+    }
+    
+
   };
   entity: EntityType = EntityType.USER;
 
@@ -63,24 +73,22 @@ class UserController extends BaseController<User, IUser, UserService>{
           {
             name: 'phoneNumber',
             type: FieldTypes.TEXT
-          },
-
-          {
-            name: 'position.id',
-            type: FieldTypes.NUMBER
-          },
-          
+          },      
           {
             name: 'position.department.id',
             type: FieldTypes.NUMBER
           },
-//           
-// 
-// 
-// 
-// 
-// 
-// 
+          // {
+          //   queryConfig:{
+          //     alias:"u",
+          //     relations: ['position', 'department'],
+          //     whereClause: 'department.id IN (:...whereValue)',
+          //     whereValues: [],
+          //     selectColumns: ['u.id']
+          //   },
+          //   name:"dep",
+          //   type:FieldTypes.NUMBER
+          // }
         ],
       );
     }
@@ -187,6 +195,7 @@ public static addUserRule =  (req: Request, res: Response, next: any) => {
   this.reqElm.relations = this.option.relations;
   this.fillSearchableFieldFromRequest(req)
   this.reqElm.search = this.searchFields;
+  this.reqElm.join = this.option.join;
     this.service.getAll(this.reqElm).then(({result})=>{
       if(result){
         this.serializeFields(result.data);

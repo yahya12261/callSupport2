@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,7 +15,7 @@ import { Position } from './Position';
 import { EntityType } from '../../enum/EntityType';
 import { IDepartment } from '../Department';
 
-@Entity("departments")
+@Entity()
 @Unique(['name'])
 export class Department extends BaseEntity{
 
@@ -23,7 +24,7 @@ export class Department extends BaseEntity{
 @Column({type:'varchar'})
 public name!:String 
 
-@OneToMany(() => Position, (pos) => pos.department)
+@OneToMany(() => Position, (position) => position.department)
 positions!: Position[];
 
 constructor(){

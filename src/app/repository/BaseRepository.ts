@@ -8,4 +8,5 @@ export interface BaseRepository<T extends BaseEntity,M extends IBaseEntity> {
     add(model:M): Promise<T | null>;
     update<U extends T>(model: Partial<U>): Promise<U | null> ;
     getById(id: number): Promise<T | null>;
+
 }

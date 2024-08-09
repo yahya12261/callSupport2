@@ -14,7 +14,7 @@ import { FieldTypes } from "../enum/FieldTypes";
 const service =  new DepartmentService(Department);
 class DepartmentController extends BaseController<Department,IDepartment,DepartmentService>{
   option: TypeormOptions = {
-    relations:["createdBy"]
+    // relations:["createdBy"]
   } ;
   entity: EntityType = EntityType.DEPARTMENT;
   constructor() {

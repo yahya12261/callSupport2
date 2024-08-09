@@ -19,7 +19,7 @@ const service = new RuleService(Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController<Rule, IRule, RuleService> {
   option: TypeormOptions = {
-    relations: ["createdBy"],
+    // relations: ["createdBy"],
   };
   entity: EntityType = EntityType.PAGE;
 

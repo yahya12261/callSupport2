@@ -167,9 +167,9 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "deletedUsers", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Position_1.Position, (pos) => pos.users),
+    (0, typeorm_1.ManyToOne)(() => Position_1.Position, (position) => position.users),
     (0, typeorm_1.JoinColumn)({ name: 'positionId', referencedColumnName: 'id' }),
-    __metadata("design:type", Object)
+    __metadata("design:type", Position_1.Position)
 ], User.prototype, "position", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Rule_1.Rule),
@@ -193,7 +193,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], User.prototype, "afterInsertHandler", null);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)("users"),
+    (0, typeorm_1.Entity)(),
     (0, typeorm_1.Unique)(['email', 'username']),
     __metadata("design:paramtypes", [])
 ], User);

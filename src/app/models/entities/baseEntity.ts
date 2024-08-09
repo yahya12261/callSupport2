@@ -1,4 +1,4 @@
-import { PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, VersionColumn, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, VersionColumn, Entity, ManyToMany, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from './User';
 import {  EntityType } from '../../enum/EntityType';
@@ -45,13 +45,16 @@ export abstract class BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   note!: string | null;
 
-  @ManyToOne(() => User, (user) => user.createdBy)
+  @ManyToOne(() => User, (user) => user.createdUsers)
+  @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
   createdBy!: User | null;
 
-  @ManyToOne(() => User, (user) => user.modifiedBy)
+  @ManyToOne(() => User, (user) => user.modifiedUsers)
+  @JoinColumn({ name: 'modifiedBy', referencedColumnName: 'id' })
   modifiedBy!: User | null;
 
-  @ManyToOne(() => User, (user) => user.deletedBy)
+  @ManyToOne(() => User, (user) => user.deletedUsers)
+  @JoinColumn({ name: 'deletedBy', referencedColumnName: 'id' })
   deletedBy!: User | null;
 
   constructor() {

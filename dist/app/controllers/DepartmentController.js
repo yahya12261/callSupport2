@@ -15,7 +15,7 @@ class DepartmentController extends BaseController_1.BaseController {
             },
         ]);
         this.option = {
-            relations: ["createdBy"]
+        // relations:["createdBy"]
         };
         this.entity = EntityType_1.EntityType.DEPARTMENT;
     }

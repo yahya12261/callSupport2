@@ -149,21 +149,35 @@ class BaseController {
             // Check if the field exists in the request query
             if (req.query[fieldName] !== undefined) {
                 // Ensure the value is a string
-                if (Array.isArray(req.query[fieldName])) {
-                    field.value = req.query[fieldName][0];
+                if (!field.queryConfig) {
+                    if (Array.isArray(req.query[fieldName])) {
+                        field.value = req.query[fieldName][0];
+                    }
+                    else {
+                        field.value = req.query[fieldName];
+                    }
+                    field.value = this.valueToType(field.value, field.type);
                 }
                 else {
-                    field.value = req.query[fieldName];
+                    if (field.queryConfig.whereValues && Array.isArray(field.queryConfig.whereValues)) {
+                        if (Array.isArray(req.query[fieldName])) {
+                            field.value = req.query[fieldName][0];
+                        }
+                        else {
+                            field.value = req.query[fieldName];
+                        }
+                        field.value = this.valueToType(field.value, field.type);
+                        field.queryConfig.whereValues.push(field.value);
+                    }
                 }
-                field.value = this.valueToType(field.value, field.type);
-            }
-            // Check if the operation exists in the request query
-            if (req.query[operationName] !== undefined) {
-                field.operation = (0, WhereOperations_1.getQueryOperatorFromString)(req.query[operationName]);
-            }
-            if (field.value && field.type === FieldTypes_1.FieldTypes.DATE && field.operation === WhereOperations_1.QueryOperator.EQUAL) {
-                field.operation = WhereOperations_1.QueryOperator.BETWEEN;
-                field.value = this.updateFieldValue(field.value);
+                // Check if the operation exists in the request query
+                if (req.query[operationName] !== undefined) {
+                    field.operation = (0, WhereOperations_1.getQueryOperatorFromString)(req.query[operationName]);
+                }
+                if (field.value && field.type === FieldTypes_1.FieldTypes.DATE && field.operation === WhereOperations_1.QueryOperator.EQUAL) {
+                    field.operation = WhereOperations_1.QueryOperator.BETWEEN;
+                    field.value = this.updateFieldValue(field.value);
+                }
             }
         });
         // Remove fields that don't have a value

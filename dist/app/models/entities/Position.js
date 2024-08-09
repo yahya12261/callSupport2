@@ -63,7 +63,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Position.prototype, "rules", void 0);
 exports.Position = Position = __decorate([
-    (0, typeorm_1.Entity)("positions"),
+    (0, typeorm_1.Entity)(),
     (0, typeorm_1.Unique)(['name']),
     __metadata("design:paramtypes", [])
 ], Position);

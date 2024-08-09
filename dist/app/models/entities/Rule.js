@@ -77,7 +77,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Rule.prototype, "rules", void 0);
 exports.Rule = Rule = __decorate([
-    (0, typeorm_1.Entity)("rules"),
+    (0, typeorm_1.Entity)(),
     __metadata("design:paramtypes", [])
 ], Rule);
 //# sourceMappingURL=Rule.js.map

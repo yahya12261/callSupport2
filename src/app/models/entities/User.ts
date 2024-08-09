@@ -27,7 +27,7 @@ import Template from "../../global/response";
 import { Response } from 'express';
 import { UserService } from '../../services/UserService';
 
-@Entity("users")
+@Entity()
 @Unique(['email','username'])
 
 export class User extends BaseEntity{
@@ -82,6 +82,7 @@ export class User extends BaseEntity{
   // add needChangePass
 
   @OneToMany(() => User, (user) => user.createdBy)
+  
   createdUsers!: User[];
 
   @OneToMany(() => User, (user) => user.modifiedBy)
@@ -90,9 +91,10 @@ export class User extends BaseEntity{
   @OneToMany(() => User, (user) => user.deletedBy)
   deletedUsers!: User[];
 
-  @ManyToOne(() => Position, (pos) => pos.users)
+  @ManyToOne(() => Position, (position) => position.users)
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
-    position!: Position | null;
+  position!: Position;
+
 
   @ManyToMany(() => Rule)
   @JoinTable({

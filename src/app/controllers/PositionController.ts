@@ -18,7 +18,7 @@ const service = new PositionService(Position);
 class PositionController extends BaseController<Position,IPosition,PositionService>{
 
   option: TypeormOptions = {
-    relations:[EntityType.DEPARTMENT,"createdBy"]
+    // relations:[EntityType.DEPARTMENT,"createdBy"]
   };
   constructor() {
     super(service,

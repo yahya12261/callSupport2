@@ -36,11 +36,11 @@ __decorate([
     __metadata("design:type", String)
 ], Department.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Position_1.Position, (pos) => pos.department),
+    (0, typeorm_1.OneToMany)(() => Position_1.Position, (position) => position.department),
     __metadata("design:type", Array)
 ], Department.prototype, "positions", void 0);
 exports.Department = Department = __decorate([
-    (0, typeorm_1.Entity)("departments"),
+    (0, typeorm_1.Entity)(),
     (0, typeorm_1.Unique)(['name']),
     __metadata("design:paramtypes", [])
 ], Department);

@@ -6,7 +6,7 @@ import { MethodTypes } from "../../enum/MethodTypes";
 import { EntityType } from "../../enum/EntityType";
 import { IRule } from "../Rule";
 
-@Entity("rules")
+@Entity()
 export class Rule extends BaseEntity{
 public updateEntity(entity: BaseEntity): void {
   throw new Error("Method not implemented.");

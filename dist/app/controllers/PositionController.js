@@ -26,7 +26,7 @@ class PositionController extends BaseController_1.BaseController {
             },
         ]);
         this.option = {
-            relations: [EntityType_1.EntityType.DEPARTMENT, "createdBy"]
+        // relations:[EntityType.DEPARTMENT,"createdBy"]
         };
         this.entity = EntityType_1.EntityType.POSITION;
         this.addPositionRule = (req, res, next) => {

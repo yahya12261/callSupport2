@@ -85,15 +85,18 @@ __decorate([
     __metadata("design:type", Object)
 ], BaseEntity.prototype, "note", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.createdBy),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.createdUsers),
+    (0, typeorm_1.JoinColumn)({ name: 'createdBy', referencedColumnName: 'id' }),
     __metadata("design:type", Object)
 ], BaseEntity.prototype, "createdBy", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.modifiedBy),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.modifiedUsers),
+    (0, typeorm_1.JoinColumn)({ name: 'modifiedBy', referencedColumnName: 'id' }),
     __metadata("design:type", Object)
 ], BaseEntity.prototype, "modifiedBy", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.deletedBy),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.deletedUsers),
+    (0, typeorm_1.JoinColumn)({ name: 'deletedBy', referencedColumnName: 'id' }),
     __metadata("design:type", Object)
 ], BaseEntity.prototype, "deletedBy", void 0);
 exports.BaseEntity = BaseEntity = __decorate([

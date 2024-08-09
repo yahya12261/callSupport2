@@ -19,7 +19,7 @@ import { EntityType } from '../../enum/EntityType';
 import { IPosition } from '../Position';
 import { Rule } from './Rule';
 
-@Entity("positions")
+@Entity()
 @Unique(['name'])
 export class Position extends BaseEntity{
 public updateEntity(entity: BaseEntity): void {
@@ -30,8 +30,8 @@ public updateEntity(entity: BaseEntity): void {
 public name!:String 
 
 @ManyToOne(() => Department, (department) => department.positions)
-  @JoinColumn({ name: 'departmentId', referencedColumnName: 'id' })
-  department!: Department;
+@JoinColumn({ name: 'departmentId', referencedColumnName: 'id' })
+department!: Department;
 
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
