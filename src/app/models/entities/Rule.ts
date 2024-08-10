@@ -46,6 +46,8 @@ public methodName!:String;
 })
 rules!: Rule[];
 
+@ManyToMany(() => Position, (pos) => pos.rules)
+  positionRules!: Position[];
 
 constructor(){
   super();

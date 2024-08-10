@@ -22,13 +22,15 @@ const service = new RuleService(Rule);
 class RuleController extends BaseController<Rule, IRule, RuleService> {
   option: TypeormOptions = {
     relations: {
-      // rules:true
+      // "rule_rules":true
       // "position.department":true
     },
     join: {
       alias: 'rule',
       innerJoinAndSelect: {
-        rules:"rules",
+        // rules:"rule.rules",
+        // apis:"rules.apiId",
+
         createdBy:'rule.createdBy',
         modifiedBy:'rule.modifiedBy',
         deletedBy:'rule.deletedBy',
@@ -74,11 +76,17 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
     this.createGridOptions(req);
     const ruleId = req.params.id;
     this.reqElm.search?.push({
-      name:"rules.pageId",
+      name:"id",
       operation : QueryOperator.EQUAL,
       type:FieldTypes.NUMBER,
       value:Number(ruleId)
     })
+    if (this.reqElm.join) {
+      this.reqElm.join.innerJoinAndSelect = {
+        ...this.reqElm.join.innerJoinAndSelect,
+        rules: "rule.rules"
+      };
+    }
     this.service.getAll(this.reqElm).then(({result})=>{
       if(result){
         const rulesRes = {currentPage:result.currentPage,data:result.data[0].rules ,pageSize:result.pageSize,total:result.total } as ResponseElement<Rule> 
@@ -94,6 +102,9 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
       }
       next(new ServerException("error occurred"));
     });
+  }
+  addNewProperty() {
+    
   }
   public addPageApi = (req: Request, res: Response, next: any) => {
     const pageId = req.body.pageId;

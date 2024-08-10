@@ -151,51 +151,55 @@ class RuleService extends BaseService<Rule, IRule> {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
   }
-  async getAllRulesByPageId(
-    requestElement: RequestElement,
-    pageId: number
-  ): Promise<{ result: ResponseElement<Rule> }> {
-    try {
-      const repository: Repository<Rule> = this.getRepository();
-      requestElement.page = requestElement.page ? requestElement.page : 1;
-      requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
-      const order: Record<string, "ASC" | "DESC"> = this.buildOrder(requestElement);
-      const whereConditions: Record<string, any> = {
-        // ...this.buildWhereConditions(requestElement),
-        id: pageId,
-      };
+  // async getAllRulesByPageId(
+  //   requestElement: RequestElement,
+  //   pageId: number
+  // ): Promise<{ result: ResponseElement<Rule> }> {
+  //   try {
+  //     const repository: Repository<Rule> = this.getRepository();
+  //     requestElement.page = requestElement.page ? requestElement.page : 1;
+  //     requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
+  //     const order: Record<string, "ASC" | "DESC"> = this.buildOrder(requestElement);
+  //     const whereConditions: Record<string, any> = {
+  //       ...this.buildWhereConditions(requestElement),
+  //       id: pageId,
+  //     };
   
-      const [data, total] = await repository.findAndCount({
-        relations: ["rules"],
-        where: whereConditions,
-        skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
-        take: requestElement.pageSize,
-        order,
-      });
+  //     const [data, total] = await repository.findAndCount({
+  //       // relations: ["rules"],
+
+  //       join:{alias:"rule_rules",leftJoinAndSelect:{
+
+  //       }}
+  //       where: whereConditions,
+  //       skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
+  //       take: requestElement.pageSize,
+  //       order,
+  //     });
   
-      const result: ResponseElement<Rule> = {
-        data: data,
-        currentPage: requestElement.page,
-        total: total,
-        pageSize: requestElement.pageSize,
-      };
+  //     const result: ResponseElement<Rule> = {
+  //       data: data,
+  //       currentPage: requestElement.page,
+  //       total: total,
+  //       pageSize: requestElement.pageSize,
+  //     };
   
-      return {
-        result,
-      };
-    } catch (e) {
-      console.error("Error fetching rules:", e);
-      const result: ResponseElement<Rule> = {
-        data: [],
-        currentPage: 0,
-        total: 0,
-        pageSize: requestElement.pageSize,
-      };
-      return {
-        result,
-      };
-    }
-  }
+  //     return {
+  //       result,
+  //     };
+  //   } catch (e) {
+  //     console.error("Error fetching rules:", e);
+  //     const result: ResponseElement<Rule> = {
+  //       data: [],
+  //       currentPage: 0,
+  //       total: 0,
+  //       pageSize: requestElement.pageSize,
+  //     };
+  //     return {
+  //       result,
+  //     };
+  //   }
+  // }
 
 
 

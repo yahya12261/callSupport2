@@ -36,7 +36,7 @@ department!: Department;
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
 
-@ManyToMany(() => Rule, (rule) => rule.rules)
+@ManyToMany(() => Rule, (rule) => rule.positionRules)
 @JoinTable({
   name: 'position_rule',
   joinColumn: {

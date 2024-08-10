@@ -225,7 +225,6 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
     }
   }
   
-  
   async getSelectOption(): Promise<T[]> {
     try {
       const repository: Repository<T> = this.getRepository();

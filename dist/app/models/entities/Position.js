@@ -48,7 +48,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Position.prototype, "users", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => Rule_1.Rule, (rule) => rule.rules),
+    (0, typeorm_1.ManyToMany)(() => Rule_1.Rule, (rule) => rule.positionRules),
     (0, typeorm_1.JoinTable)({
         name: 'position_rule',
         joinColumn: {

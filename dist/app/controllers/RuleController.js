@@ -40,13 +40,14 @@ class RuleController extends BaseController_1.BaseController {
         ]);
         this.option = {
             relations: {
-            // rules:true
+            // "rule_rules":true
             // "position.department":true
             },
             join: {
                 alias: 'rule',
                 innerJoinAndSelect: {
-                    rules: "rules",
+                    // rules:"rule.rules",
+                    // apis:"rules.apiId",
                     createdBy: 'rule.createdBy',
                     modifiedBy: 'rule.modifiedBy',
                     deletedBy: 'rule.deletedBy',
@@ -66,11 +67,14 @@ class RuleController extends BaseController_1.BaseController {
             this.createGridOptions(req);
             const ruleId = req.params.id;
             (_a = this.reqElm.search) === null || _a === void 0 ? void 0 : _a.push({
-                name: "rules.pageId",
+                name: "id",
                 operation: WhereOperations_1.QueryOperator.EQUAL,
                 type: FieldTypes_1.FieldTypes.NUMBER,
                 value: Number(ruleId)
             });
+            if (this.reqElm.join) {
+                this.reqElm.join.innerJoinAndSelect = Object.assign(Object.assign({}, this.reqElm.join.innerJoinAndSelect), { rules: "rule.rules" });
+            }
             this.service.getAll(this.reqElm).then(({ result }) => {
                 if (result) {
                     const rulesRes = { currentPage: result.currentPage, data: result.data[0].rules, pageSize: result.pageSize, total: result.total };
@@ -115,6 +119,8 @@ class RuleController extends BaseController_1.BaseController {
                 next(new custom_errors_1.ServerException("error occurred"));
             });
         };
+    }
+    addNewProperty() {
     }
 }
 exports.default = RuleController;

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rule = void 0;
 const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("./baseEntity");
+const Position_1 = require("./Position");
 const MethodTypes_1 = require("../../enum/MethodTypes");
 const EntityType_1 = require("../../enum/EntityType");
 let Rule = class Rule extends baseEntity_1.BaseEntity {
@@ -76,6 +77,10 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Rule.prototype, "rules", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Position_1.Position, (pos) => pos.rules),
+    __metadata("design:type", Array)
+], Rule.prototype, "positionRules", void 0);
 exports.Rule = Rule = __decorate([
     (0, typeorm_1.Entity)(),
     __metadata("design:paramtypes", [])
