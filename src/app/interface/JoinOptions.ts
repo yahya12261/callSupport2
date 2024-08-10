@@ -1,7 +1,7 @@
 
 export interface JoinOptions {
     alias: string;
-    leftJoinAndSelect: {
+    innerJoinAndSelect: {
       [key: string]: string;
     };
   }

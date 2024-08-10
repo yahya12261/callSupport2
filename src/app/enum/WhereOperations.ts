@@ -59,4 +59,37 @@ export enum QueryOperator {
       default:
         return QueryOperator.EQUAL;
     }
+
+   
+  }
+
+  export function getComparisonSymbol(caseType:string) {
+    switch (caseType) {
+      case "not":
+        return "NOT";
+      case "lessThan":
+        return "<";
+      case "lessThanOrEqual":
+        return "<=";
+      case "moreThan":
+        return ">";
+      case "moreThanOrEqual":
+        return ">=";
+      case "equal":
+        return "=";
+      case "between":
+        return "BETWEEN";
+      case "in":
+        return "IN";
+      case "any":
+        return "IN";
+      case "isNull":
+        return "IS NULL";
+      case "like":
+        return "LIKE";
+      case "raw":
+        return "";
+      default:
+        break;
+    }
   }

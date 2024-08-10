@@ -128,6 +128,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
       this.reqElm.relations = this.option.relations;
       this.fillSearchableFieldFromRequest(req)
       this.reqElm.search = this.searchFields;
+      this.reqElm.join = this.option.join;
         this.service.getAll(this.reqElm).then(({result})=>{
           if(result){
             this.serializeFields(result.data);
@@ -156,7 +157,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
         }
       }
       protected fillSearchableFieldFromRequest(req: Request): void {
-        console.log( this.searchFields)
+        console.log(  this.searchFields)
         this.searchFields=this.getDefaultSearchableFields();
         this.searchFields.forEach((field) => {
           const fieldName = field.name;
@@ -165,7 +166,6 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           // Check if the field exists in the request query
           if (req.query[fieldName] !== undefined) {
             // Ensure the value is a string
-            if(!field.queryConfig){
             if (Array.isArray(req.query[fieldName])) {
               field.value = req.query[fieldName][0] as string;
               
@@ -173,20 +173,6 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
               field.value = req.query[fieldName] as string;
             }
             field.value = this.valueToType(field.value,field.type);
-          }else{
-            if(field.queryConfig.whereValues&&Array.isArray(field.queryConfig.whereValues)){
-              if (Array.isArray(req.query[fieldName])) {
-                field.value = req.query[fieldName][0] as string;
-                
-              } else {
-                field.value = req.query[fieldName] as string;
-              }
-              field.value = this.valueToType(field.value,field.type);
-              field.queryConfig.whereValues.push(field.value);
-            }
-            
-          }
-      
           // Check if the operation exists in the request query
           if (req.query[operationName] !== undefined) {
             field.operation = getQueryOperatorFromString(req.query[operationName] as string) ;
@@ -194,6 +180,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           if(field.value&&field.type === FieldTypes.DATE&&field.operation=== QueryOperator.EQUAL){
             field.operation = QueryOperator.BETWEEN;
             field.value =this.updateFieldValue(field.value);
+
           }
    }
         });
@@ -281,7 +268,8 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
         // Format the startDate and endDate in the desired format
         const startDateTime = startDate.toISOString().replace('T', ' ').slice(0, 24);
         const endDateTime = endDate.toISOString().replace('T', ' ').slice(0, 24);
-      
+        console.log("startDateTime",startDateTime);
+        console.log("endDateTime",endDateTime);
         // Return the new value in the desired format
         return `${startDateTime},${endDateTime}`;
       }

@@ -26,16 +26,19 @@ const ruleController = new RuleController();
 class UserController extends BaseController<User, IUser, UserService>{
   option: TypeormOptions = {
     relations: {
-      position:{
-        eager:true,        
+      // position: true,
+      // "position.department":true
+    },
+    join: {
+      alias: 'user',
+      innerJoinAndSelect: {
+        position: 'user.position',
+        department: 'position.department',
+        createdBy:'user.createdBy',
+        modifiedBy:'user.modifiedBy',
+        deletedBy:'user.deletedBy',
       },
-      "position.department": {
-        eager: true,
-      },
-
-    }
-    
-
+    },
   };
   entity: EntityType = EntityType.USER;
 
@@ -75,7 +78,7 @@ class UserController extends BaseController<User, IUser, UserService>{
             type: FieldTypes.TEXT
           },      
           {
-            name: 'position.department.id',
+            name: 'department.id',
             type: FieldTypes.NUMBER
           },
           // {

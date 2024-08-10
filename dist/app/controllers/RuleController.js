@@ -39,7 +39,20 @@ class RuleController extends BaseController_1.BaseController {
             },
         ]);
         this.option = {
-        // relations: ["createdBy"],
+            relations: {
+            // position: true,
+            // "position.department":true
+            },
+            join: {
+                alias: 'rule',
+                innerJoinAndSelect: {
+                    rules_api: 'rule.rules',
+                    apis: 'rules_api',
+                    createdBy: 'rule.createdBy',
+                    modifiedBy: 'rule.modifiedBy',
+                    deletedBy: 'rule.deletedBy',
+                },
+            },
         };
         this.entity = EntityType_1.EntityType.PAGE;
         this.addEndPointsRule = (endPoint) => {

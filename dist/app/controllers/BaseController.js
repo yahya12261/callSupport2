@@ -106,6 +106,7 @@ class BaseController {
             this.reqElm.relations = this.option.relations;
             this.fillSearchableFieldFromRequest(req);
             this.reqElm.search = this.searchFields;
+            this.reqElm.join = this.option.join;
             this.service.getAll(this.reqElm).then(({ result }) => {
                 if (result) {
                     this.serializeFields(result.data);
@@ -149,27 +150,13 @@ class BaseController {
             // Check if the field exists in the request query
             if (req.query[fieldName] !== undefined) {
                 // Ensure the value is a string
-                if (!field.queryConfig) {
-                    if (Array.isArray(req.query[fieldName])) {
-                        field.value = req.query[fieldName][0];
-                    }
-                    else {
-                        field.value = req.query[fieldName];
-                    }
-                    field.value = this.valueToType(field.value, field.type);
+                if (Array.isArray(req.query[fieldName])) {
+                    field.value = req.query[fieldName][0];
                 }
                 else {
-                    if (field.queryConfig.whereValues && Array.isArray(field.queryConfig.whereValues)) {
-                        if (Array.isArray(req.query[fieldName])) {
-                            field.value = req.query[fieldName][0];
-                        }
-                        else {
-                            field.value = req.query[fieldName];
-                        }
-                        field.value = this.valueToType(field.value, field.type);
-                        field.queryConfig.whereValues.push(field.value);
-                    }
+                    field.value = req.query[fieldName];
                 }
+                field.value = this.valueToType(field.value, field.type);
                 // Check if the operation exists in the request query
                 if (req.query[operationName] !== undefined) {
                     field.operation = (0, WhereOperations_1.getQueryOperatorFromString)(req.query[operationName]);
@@ -259,6 +246,8 @@ class BaseController {
         // Format the startDate and endDate in the desired format
         const startDateTime = startDate.toISOString().replace('T', ' ').slice(0, 24);
         const endDateTime = endDate.toISOString().replace('T', ' ').slice(0, 24);
+        console.log("startDateTime", startDateTime);
+        console.log("endDateTime", endDateTime);
         // Return the new value in the desired format
         return `${startDateTime},${endDateTime}`;
     }

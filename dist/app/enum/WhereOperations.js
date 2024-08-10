@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryOperator = void 0;
 exports.getQueryOperatorFromString = getQueryOperatorFromString;
+exports.getComparisonSymbol = getComparisonSymbol;
 var QueryOperator;
 (function (QueryOperator) {
     QueryOperator["EQUAL"] = "=";
@@ -63,6 +64,36 @@ function getQueryOperatorFromString(operatorString) {
             return QueryOperator.IS_NOT;
         default:
             return QueryOperator.EQUAL;
+    }
+}
+function getComparisonSymbol(caseType) {
+    switch (caseType) {
+        case "not":
+            return "NOT";
+        case "lessThan":
+            return "<";
+        case "lessThanOrEqual":
+            return "<=";
+        case "moreThan":
+            return ">";
+        case "moreThanOrEqual":
+            return ">=";
+        case "equal":
+            return "=";
+        case "between":
+            return "BETWEEN";
+        case "in":
+            return "IN";
+        case "any":
+            return "IN";
+        case "isNull":
+            return "IS NULL";
+        case "like":
+            return "LIKE";
+        case "raw":
+            return "";
+        default:
+            break;
     }
 }
 //# sourceMappingURL=WhereOperations.js.map

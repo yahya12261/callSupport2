@@ -15,7 +15,15 @@ class DepartmentController extends BaseController_1.BaseController {
             },
         ]);
         this.option = {
-        // relations:["createdBy"]
+            relations: {},
+            join: {
+                alias: 'department',
+                innerJoinAndSelect: {
+                    createdBy: 'department.createdBy',
+                    modifiedBy: 'department.modifiedBy',
+                    deletedBy: 'department.deletedBy',
+                },
+            },
         };
         this.entity = EntityType_1.EntityType.DEPARTMENT;
     }

@@ -26,7 +26,16 @@ class PositionController extends BaseController_1.BaseController {
             },
         ]);
         this.option = {
-        // relations:[EntityType.DEPARTMENT,"createdBy"]
+            relations: {},
+            join: {
+                alias: 'position',
+                innerJoinAndSelect: {
+                    department: 'position.department',
+                    createdBy: 'position.createdBy',
+                    modifiedBy: 'position.modifiedBy',
+                    deletedBy: 'position.deletedBy',
+                },
+            },
         };
         this.entity = EntityType_1.EntityType.POSITION;
         this.addPositionRule = (req, res, next) => {

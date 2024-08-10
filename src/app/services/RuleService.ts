@@ -161,7 +161,7 @@ class RuleService extends BaseService<Rule, IRule> {
       requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
       const order: Record<string, "ASC" | "DESC"> = this.buildOrder(requestElement);
       const whereConditions: Record<string, any> = {
-        ...this.buildWhereConditions(requestElement),
+        // ...this.buildWhereConditions(requestElement),
         id: pageId,
       };
   

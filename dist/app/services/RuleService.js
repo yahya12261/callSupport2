@@ -155,9 +155,12 @@ class RuleService extends BaseService_1.default {
                 requestElement.page = requestElement.page ? requestElement.page : 1;
                 requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
                 const order = this.buildOrder(requestElement);
-                const whereConditions = Object.assign(Object.assign({}, this.buildWhereConditions(requestElement)), { id: pageId });
+                const whereConditions = {
+                    // ...this.buildWhereConditions(requestElement),
+                    id: pageId,
+                };
                 const [data, total] = yield repository.findAndCount({
-                    relations: ["rules"],
+                    // relations: ["rule"],
                     where: whereConditions,
                     skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
                     take: requestElement.pageSize,

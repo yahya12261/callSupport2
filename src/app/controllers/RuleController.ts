@@ -15,14 +15,26 @@ import { IEndPoints } from "../interface/IEndPoints";
 import { FieldTypes } from "../enum/FieldTypes";
 import { validateOrderOperation } from "../enum/OrderByOperation";
 import { ResponseElement } from "../interface/ResponseElement";
+import { JoinOptions } from "../interface/JoinOptions";
 const service = new RuleService(Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController<Rule, IRule, RuleService> {
   option: TypeormOptions = {
-    // relations: ["createdBy"],
+    relations: {
+      // position: true,
+      // "position.department":true
+    },
+    join: {
+      alias: 'rule',
+      innerJoinAndSelect: {
+        createdBy:'rule.createdBy',
+        modifiedBy:'rule.modifiedBy',
+        deletedBy:'rule.deletedBy',
+      },
+    },
   };
   entity: EntityType = EntityType.PAGE;
-
+  
   constructor() {
       super(service,
         [

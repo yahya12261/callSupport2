@@ -56,7 +56,7 @@ class UserController extends BaseController_1.BaseController {
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: 'position.department.id',
+                name: 'department.id',
                 type: FieldTypes_1.FieldTypes.NUMBER
             },
             // {
@@ -73,13 +73,19 @@ class UserController extends BaseController_1.BaseController {
         ]);
         this.option = {
             relations: {
-                position: {
-                    eager: true,
+            // position: true,
+            // "position.department":true
+            },
+            join: {
+                alias: 'user',
+                innerJoinAndSelect: {
+                    position: 'user.position',
+                    department: 'position.department',
+                    createdBy: 'user.createdBy',
+                    modifiedBy: 'user.modifiedBy',
+                    deletedBy: 'user.deletedBy',
                 },
-                "position.department": {
-                    eager: true,
-                },
-            }
+            },
         };
         this.entity = EntityType_1.EntityType.USER;
         this.getAll = (req, res, next) => {
