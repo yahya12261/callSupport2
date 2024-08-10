@@ -99,14 +99,7 @@ class BaseController {
             res.json(response_1.default.success(this.getDefaultSearchableFields(), ""));
         };
         this.getAll = (req, res, next) => {
-            this.reqElm.page = Number(req.query.page);
-            this.reqElm.pageSize = Number(req.query.pageSize);
-            this.reqElm.orderBy = req.query.orderBy ? String(req.query.orderBy) : "createdAt";
-            this.reqElm.order = req.query.order ? (0, OrderByOperation_1.validateOrderOperation)(String(req.query.order)) : "DESC";
-            this.reqElm.relations = this.option.relations;
-            this.fillSearchableFieldFromRequest(req);
-            this.reqElm.search = this.searchFields;
-            this.reqElm.join = this.option.join;
+            this.createGridOptions(req);
             this.service.getAll(this.reqElm).then(({ result }) => {
                 if (result) {
                     this.serializeFields(result.data);
@@ -233,6 +226,16 @@ class BaseController {
             return rest;
         }) : [];
         return defaultFields.concat(filteredChildSearchableFields);
+    }
+    createGridOptions(req) {
+        this.reqElm.page = Number(req.query.page);
+        this.reqElm.pageSize = Number(req.query.pageSize);
+        this.reqElm.orderBy = req.query.orderBy ? String(req.query.orderBy) : "createdAt";
+        this.reqElm.order = req.query.order ? (0, OrderByOperation_1.validateOrderOperation)(String(req.query.order)) : "DESC";
+        this.reqElm.relations = this.option.relations;
+        this.fillSearchableFieldFromRequest(req);
+        this.reqElm.search = this.searchFields;
+        this.reqElm.join = this.option.join;
     }
     updateFieldValue(value) {
         // Split the field.value by the comma

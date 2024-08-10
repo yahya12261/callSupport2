@@ -54,7 +54,7 @@ class PositionService extends BaseService<Position,IPosition> {
   // }
   async addPositionRule(positionId: number, ruleId: number): Promise<void> {
     try {
-      // Check if the (pageId, apiId) combination already exists in the api_page table
+      // Check if the (pageId, apiId) combination already exists in the rule_rules table
       const existingRelation = await getRepository("position_rule").findOne({
         where: { positionId, ruleId },
       });

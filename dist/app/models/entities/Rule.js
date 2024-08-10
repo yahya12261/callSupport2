@@ -64,7 +64,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Rule, (rule) => rule.rules),
     (0, typeorm_1.JoinTable)({
-        name: 'api_page',
+        name: 'rule_rules',
         joinColumn: {
             name: 'pageId',
             referencedColumnName: 'id'

@@ -58,7 +58,7 @@ class PositionService extends BaseService_1.default {
     addPositionRule(positionId, ruleId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Check if the (pageId, apiId) combination already exists in the api_page table
+                // Check if the (pageId, apiId) combination already exists in the rule_rules table
                 const existingRelation = yield (0, typeorm_1.getRepository)("position_rule").findOne({
                     where: { positionId, ruleId },
                 });

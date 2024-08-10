@@ -16,17 +16,19 @@ import { FieldTypes } from "../enum/FieldTypes";
 import { validateOrderOperation } from "../enum/OrderByOperation";
 import { ResponseElement } from "../interface/ResponseElement";
 import { JoinOptions } from "../interface/JoinOptions";
+import { QueryOperator } from "../enum/WhereOperations";
 const service = new RuleService(Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController<Rule, IRule, RuleService> {
   option: TypeormOptions = {
     relations: {
-      // position: true,
+      // rules:true
       // "position.department":true
     },
     join: {
       alias: 'rule',
       innerJoinAndSelect: {
+        rules:"rules",
         createdBy:'rule.createdBy',
         modifiedBy:'rule.modifiedBy',
         deletedBy:'rule.deletedBy',
@@ -69,19 +71,19 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
   })
   }
   public getPagesApis = (req: Request, res: Response, next: any) => {
-    this.reqElm.page = Number(req.query.page);
-    this.reqElm.pageSize = Number(req.query.pageSize);
-    this.reqElm.orderBy = req.query.orderBy?String(req.query.orderBy):"createdAt";
-    this.reqElm.order = req.query.order?validateOrderOperation(String(req.query.order)):"DESC";
-    this.reqElm.relations = this.option.relations;
+    this.createGridOptions(req);
     const ruleId = req.params.id;
-    this.fillSearchableFieldFromRequest(req)
-    this.reqElm.search = this.searchFields;
-    this.service.getAllRulesByPageId(this.reqElm,Number(ruleId)).then(({result})=>{
+    this.reqElm.search?.push({
+      name:"rules.pageId",
+      operation : QueryOperator.EQUAL,
+      type:FieldTypes.NUMBER,
+      value:Number(ruleId)
+    })
+    this.service.getAll(this.reqElm).then(({result})=>{
       if(result){
         const rulesRes = {currentPage:result.currentPage,data:result.data[0].rules ,pageSize:result.pageSize,total:result.total } as ResponseElement<Rule> 
         this.serializeFields(result.data);
-       this.searchFields = this.getDefaultSearchableFields();
+        this.searchFields = this.getDefaultSearchableFields();
         res.json(Template.success(rulesRes, ""));
       }
     })

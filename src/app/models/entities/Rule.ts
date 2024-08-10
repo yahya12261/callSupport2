@@ -34,7 +34,7 @@ public methodName!:String;
 
 @ManyToMany(() => Rule, (rule) => rule.rules)
 @JoinTable({
-  name: 'api_page',
+  name: 'rule_rules',
   joinColumn: {
     name: 'pageId',
     referencedColumnName: 'id'

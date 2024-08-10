@@ -11,7 +11,7 @@ const custom_errors_1 = require("../../lib/custom-errors");
 const BaseController_1 = require("./BaseController");
 const EntityType_1 = require("../enum/EntityType");
 const FieldTypes_1 = require("../enum/FieldTypes");
-const OrderByOperation_1 = require("../enum/OrderByOperation");
+const WhereOperations_1 = require("../enum/WhereOperations");
 const service = new RuleService_1.RuleService(Rule_1.Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController_1.BaseController {
@@ -40,14 +40,13 @@ class RuleController extends BaseController_1.BaseController {
         ]);
         this.option = {
             relations: {
-            // position: true,
+            // rules:true
             // "position.department":true
             },
             join: {
                 alias: 'rule',
                 innerJoinAndSelect: {
-                    rules_api: 'rule.rules',
-                    apis: 'rules_api',
+                    rules: "rules",
                     createdBy: 'rule.createdBy',
                     modifiedBy: 'rule.modifiedBy',
                     deletedBy: 'rule.deletedBy',
@@ -63,15 +62,16 @@ class RuleController extends BaseController_1.BaseController {
             });
         };
         this.getPagesApis = (req, res, next) => {
-            this.reqElm.page = Number(req.query.page);
-            this.reqElm.pageSize = Number(req.query.pageSize);
-            this.reqElm.orderBy = req.query.orderBy ? String(req.query.orderBy) : "createdAt";
-            this.reqElm.order = req.query.order ? (0, OrderByOperation_1.validateOrderOperation)(String(req.query.order)) : "DESC";
-            this.reqElm.relations = this.option.relations;
+            var _a;
+            this.createGridOptions(req);
             const ruleId = req.params.id;
-            this.fillSearchableFieldFromRequest(req);
-            this.reqElm.search = this.searchFields;
-            this.service.getAllRulesByPageId(this.reqElm, Number(ruleId)).then(({ result }) => {
+            (_a = this.reqElm.search) === null || _a === void 0 ? void 0 : _a.push({
+                name: "rules.pageId",
+                operation: WhereOperations_1.QueryOperator.EQUAL,
+                type: FieldTypes_1.FieldTypes.NUMBER,
+                value: Number(ruleId)
+            });
+            this.service.getAll(this.reqElm).then(({ result }) => {
                 if (result) {
                     const rulesRes = { currentPage: result.currentPage, data: result.data[0].rules, pageSize: result.pageSize, total: result.total };
                     this.serializeFields(result.data);

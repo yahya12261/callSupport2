@@ -120,14 +120,14 @@ class RuleService extends BaseService<Rule, IRule> {
   // }
   async deleteApiFromPage(pageId: number, apiId: number): Promise<void> {
     try {
-      // Check if the (pageId, apiId) combination exists in the api_page table
-      // const existingRelation = await getRepository("api_page").findOne({
+      // Check if the (pageId, apiId) combination exists in the rule_rules table
+      // const existingRelation = await getRepository("rule_rules").findOne({
       //   where: { pageId:pageId, apiId: apiId },
       // });
       
       // if (existingRelation) {
-        // Delete the record from the api_page table
-        await getRepository("api_page").delete({ pageId, apiId });
+        // Delete the record from the rule_rules table
+        await getRepository("rule_rules").delete({ pageId, apiId });
 
       // } else {
       //   // If the record doesn't exist, throw an error
@@ -139,13 +139,13 @@ class RuleService extends BaseService<Rule, IRule> {
   }
   async addPageApiRule(pageId: number, apiId: number): Promise<void> {
     try {
-      // Check if the (pageId, apiId) combination already exists in the api_page table
-      const existingRelation = await getRepository("api_page").findOne({
+      // Check if the (pageId, apiId) combination already exists in the rule_rules table
+      const existingRelation = await getRepository("rule_rules").findOne({
         where: { pageId, apiId },
       });
   
       if (!existingRelation) {
-        await getRepository("api_page").insert({ pageId, apiId });
+        await getRepository("rule_rules").insert({ pageId, apiId });
       }
     } catch (err) {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));

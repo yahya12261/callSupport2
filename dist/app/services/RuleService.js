@@ -115,13 +115,13 @@ class RuleService extends BaseService_1.default {
     deleteApiFromPage(pageId, apiId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Check if the (pageId, apiId) combination exists in the api_page table
-                // const existingRelation = await getRepository("api_page").findOne({
+                // Check if the (pageId, apiId) combination exists in the rule_rules table
+                // const existingRelation = await getRepository("rule_rules").findOne({
                 //   where: { pageId:pageId, apiId: apiId },
                 // });
                 // if (existingRelation) {
-                // Delete the record from the api_page table
-                yield (0, typeorm_1.getRepository)("api_page").delete({ pageId, apiId });
+                // Delete the record from the rule_rules table
+                yield (0, typeorm_1.getRepository)("rule_rules").delete({ pageId, apiId });
                 // } else {
                 //   // If the record doesn't exist, throw an error
                 //   return Promise.reject(new APIError("Relation not found", Err.UndefinedCode));
@@ -135,12 +135,12 @@ class RuleService extends BaseService_1.default {
     addPageApiRule(pageId, apiId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Check if the (pageId, apiId) combination already exists in the api_page table
-                const existingRelation = yield (0, typeorm_1.getRepository)("api_page").findOne({
+                // Check if the (pageId, apiId) combination already exists in the rule_rules table
+                const existingRelation = yield (0, typeorm_1.getRepository)("rule_rules").findOne({
                     where: { pageId, apiId },
                 });
                 if (!existingRelation) {
-                    yield (0, typeorm_1.getRepository)("api_page").insert({ pageId, apiId });
+                    yield (0, typeorm_1.getRepository)("rule_rules").insert({ pageId, apiId });
                 }
             }
             catch (err) {
@@ -160,7 +160,7 @@ class RuleService extends BaseService_1.default {
                     id: pageId,
                 };
                 const [data, total] = yield repository.findAndCount({
-                    // relations: ["rule"],
+                    relations: ["rules"],
                     where: whereConditions,
                     skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
                     take: requestElement.pageSize,
