@@ -12,6 +12,7 @@ const BaseController_1 = require("./BaseController");
 const EntityType_1 = require("../enum/EntityType");
 const FieldTypes_1 = require("../enum/FieldTypes");
 const WhereOperations_1 = require("../enum/WhereOperations");
+const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 const service = new RuleService_1.RuleService(Rule_1.Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController_1.BaseController {
@@ -36,6 +37,10 @@ class RuleController extends BaseController_1.BaseController {
             {
                 name: 'methodName',
                 type: FieldTypes_1.FieldTypes.TEXT
+            },
+            {
+                name: 'isDefault',
+                type: FieldTypes_1.FieldTypes.NUMBER
             },
         ]);
         this.option = {
@@ -88,7 +93,7 @@ class RuleController extends BaseController_1.BaseController {
                 if (err.ErrorID == 2110) {
                     next(new apierror_1.default(err.message, err.ErrorID));
                 }
-                next(new custom_errors_1.ServerException("error occurred"));
+                next(new apierror_1.default(err.message, err.ErrorID));
             });
         };
         this.addPageApi = (req, res, next) => {
@@ -102,7 +107,7 @@ class RuleController extends BaseController_1.BaseController {
                 if (err.ErrorID == 2110) {
                     next(new apierror_1.default(err.message, err.ErrorID));
                 }
-                next(new custom_errors_1.ServerException("error occurred"));
+                next(new apierror_1.default(err.message, err.ErrorID));
             });
         };
         this.deletePageApi = (req, res, next) => {
@@ -119,8 +124,31 @@ class RuleController extends BaseController_1.BaseController {
                 next(new custom_errors_1.ServerException("error occurred"));
             });
         };
+        this.makeUnmakeDefault = (req, res, next) => {
+            const rule = req.body;
+            if (!rule || !rule.uuid) {
+                next(new apierror_1.default("خطأ في الطلب", 0));
+            }
+            service.makeUnMakeDefaultRule(rule.uuid).then(() => {
+                res.json(response_1.default.success("تمت العملية بنجاح", ''));
+            }, error => {
+                next(new apierror_1.default(error.message, 0));
+            });
+        };
     }
     addNewProperty() {
+    }
+    getRulesByType(type) {
+        if (!type) {
+            return Promise.reject(new apierror_1.default("خطأ في الطلب", errorcode_1.default.UndefinedCode));
+        }
+        console.log("rule cntrl", type);
+        service.getRuleByType(type).then((rules) => {
+            return rules;
+        }).catch((err) => {
+            return Promise.reject(new apierror_1.default(err.message, errorcode_1.default.UndefinedCode));
+        });
+        return Promise.resolve([]);
     }
 }
 exports.default = RuleController;

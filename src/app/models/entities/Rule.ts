@@ -46,6 +46,10 @@ public methodName!:String;
 })
 rules!: Rule[];
 
+@Column({default:false})
+public isDefault!:boolean;
+
+
 @ManyToMany(() => Position, (pos) => pos.rules)
   positionRules!: Position[];
 
@@ -53,15 +57,14 @@ constructor(){
   super();
   this.type = EntityType.PAGE;
 }
-
 public fillFromModel(modal:IRule){
   this.fillEntityFromModel(modal);
   this.name = modal.name;
   this.code = modal.code;
   this.methodName = modal.methodName;
   this.methodType = modal.methodType; 
+  this.isDefault = modal.isDefault;
 }
-
 public addRules(rule: Rule) {
   // Check if the rule already exists in the rules array
   if (!this.rules.some((r) => r.id === rule.id)) {

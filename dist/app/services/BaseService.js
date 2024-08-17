@@ -20,6 +20,20 @@ class BaseService {
     getById(id) {
         throw new Error("Method not implemented.");
     }
+    findByUUID(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                const object = yield repository.findOne({
+                    where: { uuid: uuid },
+                });
+                return object;
+            }
+            catch (e) {
+                return Promise.reject(new apierror_1.default(e.message, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
     getRepository() {
         return (0, typeorm_1.getRepository)(this.getEntityClass());
     }
@@ -130,7 +144,9 @@ class BaseService {
             try {
                 const repository = this.getRepository();
                 requestElement.page = requestElement.page ? requestElement.page : 1;
-                requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
+                requestElement.pageSize = requestElement.pageSize
+                    ? requestElement.pageSize
+                    : 20;
                 const order = this.buildOrder(requestElement);
                 console.log(order);
                 console.log(requestElement.join);
@@ -142,22 +158,26 @@ class BaseService {
                 Object.keys(whereConditions).forEach((key) => {
                     const condition = whereConditions[key];
                     if ((0, WhereOperations_1.getComparisonSymbol)(condition._type) === "BETWEEN") {
-                        if (Array.isArray(condition._value) && condition._value.length === 2) {
+                        if (Array.isArray(condition._value) &&
+                            condition._value.length === 2) {
                             queryBuilder.andWhere(`${entity}.${key} ${(0, WhereOperations_1.getComparisonSymbol)(condition._type)} :val1 AND :val2`, {
-                                ["val1"]: condition._value[0], ["val2"]: condition._value[1],
+                                ["val1"]: condition._value[0],
+                                ["val2"]: condition._value[1],
                             });
                         }
                         else {
                             queryBuilder.andWhere(`${entity}.${key} ${(0, WhereOperations_1.getComparisonSymbol)(condition._type)} :${key}`, { [key]: condition._value });
                         }
                     }
-                    else if (typeof condition === 'object') {
+                    else if (typeof condition === "object") {
                         Object.keys(condition).forEach((nestedKey) => {
                             queryBuilder.andWhere(`${entity}.${key}.${nestedKey} = :${key}_${nestedKey}`, { [`${key}_${nestedKey}`]: condition[nestedKey] });
                         });
                     }
                     else {
-                        queryBuilder.andWhere(`${entity}.${key} = :${key}`, { [key]: condition });
+                        queryBuilder.andWhere(`${entity}.${key} = :${key}`, {
+                            [key]: condition,
+                        });
                     }
                 });
                 // Apply order
@@ -279,7 +299,9 @@ class BaseService {
                                     break;
                                 case WhereOperations_1.QueryOperator.BETWEEN:
                                     console.log(value);
-                                    const [start, end] = value.split(',').map((v) => v.trim());
+                                    const [start, end] = value
+                                        .split(",")
+                                        .map((v) => v.trim());
                                     currentConditions[fieldName] = (0, typeorm_1.Between)(start, end);
                                     break;
                                 case WhereOperations_1.QueryOperator.NOT_BETWEEN:

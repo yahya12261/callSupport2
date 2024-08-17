@@ -6,6 +6,7 @@ export interface CustomeRequest extends Request {
     createdUser?: User;
     updatedUser?: User;
     deletedUser?: User;
+    selectedUser?:User;
     Action?:EndPointsActionsEnum;
 
 

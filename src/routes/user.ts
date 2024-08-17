@@ -15,9 +15,19 @@ const Controller = new UserController();
 // Get all users
 router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getAll);
 
+router.get('/getUserRules/:id',EndPointsActions(EndPointsActionsEnum.SELECT),authMiddleware, Controller.getUserRules);
+
+router.get('/getPermissions',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getPermissions);
+
 router.post('/', EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware,upload.none(), UserController.create);
 
 router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
+
+router.patch('/change-password',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), UserController.changePassword);
+
+router.patch('/activate-deactivate-change-password',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), UserController.activeDeactivateChangePassword);
+
+router.patch('/activate-deactivate',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), UserController.activeDeactivate);
 
 router.post('/login', upload.none(), UserController.login);
 
@@ -25,6 +35,8 @@ router.post('/loginByOTP', upload.none(), UserController.loginByOTP);
 
 router.post('/resetRules',upload.none(),UserController.resetUserRules);
 
-router.post('/addRule',upload.none(),UserController.addUserRule);
+router.post('/add-rule',EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware,upload.none(),Controller.addUserRule);
+
+router.post('/delete-rule',EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware,upload.none(),Controller.deleteUserRule);
 
 export default router;

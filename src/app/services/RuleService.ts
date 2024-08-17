@@ -120,19 +120,7 @@ class RuleService extends BaseService<Rule, IRule> {
   // }
   async deleteApiFromPage(pageId: number, apiId: number): Promise<void> {
     try {
-      // Check if the (pageId, apiId) combination exists in the rule_rules table
-      // const existingRelation = await getRepository("rule_rules").findOne({
-      //   where: { pageId:pageId, apiId: apiId },
-      // });
-      
-      // if (existingRelation) {
-        // Delete the record from the rule_rules table
         await getRepository("rule_rules").delete({ pageId, apiId });
-
-      // } else {
-      //   // If the record doesn't exist, throw an error
-      //   return Promise.reject(new APIError("Relation not found", Err.UndefinedCode));
-      // }
     } catch (err) {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
@@ -200,7 +188,45 @@ class RuleService extends BaseService<Rule, IRule> {
   //     };
   //   }
   // }
-
+  async makeUnMakeDefaultRule(uuid:string):Promise<void>{
+    const repository = this.getRepository();
+    try{
+      const rule = await this.findByUUID(uuid);
+      if(!rule){
+        return Promise.reject(new APIError("الصلاحية غير موجودة", Err.UndefinedCode));
+      }
+      rule.isDefault = !rule.isDefault;
+      await repository.save(rule as Rule); 
+    }catch(err){
+      return Promise.reject(new APIError("خطأ", Err.UndefinedCode));
+    }
+    
+  }
+  async getDefaultRules():Promise<Rule[]>{
+    const repository = this.getRepository();
+    try{
+      var rules = await repository.find({
+        where:{isDefault:true}
+      });
+      return rules;
+    }catch(err){
+      return Promise.reject(new APIError("خطأ", Err.UndefinedCode));
+    }
+  }
+  async getRuleByType(type:EntityType):Promise<Rule[]>{
+    try{
+      if(!type||!(Object.is(EntityType.PAGE,type)||Object.is(EntityType.API,type)||Object.is(EntityType.COMPONENT,type))){
+        return Promise.reject(new APIError("خطأ في الطلب", Err.UndefinedCode));
+      }
+       const rules = await this.getRepository().find({
+        where:{type:type}
+       });
+      // console.log("service",rules)
+       return rules;
+    }catch(e){
+      return Promise.reject(new APIError("an error : " + e, Err.UndefinedCode));
+    }
+  }
 
 
   

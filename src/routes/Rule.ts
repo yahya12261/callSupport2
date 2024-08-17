@@ -18,6 +18,8 @@ router.get('/scheme',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddlewa
 
 router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
 
+router.patch('/mk-unmk-default',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.makeUnmakeDefault);
+
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
 
 router.get('/getPagesApis/:id',EndPointsActions(EndPointsActionsEnum.SELECT),authMiddleware, Controller.getPagesApis);

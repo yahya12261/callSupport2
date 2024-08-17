@@ -21,27 +21,39 @@ const logger_1 = require("../../lib/logger");
 const EmailService_1 = require("../extra/EmailService");
 const JWTService_1 = require("../extra/JWTService");
 const Position_1 = require("../models/entities/Position");
+const Rule_1 = require("../models/entities/Rule");
 const BaseService_1 = __importDefault(require("./BaseService"));
+const RuleService_1 = require("./RuleService");
 class UserService extends BaseService_1.default {
+    constructor() {
+        super(...arguments);
+        this.ruleService = new RuleService_1.RuleService(Rule_1.Rule);
+    }
     getEntityClass() {
         return User_1.User;
     }
-    changePassword(user, newPass) {
+    changePassword(user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const existingUser = yield this.login(user, false);
+                const userRepository = this.getRepository();
+                const userId = user.id;
+                const existingUser = yield userRepository.findOne({
+                    where: { id: Number(userId) },
+                });
                 if (existingUser) {
-                    existingUser.password = newPass;
-                    existingUser.hashPassword();
-                    yield (0, typeorm_1.getRepository)(User_1.User).save(existingUser);
-                    return existingUser;
+                    console.log(user.password);
+                    existingUser.password = User_1.User.hashPasswordNew(user.password);
+                    //  existingUser.hashPassword();
+                    existingUser.changePassword = false;
+                    yield userRepository.save(existingUser);
+                    return true;
                 }
                 else {
-                    throw new apierror_1.default("User not found", errorcode_1.default.UserNotFound);
+                    return Promise.reject(new apierror_1.default("user not found", errorcode_1.default.UserNotFound));
                 }
             }
             catch (err) {
-                throw new apierror_1.default("Error changing password", errorcode_1.default.UserNotFound);
+                return Promise.reject(new apierror_1.default("user not found", errorcode_1.default.UserNotFound));
             }
         });
     }
@@ -103,7 +115,7 @@ class UserService extends BaseService_1.default {
     }
     add(model) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { first, middle, last, username, password, email, createdBy, position, dsc, note, phoneNumber, arabicLabel } = model;
+            const { first, middle, last, username, password, email, createdBy, position, dsc, note, phoneNumber, arabicLabel, } = model;
             const user = new User_1.User();
             user.username = username;
             user.first = first;
@@ -121,8 +133,14 @@ class UserService extends BaseService_1.default {
             user.makeUsernameAndEmailLowerCase();
             const userRepository = (0, typeorm_1.getRepository)(User_1.User);
             try {
+                //  add default rules
+                // const defaultRules = await this.ruleService.getDefaultRules();
+                // if(defaultRules){
+                //   defaultRules.forEach((rule)=>{
+                //     user.addRules(rule);
+                //   });
+                // }
                 const savedUser = yield userRepository.save(user);
-                // generate rules
                 return savedUser;
             }
             catch (e) {
@@ -136,7 +154,7 @@ class UserService extends BaseService_1.default {
             const { username, password } = model;
             const user = yield this.findUser(username);
             if (!user) {
-                return Promise.reject(new apierror_1.default("user not found", errorcode_1.default.UserNotFound));
+                return Promise.reject(new apierror_1.default("الحساب غير موجود", errorcode_1.default.UserNotFound));
             }
             yield this.validateUser(user, password);
             yield this.updateUserLastLogin(user);
@@ -171,7 +189,7 @@ class UserService extends BaseService_1.default {
     validateUser(user, password) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!user.isActive) {
-                throw new apierror_1.default("Account is locked", errorcode_1.default.InactiveUser);
+                return Promise.reject(new apierror_1.default("تم إغلاق هذا الحساب يرجى التواصل مع المسؤول !", errorcode_1.default.UndefinedCode));
             }
             if (user.checkIfUnencryptedPasswordIsValid(password)) {
                 user.invalidLoginAttempts = 0;
@@ -181,10 +199,10 @@ class UserService extends BaseService_1.default {
                 if (user.invalidLoginAttempts >= 3) {
                     user.isActive = false;
                     yield (0, typeorm_1.getRepository)(User_1.User).save(user);
-                    throw new apierror_1.default("Account is locked", errorcode_1.default.InactiveUser);
+                    return Promise.reject(new apierror_1.default("تم إغلاق هذا الحساب يرجى التواصل مع المسؤول !", errorcode_1.default.UndefinedCode));
                 }
                 else {
-                    throw new apierror_1.default("Invalid password", errorcode_1.default.InvalidLoginPassword);
+                    return Promise.reject(new apierror_1.default("كلمة المرور خاطئة", errorcode_1.default.UndefinedCode));
                 }
             }
         });
@@ -209,7 +227,7 @@ class UserService extends BaseService_1.default {
                         if (OTP == user.OTP) {
                             //Generate JWE and send it
                             const token = JWTService_1.JWTService.generateJWT(user.uuid);
-                            return token;
+                            return { JWT: token, resetPass: user.changePassword };
                         }
                         else {
                             this.sendOTP(user);
@@ -327,12 +345,46 @@ class UserService extends BaseService_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!userId || !ruleId) {
-                    return Promise.reject(new apierror_1.default("err", errorcode_1.default.EmptyRequestBody));
+                    return Promise.reject(new apierror_1.default("طلب خاطئ", errorcode_1.default.EmptyRequestBody));
                 }
                 (0, typeorm_1.getRepository)("user_rule").delete({ userId: userId, ruleId: ruleId });
             }
             catch (err) {
                 return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    activeDeactivateChangePassword(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            try {
+                const user = yield this.findByUUID(uuid);
+                //console.log(user);
+                if (!user) {
+                    return Promise.reject(new apierror_1.default("user not Exist", errorcode_1.default.UndefinedCode));
+                }
+                user.changePassword = !user.changePassword;
+                yield userRepository.save(user);
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default(err.message, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    activeDeactivate(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            try {
+                const user = yield this.findByUUID(uuid);
+                //console.log(user);
+                if (!user) {
+                    return Promise.reject(new apierror_1.default("user not Exist", errorcode_1.default.UndefinedCode));
+                }
+                user.isActive = !user.isActive;
+                yield userRepository.save(user);
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default(err.message, errorcode_1.default.UndefinedCode));
             }
         });
     }

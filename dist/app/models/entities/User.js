@@ -77,6 +77,9 @@ let User = class User extends baseEntity_1.BaseEntity {
             this.password = bcrypt.hashSync(this.password, 8);
         }
     }
+    static hashPasswordNew(pass) {
+        return bcrypt.hashSync(pass, 8) + "";
+    }
     makeUsernameAndEmailLowerCase() {
         this.username = this.username.toLowerCase();
         this.email = this.email.toLowerCase();
@@ -88,6 +91,8 @@ let User = class User extends baseEntity_1.BaseEntity {
         throw new Error('Method not implemented.');
     }
     addRules(rule) {
+        if (!Array.isArray(this.rules))
+            this.rules = [];
         this.rules.push(rule);
     }
     static getUserJson(user) {

@@ -11,4 +11,5 @@ export interface IRule extends IBaseEntity {
     methodName:String,
     position:Position[]
     rules:Rule[],
+    isDefault:boolean,
   }

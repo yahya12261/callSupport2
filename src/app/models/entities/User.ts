@@ -133,6 +133,9 @@ export class User extends BaseEntity{
     if(this.password){
     this.password = bcrypt.hashSync(this.password, 8);}
   }
+  public static hashPasswordNew(pass:string):string {
+    return bcrypt.hashSync(pass, 8)+"";
+  }
 
   public makeUsernameAndEmailLowerCase(){
     this.username =this.username.toLowerCase();
@@ -147,6 +150,8 @@ export class User extends BaseEntity{
   }
 
   public addRules(rule:Rule){
+    if(!Array.isArray(this.rules))
+        this.rules = [];
     this.rules.push(rule);
   }
 

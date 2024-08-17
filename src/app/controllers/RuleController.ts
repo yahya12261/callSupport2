@@ -17,6 +17,8 @@ import { validateOrderOperation } from "../enum/OrderByOperation";
 import { ResponseElement } from "../interface/ResponseElement";
 import { JoinOptions } from "../interface/JoinOptions";
 import { QueryOperator } from "../enum/WhereOperations";
+import { CustomeRequest } from "../interface/CustomeRequest";
+import Err from "../global/response/errorcode";
 const service = new RuleService(Rule);
 // const ruleService = new RuleService(Rule);
 class RuleController extends BaseController<Rule, IRule, RuleService> {
@@ -62,6 +64,10 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
             name: 'methodName',
             type: FieldTypes.TEXT
           },
+          {
+            name: 'isDefault',
+            type: FieldTypes.NUMBER
+          },
         ],
       );
     }
@@ -100,7 +106,7 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
       if (err.ErrorID == 2110) {
         next(new APIError(err.message, err.ErrorID));
       }
-      next(new ServerException("error occurred"));
+      next(new APIError(err.message, err.ErrorID));
     });
   }
   addNewProperty() {
@@ -117,7 +123,7 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
       if (err.ErrorID == 2110) {
         next(new APIError(err.message, err.ErrorID));
       }
-      next(new ServerException("error occurred"));
+        next(new APIError(err.message, err.ErrorID));
     });
 };
   public deletePageApi = (req: Request, res: Response, next: any) => {
@@ -134,7 +140,31 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
       next(new ServerException("error occurred"));
     });
 };
-
+  public  makeUnmakeDefault = (req:Request , res: Response,next:any)=>{
+    const rule = req.body as IRule;
+    if(!rule||!rule.uuid){
+      next(new APIError("خطأ في الطلب", 0));
+    }
+    service.makeUnMakeDefaultRule(rule.uuid).then(()=>{
+      res.json(Template.success("تمت العملية بنجاح", ''))
+    },error=>{
+      next(new APIError(error.message, 0));
+    }
+  )
+  }
+  public getRulesByType(type:EntityType):Promise<Rule[]>{
+    
+    if(!type){
+      return Promise.reject(new APIError("خطأ في الطلب", Err.UndefinedCode));
+    }
+    console.log("rule cntrl" , type)
+   service.getRuleByType(type).then((rules)=>{
+    return rules as Rule[];
+   }).catch((err)=>{
+    return Promise.reject(new APIError(err.message, Err.UndefinedCode));
+   })
+   return Promise.resolve([]);
+  } 
 }
 
 export default RuleController;

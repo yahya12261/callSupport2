@@ -13,12 +13,28 @@ import { FieldTypes } from "../enum/FieldTypes";
 import { RelationOptions } from "../interface/RelationOptions";
 import { SearchFields } from "../interface/SearchFields";
 import { QueryOrder } from "../interface/QueryOrder";
+import { ExceptionHandler } from "winston";
+import { ErrorCallback } from "typescript";
 
 abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   implements BaseRepository<T, M>
 {
   getById(id: number): Promise<T | null> {
     throw new Error("Method not implemented.");
+  }
+
+  async findByUUID(uuid: string): Promise<T | null> {
+    const repository: Repository<T> = this.getRepository();
+    try {
+      const object = await repository.findOne({
+        where: { uuid: uuid },
+      });
+      return object as T;
+    } catch (e:any) {
+      return Promise.reject(
+        new APIError(e.message, Err.UndefinedCode)
+      );
+    }
   }
   protected getRepository(): Repository<T> {
     return getRepository(this.getEntityClass() as ObjectType<T>);
@@ -98,7 +114,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   //     const whereConditions: Record<string, any> = {
   //       ...this.buildWhereConditions(requestElement),
   //     };
-  
+
   //     const findOptions: FindManyOptions<T> = {
   //       skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
   //       take: requestElement.pageSize,
@@ -108,13 +124,13 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   //     if (requestElement.relations) {
   //       findOptions.relations = Object.keys(requestElement.relations);
   //     }
-  
+
   //     if (requestElement.join) {
   //       findOptions.join = requestElement.join;
   //     }
-  
+
   //     const [data, total] = await repository.findAndCount(findOptions);
-  
+
   //     const result: ResponseElement<T> = {
   //       data: data,
   //       currentPage: requestElement.page,
@@ -137,71 +153,101 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   //     };
   //   }
   // }
-  
+
   async getAll(
     requestElement: RequestElement
   ): Promise<{ result: ResponseElement<T> }> {
     try {
       const repository: Repository<T> = this.getRepository();
       requestElement.page = requestElement.page ? requestElement.page : 1;
-      requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
-      const order: Record<string, "ASC" | "DESC"> = this.buildOrder(requestElement);
+      requestElement.pageSize = requestElement.pageSize
+        ? requestElement.pageSize
+        : 20;
+      const order: Record<string, "ASC" | "DESC"> =
+        this.buildOrder(requestElement);
       console.log(order);
-      console.log(requestElement.join)
+      console.log(requestElement.join);
       const whereConditions: Record<string, any> = {
         ...this.buildWhereConditions(requestElement),
       };
-      let entity = requestElement.join?.alias
+      let entity = requestElement.join?.alias;
 
       const queryBuilder = repository.createQueryBuilder(entity);
-  
+
       // Apply where conditions
-    // Apply where conditions
-    Object.keys(whereConditions).forEach((key) => {
-      const condition = whereConditions[key];
-      if (getComparisonSymbol(condition._type) === "BETWEEN") {
-        if (Array.isArray(condition._value) && condition._value.length === 2) {
-          queryBuilder.andWhere(`${entity}.${key} ${getComparisonSymbol(condition._type)} :val1 AND :val2`, {
-            ["val1"]:condition._value[0],["val2"]: condition._value[1],
+      // Apply where conditions
+      Object.keys(whereConditions).forEach((key) => {
+        const condition = whereConditions[key];
+        if (getComparisonSymbol(condition._type) === "BETWEEN") {
+          if (
+            Array.isArray(condition._value) &&
+            condition._value.length === 2
+          ) {
+            queryBuilder.andWhere(
+              `${entity}.${key} ${getComparisonSymbol(
+                condition._type
+              )} :val1 AND :val2`,
+              {
+                ["val1"]: condition._value[0],
+                ["val2"]: condition._value[1],
+              }
+            );
+          } else {
+            queryBuilder.andWhere(
+              `${entity}.${key} ${getComparisonSymbol(
+                condition._type
+              )} :${key}`,
+              { [key]: condition._value }
+            );
+          }
+        } else if (typeof condition === "object") {
+          Object.keys(condition).forEach((nestedKey) => {
+            queryBuilder.andWhere(
+              `${entity}.${key}.${nestedKey} = :${key}_${nestedKey}`,
+              { [`${key}_${nestedKey}`]: condition[nestedKey] }
+            );
           });
-          }else{
-        queryBuilder.andWhere(`${entity}.${key} ${getComparisonSymbol(condition._type)} :${key}`, { [key]: condition._value });}
-      } else if (typeof condition === 'object') {
-        Object.keys(condition).forEach((nestedKey) => {
-          queryBuilder.andWhere(`${entity}.${key}.${nestedKey} = :${key}_${nestedKey}`, { [`${key}_${nestedKey}`]: condition[nestedKey] });
-        });
-      } else {
-        queryBuilder.andWhere(`${entity}.${key} = :${key}`, { [key]: condition });
-      }
-    });
+        } else {
+          queryBuilder.andWhere(`${entity}.${key} = :${key}`, {
+            [key]: condition,
+          });
+        }
+      });
 
       // Apply order
       Object.keys(order).forEach((key) => {
-        console.log(`${entity}.${key}`)
+        console.log(`${entity}.${key}`);
         queryBuilder.addOrderBy(`${entity}.${key}`, order[key]);
       });
-  
+
       // Apply pagination
-      queryBuilder.skip(Math.abs((requestElement.page - 1) * requestElement.pageSize));
+      queryBuilder.skip(
+        Math.abs((requestElement.page - 1) * requestElement.pageSize)
+      );
       queryBuilder.take(requestElement.pageSize);
-  
+
       // Apply relations
       if (requestElement.relations) {
         Object.keys(requestElement.relations).forEach((relation) => {
           queryBuilder.leftJoinAndSelect(`${entity}.${relation}`, relation);
         });
       }
-      
+
       // Apply joins
       if (requestElement.join) {
-        Object.keys(requestElement.join.innerJoinAndSelect).forEach((joinAlias) => {
-          if(requestElement.join)
-          queryBuilder.leftJoinAndSelect(requestElement.join.innerJoinAndSelect[joinAlias], joinAlias);
-        });
+        Object.keys(requestElement.join.innerJoinAndSelect).forEach(
+          (joinAlias) => {
+            if (requestElement.join)
+              queryBuilder.leftJoinAndSelect(
+                requestElement.join.innerJoinAndSelect[joinAlias],
+                joinAlias
+              );
+          }
+        );
       }
-  
+
       const [data, total] = await queryBuilder.getManyAndCount();
-  
+
       const result: ResponseElement<T> = {
         data: data,
         currentPage: requestElement.page,
@@ -224,7 +270,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
       };
     }
   }
-  
+
   async getSelectOption(): Promise<T[]> {
     try {
       const repository: Repository<T> = this.getRepository();
@@ -250,10 +296,10 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
         if (value) {
           const fieldNames = name.split(".");
           let currentConditions = whereConditions;
-  
+
           for (let i = 0; i < fieldNames.length; i++) {
             const fieldName = fieldNames[i];
-  
+
             if (i === fieldNames.length - 1) {
               // Last field name, apply the condition
               switch (operation) {
@@ -304,8 +350,10 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
                   );
                   break;
                 case QueryOperator.BETWEEN:
-                  console.log(value)
-                    const [start, end] = value.split(',').map((v:string) => v.trim());
+                  console.log(value);
+                  const [start, end] = value
+                    .split(",")
+                    .map((v: string) => v.trim());
                   currentConditions[fieldName] = Between(start, end);
                   break;
                 case QueryOperator.NOT_BETWEEN:
@@ -319,36 +367,39 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
                 case QueryOperator.IS_NOT:
                   currentConditions[fieldName] = Not(IsNull());
                   break;
-                  default:
-                    break;
-                }
-              } else {
-                // Nested field, create a new object to hold the condition
-                if (!currentConditions[fieldName]) {
-                  currentConditions[fieldName] = {};
-                }
-                currentConditions = currentConditions[fieldName] as Record<string, unknown>;
+                default:
+                  break;
               }
+            } else {
+              // Nested field, create a new object to hold the condition
+              if (!currentConditions[fieldName]) {
+                currentConditions[fieldName] = {};
+              }
+              currentConditions = currentConditions[fieldName] as Record<
+                string,
+                unknown
+              >;
             }
           }
-        });
-      }
-    
-      console.log(whereConditions);
-      return whereConditions;
-    }
-    protected buildOrder(
-      requestElement: RequestElement
-    ): Record<string, "DESC" | "ASC"> {
-      const order: Record<string, "DESC" | "ASC"> = {};
-      const orderBy = requestElement.orderBy
-        ?.split(",")
-        .map((field) => field.trim()) ?? ["createdAt"];
-      orderBy.forEach((field) => {
-        order[field] = requestElement.order;
+        }
       });
-      return order;
     }
+
+    console.log(whereConditions);
+    return whereConditions;
+  }
+  protected buildOrder(
+    requestElement: RequestElement
+  ): Record<string, "DESC" | "ASC"> {
+    const order: Record<string, "DESC" | "ASC"> = {};
+    const orderBy = requestElement.orderBy
+      ?.split(",")
+      .map((field) => field.trim()) ?? ["createdAt"];
+    orderBy.forEach((field) => {
+      order[field] = requestElement.order;
+    });
+    return order;
+  }
   async add(model: M): Promise<T | null> {
     const repository: Repository<T> = this.getRepository();
     try {
@@ -411,27 +462,27 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   // ): Promise<any[]> {
   //   const repository = this.getRepository();
   //   const results: any[] = [];
-  
+
   //   if (requestElement.search) {
   //     for (const searchField of requestElement.search) {
   //       if (searchField.queryConfig) {
   //         let queryBuilder = repository.createQueryBuilder(searchField.queryConfig.alias);
-  
+
   //         for (const relation of searchField.queryConfig.relations) {
   //           queryBuilder = queryBuilder.innerJoin(`${searchField.queryConfig.alias}.${relation}`, relation);
   //         }
-  
+
   //         const whereParams: { [key: string]: any } = {};
   //         searchField.queryConfig.whereValues.forEach((value, index) => {
   //           whereParams[`whereValue${index}`] = value;
   //         });
-  
+
   //         queryBuilder = queryBuilder
   //           .where(searchField.queryConfig.whereClause, whereParams)
   //           .select(searchField.queryConfig.selectColumns);
-  
+
   //         const result = await queryBuilder.getRawMany();
-  
+
   //         result.forEach(row => {
   //           const rowData: any = {};
   //           if(searchField.queryConfig)
@@ -448,7 +499,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   //       }
   //     }
   //   }
-  
+
   //   return results;
   // }
   // protected buildWhereConditions(
@@ -533,11 +584,6 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   private getNormalizedLimit(limit?: number): number {
     return limit ? Math.min(limit, this.maxLimit) : this.defaultLimit;
   }
-
-  
-  
-
-
 }
 
 

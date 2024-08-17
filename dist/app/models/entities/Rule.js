@@ -29,6 +29,7 @@ let Rule = class Rule extends baseEntity_1.BaseEntity {
         this.code = modal.code;
         this.methodName = modal.methodName;
         this.methodType = modal.methodType;
+        this.isDefault = modal.isDefault;
     }
     addRules(rule) {
         // Check if the rule already exists in the rules array
@@ -77,6 +78,10 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Rule.prototype, "rules", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Rule.prototype, "isDefault", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Position_1.Position, (pos) => pos.rules),
     __metadata("design:type", Array)

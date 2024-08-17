@@ -115,17 +115,7 @@ class RuleService extends BaseService_1.default {
     deleteApiFromPage(pageId, apiId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Check if the (pageId, apiId) combination exists in the rule_rules table
-                // const existingRelation = await getRepository("rule_rules").findOne({
-                //   where: { pageId:pageId, apiId: apiId },
-                // });
-                // if (existingRelation) {
-                // Delete the record from the rule_rules table
                 yield (0, typeorm_1.getRepository)("rule_rules").delete({ pageId, apiId });
-                // } else {
-                //   // If the record doesn't exist, throw an error
-                //   return Promise.reject(new APIError("Relation not found", Err.UndefinedCode));
-                // }
             }
             catch (err) {
                 return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));
@@ -148,45 +138,94 @@ class RuleService extends BaseService_1.default {
             }
         });
     }
-    getAllRulesByPageId(requestElement, pageId) {
+    // async getAllRulesByPageId(
+    //   requestElement: RequestElement,
+    //   pageId: number
+    // ): Promise<{ result: ResponseElement<Rule> }> {
+    //   try {
+    //     const repository: Repository<Rule> = this.getRepository();
+    //     requestElement.page = requestElement.page ? requestElement.page : 1;
+    //     requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
+    //     const order: Record<string, "ASC" | "DESC"> = this.buildOrder(requestElement);
+    //     const whereConditions: Record<string, any> = {
+    //       ...this.buildWhereConditions(requestElement),
+    //       id: pageId,
+    //     };
+    //     const [data, total] = await repository.findAndCount({
+    //       // relations: ["rules"],
+    //       join:{alias:"rule_rules",leftJoinAndSelect:{
+    //       }}
+    //       where: whereConditions,
+    //       skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
+    //       take: requestElement.pageSize,
+    //       order,
+    //     });
+    //     const result: ResponseElement<Rule> = {
+    //       data: data,
+    //       currentPage: requestElement.page,
+    //       total: total,
+    //       pageSize: requestElement.pageSize,
+    //     };
+    //     return {
+    //       result,
+    //     };
+    //   } catch (e) {
+    //     console.error("Error fetching rules:", e);
+    //     const result: ResponseElement<Rule> = {
+    //       data: [],
+    //       currentPage: 0,
+    //       total: 0,
+    //       pageSize: requestElement.pageSize,
+    //     };
+    //     return {
+    //       result,
+    //     };
+    //   }
+    // }
+    makeUnMakeDefaultRule(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                const rule = yield this.findByUUID(uuid);
+                if (!rule) {
+                    return Promise.reject(new apierror_1.default("الصلاحية غير موجودة", errorcode_1.default.UndefinedCode));
+                }
+                rule.isDefault = !rule.isDefault;
+                yield repository.save(rule);
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("خطأ", errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    getDefaultRules() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                var rules = yield repository.find({
+                    where: { isDefault: true }
+                });
+                return rules;
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("خطأ", errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    getRuleByType(type) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const repository = this.getRepository();
-                requestElement.page = requestElement.page ? requestElement.page : 1;
-                requestElement.pageSize = requestElement.pageSize ? requestElement.pageSize : 20;
-                const order = this.buildOrder(requestElement);
-                const whereConditions = {
-                    // ...this.buildWhereConditions(requestElement),
-                    id: pageId,
-                };
-                const [data, total] = yield repository.findAndCount({
-                    relations: ["rules"],
-                    where: whereConditions,
-                    skip: Math.abs((requestElement.page - 1) * requestElement.pageSize),
-                    take: requestElement.pageSize,
-                    order,
+                if (!type || !(Object.is(EntityType_1.EntityType.PAGE, type) || Object.is(EntityType_1.EntityType.API, type) || Object.is(EntityType_1.EntityType.COMPONENT, type))) {
+                    return Promise.reject(new apierror_1.default("خطأ في الطلب", errorcode_1.default.UndefinedCode));
+                }
+                const rules = yield this.getRepository().find({
+                    where: { type: type }
                 });
-                const result = {
-                    data: data,
-                    currentPage: requestElement.page,
-                    total: total,
-                    pageSize: requestElement.pageSize,
-                };
-                return {
-                    result,
-                };
+                // console.log("service",rules)
+                return rules;
             }
             catch (e) {
-                console.error("Error fetching rules:", e);
-                const result = {
-                    data: [],
-                    currentPage: 0,
-                    total: 0,
-                    pageSize: requestElement.pageSize,
-                };
-                return {
-                    result,
-                };
+                return Promise.reject(new apierror_1.default("an error : " + e, errorcode_1.default.UndefinedCode));
             }
         });
     }

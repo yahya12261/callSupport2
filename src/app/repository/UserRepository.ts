@@ -7,7 +7,7 @@ export interface IUserRepository {
      checkUserExists(user: IUser):Promise<boolean> ;
      add(user: IUser): Promise<User | null>;
      login(user: IUser,otp:boolean): Promise<User | null>;
-     loginByOTP(user: IUser): Promise<String | null>;
-     changePassword(user:IUser,newPass:string):Promise<User | null>;
+     loginByOTP(user: IUser): Promise<{JWT:string | null,resetPass:boolean}>;
+     changePassword(user:IUser):Promise<boolean>;
      // delete(id: number): Promise<User | null>;
 }
