@@ -17,11 +17,14 @@ const EventEmitter = require("events");
 const typeorm_1 = require("typeorm");
 const config_1 = __importDefault(require("../../config/config"));
 const logger_1 = require("../../lib/logger");
+const routes_1 = require("../../routes");
 const User_1 = require("../models/entities/User");
 const Department_1 = require("../models/entities/Department");
 const Position_1 = require("../models/entities/Position");
 const Rule_1 = require("../models/entities/Rule");
-const routes_1 = require("../../routes");
+const Government_1 = require("../models/entities/Location/Government");
+const Caza_1 = require("../models/entities/Location/Caza");
+const Town_1 = require("../models/entities/Location/Town");
 class DatabaseService {
     static getConnection() {
         return __awaiter(this, arguments, void 0, function* (callback = null, wait = false) {
@@ -41,7 +44,7 @@ class DatabaseService {
                 password: dbConfig.password,
                 database: dbConfig.database,
                 entities: [
-                    User_1.User, Department_1.Department, Position_1.Position, Rule_1.Rule
+                    User_1.User, Department_1.Department, Position_1.Position, Rule_1.Rule, Government_1.Government, Caza_1.Caza, Town_1.Town
                 ],
                 logging: true,
                 synchronize: true,

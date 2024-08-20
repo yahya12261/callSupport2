@@ -1,6 +1,6 @@
 import { IBaseEntity } from "./baseEntity"
-import { Position } from "./entities/Position"
 import { MethodTypes } from "../enum/MethodTypes"
+import { Position } from "./entities/Position"
 import { Rule } from "./entities/Rule"
 
 export interface IRule extends IBaseEntity {

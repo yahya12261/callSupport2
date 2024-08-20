@@ -6,4 +6,7 @@ export enum EntityType {
     COMPONENT = 'component',
     DEPARTMENT = 'department',
     POSITION = 'position',
+    GOVERNMENT = 'government',
+    CAZA = 'caza',
+    TOWN = 'town'
   }

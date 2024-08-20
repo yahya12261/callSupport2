@@ -6,11 +6,11 @@ import Template from "../global/response";
 import { Request, Response } from "express";
 import { DepartmentService } from "../services/DepartmentService";
 import { BaseController } from "./BaseController";
-import { Department } from "../models/entities/Department";
 import { IDepartment } from "../models/Department";
 import { EntityType } from "../enum/EntityType";
 import { TypeormOptions } from "../interface/TypeormOptions";
 import { FieldTypes } from "../enum/FieldTypes";
+import { Department } from "../models/entities/Department";
 const service =  new DepartmentService(Department);
 class DepartmentController extends BaseController<Department,IDepartment,DepartmentService>{
   option: TypeormOptions = {

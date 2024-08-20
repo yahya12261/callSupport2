@@ -10,5 +10,8 @@ var EntityType;
     EntityType["COMPONENT"] = "component";
     EntityType["DEPARTMENT"] = "department";
     EntityType["POSITION"] = "position";
+    EntityType["GOVERNMENT"] = "government";
+    EntityType["CAZA"] = "caza";
+    EntityType["TOWN"] = "town";
 })(EntityType || (exports.EntityType = EntityType = {}));
 //# sourceMappingURL=EntityType.js.map

@@ -10,6 +10,9 @@ const test_1 = __importDefault(require("./test"));
 const department_1 = __importDefault(require("./department"));
 const position_1 = __importDefault(require("./position"));
 const Rule_1 = __importDefault(require("./Rule"));
+const government_1 = __importDefault(require("./Locations/government"));
+const caza_1 = __importDefault(require("./Locations/caza"));
+const town_1 = __importDefault(require("./Locations/town"));
 const EndPoints_1 = require("../app/extra/EndPoints");
 const routes = (0, express_1.Router)();
 exports.routes = routes;
@@ -19,6 +22,9 @@ routers.set('/v1/test', test_1.default);
 routers.set('/v1/department', department_1.default);
 routers.set('/v1/position', position_1.default);
 routers.set('/v1/rule', Rule_1.default);
+routers.set('/v1/government', government_1.default);
+routers.set('/v1/caza', caza_1.default);
+routers.set('/v1/town', town_1.default);
 const endPoint = new EndPoints_1.EndPoints(routers);
 exports.endPoint = endPoint;
 // console.log(endPoint.getAllRoutes())
@@ -27,4 +33,7 @@ routes.use('/v1/test', test_1.default);
 routes.use('/v1/department', department_1.default);
 routes.use('/v1/position', position_1.default);
 routes.use('/v1/rule', Rule_1.default);
+routes.use('/v1/government', government_1.default);
+routes.use('/v1/caza', caza_1.default);
+routes.use('/v1/town', town_1.default);
 //# sourceMappingURL=index.js.map

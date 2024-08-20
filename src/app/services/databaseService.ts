@@ -2,13 +2,15 @@ import EventEmitter = require('events');
 import { createConnection } from 'typeorm';
 import config from '../../config/config';
 import { Logger } from '../../lib/logger';
+import axios, { AxiosResponse } from 'axios';
+import { endPoint } from '../../routes';
 import { User } from '../models/entities/User';
-import { Testy } from '../models/entities/Testy';
 import { Department } from '../models/entities/Department';
 import { Position } from '../models/entities/Position';
 import { Rule } from '../models/entities/Rule';
-import axios, { AxiosResponse } from 'axios';
-import { endPoint } from '../../routes';
+import { Government } from '../models/entities/Location/Government';
+import { Caza } from '../models/entities/Location/Caza';
+import { Town } from '../models/entities/Location/Town';
 class DatabaseService {
   public static emitter: EventEmitter = new EventEmitter();
   public static isConnected = false;
@@ -29,7 +31,7 @@ class DatabaseService {
       password: dbConfig.password,
       database: dbConfig.database,
       entities: [
-        User,Department,Position,Rule
+        User,Department,Position,Rule,Government,Caza,Town
       ],
       logging:true,
       synchronize:true,
