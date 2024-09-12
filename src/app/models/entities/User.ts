@@ -95,7 +95,6 @@ export class User extends BaseEntity{
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
   position!: Position;
 
-
   @ManyToMany(() => Rule)
   @JoinTable({
     name: 'user_rule',
@@ -109,7 +108,6 @@ export class User extends BaseEntity{
     }
   })
   rules!:Rule[]
- 
 
   @AfterInsert()
   async afterInsertHandler() {
@@ -119,7 +117,6 @@ export class User extends BaseEntity{
           console.log(b)
         }});
       }
-
   private ruleBack() {
     // Add your custom logic to handle the rule creation failure
     console.log("Performing rule back operation...");

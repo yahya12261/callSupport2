@@ -21,6 +21,8 @@ let Town = class Town extends baseEntity_1.BaseEntity {
     }
     fillFromModel(modal) {
         this.fillEntityFromModel(modal);
+        this.name = modal.name;
+        this.caza = modal.caza;
     }
     updateEntity(entity) {
         throw new Error('Method not implemented.');

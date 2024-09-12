@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   Unique,
 } from 'typeorm';
 import { BaseEntity } from '../baseEntity';
@@ -30,6 +31,8 @@ export class Town extends BaseEntity{
 
       public fillFromModel(modal:ITown): void {
         this.fillEntityFromModel(modal);
+        this.name = modal.name;
+        this.caza = modal.caza;
       }
 
       public updateEntity(entity: BaseEntity): void {

@@ -34,6 +34,24 @@ class BaseService {
             }
         });
     }
+    disable(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                let object = yield repository.findOne({
+                    where: { uuid: uuid },
+                });
+                if (object) {
+                    object.isActive = false;
+                    yield repository.save(object);
+                }
+                return object;
+            }
+            catch (e) {
+                return Promise.reject(new apierror_1.default(e.message, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
     getRepository() {
         return (0, typeorm_1.getRepository)(this.getEntityClass());
     }
@@ -153,8 +171,6 @@ class BaseService {
                 const whereConditions = Object.assign({}, this.buildWhereConditions(requestElement));
                 let entity = (_a = requestElement.join) === null || _a === void 0 ? void 0 : _a.alias;
                 const queryBuilder = repository.createQueryBuilder(entity);
-                // Apply where conditions
-                // Apply where conditions
                 Object.keys(whereConditions).forEach((key) => {
                     const condition = whereConditions[key];
                     if ((0, WhereOperations_1.getComparisonSymbol)(condition._type) === "BETWEEN") {
@@ -171,7 +187,7 @@ class BaseService {
                     }
                     else if (typeof condition === "object") {
                         Object.keys(condition).forEach((nestedKey) => {
-                            queryBuilder.andWhere(`${entity}.${key}.${nestedKey} = :${key}_${nestedKey}`, { [`${key}_${nestedKey}`]: condition[nestedKey] });
+                            queryBuilder.andWhere(`${key}.${nestedKey} = :${key}_${nestedKey}`, { [`${key}_${nestedKey}`]: condition[nestedKey] });
                         });
                     }
                     else {

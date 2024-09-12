@@ -14,6 +14,7 @@ import { User } from '../User';
 import { EntityType } from '../../../enum/EntityType';
 import { IGovernment } from '../../Locations/Government';
 import { Caza } from './Caza';
+import { Person } from '../Person';
 
 @Entity()
 @Unique(['name'])
@@ -24,6 +25,10 @@ public name!:String
 
 @OneToMany(() => Caza, (caza) => caza.government)
 casas!: Caza[];
+
+@OneToMany(() =>Person, (person) =>person.governmentAddress)
+personGovernment!: Person[];
+
 
 constructor(){
   super();

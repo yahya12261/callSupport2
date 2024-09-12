@@ -118,6 +118,8 @@ class RuleService extends BaseService<Rule, IRule> {
   //     return Promise.reject(new APIError(`An error occurred: ${err}`, Err.UndefinedCode));
   //   }
   // }
+
+
   async deleteApiFromPage(pageId: number, apiId: number): Promise<void> {
     try {
         await getRepository("rule_rules").delete({ pageId, apiId });
@@ -125,6 +127,8 @@ class RuleService extends BaseService<Rule, IRule> {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
   }
+
+
   async addPageApiRule(pageId: number, apiId: number): Promise<void> {
     try {
       // Check if the (pageId, apiId) combination already exists in the rule_rules table
@@ -139,6 +143,7 @@ class RuleService extends BaseService<Rule, IRule> {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
   }
+
   // async getAllRulesByPageId(
   //   requestElement: RequestElement,
   //   pageId: number
@@ -188,6 +193,7 @@ class RuleService extends BaseService<Rule, IRule> {
   //     };
   //   }
   // }
+
   async makeUnMakeDefaultRule(uuid:string):Promise<void>{
     const repository = this.getRepository();
     try{
@@ -200,8 +206,8 @@ class RuleService extends BaseService<Rule, IRule> {
     }catch(err){
       return Promise.reject(new APIError("خطأ", Err.UndefinedCode));
     }
-    
   }
+
   async getDefaultRules():Promise<Rule[]>{
     const repository = this.getRepository();
     try{
@@ -213,6 +219,9 @@ class RuleService extends BaseService<Rule, IRule> {
       return Promise.reject(new APIError("خطأ", Err.UndefinedCode));
     }
   }
+
+
+
   async getRuleByType(type:EntityType):Promise<Rule[]>{
     try{
       if(!type||!(Object.is(EntityType.PAGE,type)||Object.is(EntityType.API,type)||Object.is(EntityType.COMPONENT,type))){

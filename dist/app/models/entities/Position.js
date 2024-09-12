@@ -16,6 +16,7 @@ const Department_1 = require("./Department");
 const User_1 = require("./User");
 const EntityType_1 = require("../../enum/EntityType");
 const Rule_1 = require("./Rule");
+const StatusFlow_1 = require("./Statuses/StatusFlow");
 let Position = class Position extends baseEntity_1.BaseEntity {
     updateEntity(entity) {
         throw new Error('Method not implemented.');
@@ -47,6 +48,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => User_1.User, (user) => user.position),
     __metadata("design:type", Array)
 ], Position.prototype, "users", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => StatusFlow_1.StatusFlow, (sf) => sf.position),
+    __metadata("design:type", Array)
+], Position.prototype, "statusPosition", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Rule_1.Rule, (rule) => rule.positionRules),
     (0, typeorm_1.JoinTable)({

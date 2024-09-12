@@ -7,8 +7,11 @@ import Rule from './Rule'
 import government from './Locations/government';
 import caza from './Locations/caza';
 import town from './Locations/town';
+import status from './Status/Status';
+import statusFlow from './Status/StatusFlow';
+import service from './Service';
 import { EndPoints } from '../app/extra/EndPoints';
-
+import person from './Person';
 const routes = Router();
 const routers: Map<string, express.Router> =new Map();
 routers.set('/v1/user',user);
@@ -19,6 +22,10 @@ routers.set('/v1/rule',Rule);
 routers.set('/v1/government',government);
 routers.set('/v1/caza',caza);
 routers.set('/v1/town',town);
+routers.set('/v1/status',status);
+routes.use('/v1/status-flow', statusFlow);
+routes.use('/v1/service', service);
+routes.use('/v1/person',person);
 const endPoint :EndPoints = new EndPoints(routers);
 // console.log(endPoint.getAllRoutes())
 routes.use('/v1/user', user);
@@ -29,6 +36,9 @@ routes.use('/v1/rule', Rule);
 routes.use('/v1/government', government);
 routes.use('/v1/caza', caza);
 routes.use('/v1/town', town);
-
+routes.use('/v1/status', status);
+routes.use('/v1/service',service);
+routes.use('/v1/status-flow', statusFlow);
+routes.use('/v1/person', person);
 
 export { routes,endPoint };

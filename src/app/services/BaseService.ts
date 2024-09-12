@@ -36,6 +36,23 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
       );
     }
   }
+  async disable(uuid: string): Promise<T | null> {
+    const repository: Repository<T> = this.getRepository();
+    try {
+      let object = await repository.findOne({
+        where: { uuid: uuid },
+      });
+      if(object){
+        object.isActive = false;
+        await repository.save(object as DeepPartial<T>);
+      }
+      return object as T;
+    } catch (e:any) {
+      return Promise.reject(
+        new APIError(e.message, Err.UndefinedCode)
+      );
+    }
+  }
   protected getRepository(): Repository<T> {
     return getRepository(this.getEntityClass() as ObjectType<T>);
   }
@@ -171,11 +188,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
         ...this.buildWhereConditions(requestElement),
       };
       let entity = requestElement.join?.alias;
-
       const queryBuilder = repository.createQueryBuilder(entity);
-
-      // Apply where conditions
-      // Apply where conditions
       Object.keys(whereConditions).forEach((key) => {
         const condition = whereConditions[key];
         if (getComparisonSymbol(condition._type) === "BETWEEN") {
@@ -203,7 +216,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
         } else if (typeof condition === "object") {
           Object.keys(condition).forEach((nestedKey) => {
             queryBuilder.andWhere(
-              `${entity}.${key}.${nestedKey} = :${key}_${nestedKey}`,
+              `${key}.${nestedKey} = :${key}_${nestedKey}`,
               { [`${key}_${nestedKey}`]: condition[nestedKey] }
             );
           });

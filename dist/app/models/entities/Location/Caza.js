@@ -15,13 +15,16 @@ const baseEntity_1 = require("../baseEntity");
 const EntityType_1 = require("../../../enum/EntityType");
 const Government_1 = require("./Government");
 const Town_1 = require("./Town");
+const Person_1 = require("../Person");
 let Caza = class Caza extends baseEntity_1.BaseEntity {
     constructor() {
         super();
-        this.type = EntityType_1.EntityType.GOVERNMENT;
+        this.type = EntityType_1.EntityType.CAZA;
     }
     fillFromModel(modal) {
         this.fillEntityFromModel(modal);
+        this.name = modal.name;
+        this.government = modal.government;
     }
     updateEntity(entity) {
         throw new Error('Method not implemented.');
@@ -33,7 +36,7 @@ __decorate([
     __metadata("design:type", String)
 ], Caza.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Government_1.Government, (gov) => gov.casas),
+    (0, typeorm_1.ManyToOne)(() => Government_1.Government, (government) => government.casas),
     (0, typeorm_1.JoinColumn)({ name: 'governmentId', referencedColumnName: 'id' }),
     __metadata("design:type", Government_1.Government)
 ], Caza.prototype, "government", void 0);
@@ -41,6 +44,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Town_1.Town, (town) => town.caza),
     __metadata("design:type", Array)
 ], Caza.prototype, "towns", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Person_1.Person, (person) => person.cazaAddress),
+    __metadata("design:type", Array)
+], Caza.prototype, "personCaza", void 0);
 exports.Caza = Caza = __decorate([
     (0, typeorm_1.Entity)(),
     (0, typeorm_1.Unique)(['name']),

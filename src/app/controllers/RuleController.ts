@@ -32,7 +32,6 @@ class RuleController extends BaseController<Rule, IRule, RuleService> {
       innerJoinAndSelect: {
         // rules:"rule.rules",
         // apis:"rules.apiId",
-
         createdBy:'rule.createdBy',
         modifiedBy:'rule.modifiedBy',
         deletedBy:'rule.deletedBy',

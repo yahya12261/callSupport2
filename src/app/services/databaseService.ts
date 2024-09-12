@@ -11,6 +11,10 @@ import { Rule } from '../models/entities/Rule';
 import { Government } from '../models/entities/Location/Government';
 import { Caza } from '../models/entities/Location/Caza';
 import { Town } from '../models/entities/Location/Town';
+import { Status } from '../models/entities/Statuses/Status';
+import {StatusFlow} from '../models/entities/Statuses/StatusFlow';
+import { Service } from '../models/entities/Service';
+import { Person } from '../models/entities/Person';
 class DatabaseService {
   public static emitter: EventEmitter = new EventEmitter();
   public static isConnected = false;
@@ -31,7 +35,7 @@ class DatabaseService {
       password: dbConfig.password,
       database: dbConfig.database,
       entities: [
-        User,Department,Position,Rule,Government,Caza,Town
+        User,Department,Position,Rule,Government,Caza,Town,Status,StatusFlow,Service,Person
       ],
       logging:true,
       synchronize:true,

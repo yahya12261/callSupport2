@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("../baseEntity");
 const EntityType_1 = require("../../../enum/EntityType");
 const Caza_1 = require("./Caza");
+const Person_1 = require("../Person");
 let Government = class Government extends baseEntity_1.BaseEntity {
     constructor() {
         super();
@@ -35,6 +36,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Caza_1.Caza, (caza) => caza.government),
     __metadata("design:type", Array)
 ], Government.prototype, "casas", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Person_1.Person, (person) => person.governmentAddress),
+    __metadata("design:type", Array)
+], Government.prototype, "personGovernment", void 0);
 exports.Government = Government = __decorate([
     (0, typeorm_1.Entity)(),
     (0, typeorm_1.Unique)(['name']),

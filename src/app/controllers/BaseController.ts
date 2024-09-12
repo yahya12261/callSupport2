@@ -283,4 +283,6 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           data[index] = rest as T;
         });
       }
+
+    
 }

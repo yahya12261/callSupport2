@@ -18,6 +18,8 @@ import { User } from './User';
 import { EntityType } from '../../enum/EntityType';
 import { IPosition } from '../Position';
 import { Rule } from './Rule';
+import { Status } from './Statuses/Status';
+import { StatusFlow } from './Statuses/StatusFlow';
 
 @Entity()
 @Unique(['name'])
@@ -36,6 +38,9 @@ department!: Department;
 @OneToMany(() => User, (user) => user.position)
 users!: User[];
 
+@OneToMany(() => StatusFlow, (sf) => sf.position)
+statusPosition!: StatusFlow[];
+
 @ManyToMany(() => Rule, (rule) => rule.positionRules)
 @JoinTable({
   name: 'position_rule',
@@ -49,6 +54,7 @@ users!: User[];
   }
 })
 rules!: Rule[]
+
 
 constructor(){
   super();

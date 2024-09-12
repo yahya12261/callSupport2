@@ -8,5 +8,9 @@ export enum EntityType {
     POSITION = 'position',
     GOVERNMENT = 'government',
     CAZA = 'caza',
-    TOWN = 'town'
+    TOWN = 'town',
+    STATUS = "status",
+    STAUTSFLOW = "statusFlow",
+    SERVICE = "service",
+    PERSON = "person"
   }
