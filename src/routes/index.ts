@@ -12,6 +12,7 @@ import statusFlow from './Status/StatusFlow';
 import service from './Service';
 import { EndPoints } from '../app/extra/EndPoints';
 import person from './Person';
+import personOperation from './personOperation'
 const routes = Router();
 const routers: Map<string, express.Router> =new Map();
 routers.set('/v1/user',user);
@@ -26,6 +27,7 @@ routers.set('/v1/status',status);
 routes.use('/v1/status-flow', statusFlow);
 routes.use('/v1/service', service);
 routes.use('/v1/person',person);
+routes.use('/v1/person-operation',personOperation);
 const endPoint :EndPoints = new EndPoints(routers);
 // console.log(endPoint.getAllRoutes())
 routes.use('/v1/user', user);
@@ -40,5 +42,6 @@ routes.use('/v1/status', status);
 routes.use('/v1/service',service);
 routes.use('/v1/status-flow', statusFlow);
 routes.use('/v1/person', person);
+routes.use('/v1/person-operation',personOperation);
 
 export { routes,endPoint };

@@ -20,6 +20,8 @@ class PersonController extends BaseController<Person,IPerson,PersonService>{
         createdBy:'person.createdBy',
         modifiedBy:'person.modifiedBy',
         deletedBy:'person.deletedBy',
+        government:'person.governmentAddress',
+        caza:'person.cazaAddress'   
       },
     },
   };
@@ -29,65 +31,65 @@ class PersonController extends BaseController<Person,IPerson,PersonService>{
     super(service,
       [
              {
-          name: IPersonKeys.firstAr,
+          name: IPersonKeys.firstAr.toString(),
           type: FieldTypes.TEXT
         },
             {
-            name: IPersonKeys.firstAr,
+            name: IPersonKeys.firstAr.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.middleAr,
+            name: IPersonKeys.middleAr.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.lastAr,
+            name: IPersonKeys.lastAr.toString(),
             type: FieldTypes.TEXT
           },        {
-            name: IPersonKeys.firstEn,
+            name: IPersonKeys.firstEn.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.middleEn,
+            name: IPersonKeys.middleEn.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.lastEn,
+            name: IPersonKeys.lastEn.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.Gender,
+            name: IPersonKeys.Gender.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.dob,
+            name: IPersonKeys.dob.toString(),
             type: FieldTypes.DATE
           },
           {
-            name: IPersonKeys.fromMedical,
+            name: IPersonKeys.fromMedical.toString(),
             type: FieldTypes.BOOLEAN
           },        {
-            name: IPersonKeys.nationality,
+            name: IPersonKeys.nationality.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.phoneNumber,
+            name: IPersonKeys.phoneNumber.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.phoneNumberCode,
+            name: IPersonKeys.phoneNumberCode.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.townAddress,
+            name: IPersonKeys.townAddress.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.governmentAddress,
+            name: IPersonKeys.governmentAddress.toString(),
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.cazaAddress,
+            name: IPersonKeys.cazaAddress.toString(),
             type: FieldTypes.TEXT
           },
       ],

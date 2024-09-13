@@ -18,6 +18,7 @@ import { IDepartment } from '../../Department';
 import { IBaseEntity } from '../../baseEntity';
 import { IStatus } from '../../Status';
 import { StatusFlow } from './StatusFlow';
+import { PersonOperation } from '../personOperation';
 
 @Entity()
 @Unique(['name'])
@@ -45,6 +46,9 @@ public fillFromModel(modal:IStatus): void {
 
 @OneToMany(() => StatusFlow, (sf) => sf.refStatus)
 refStatuses!: StatusFlow[];
+
+@OneToMany(() => PersonOperation, (sf) => sf.status)
+personOperation!: PersonOperation[];
 
 public updateEntity(entity: BaseEntity): void {
     throw new Error('Method not implemented.');

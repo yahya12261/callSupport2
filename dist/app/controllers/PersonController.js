@@ -82,6 +82,8 @@ class PersonController extends BaseController_1.BaseController {
                     createdBy: 'person.createdBy',
                     modifiedBy: 'person.modifiedBy',
                     deletedBy: 'person.deletedBy',
+                    government: 'person.governmentAddress',
+                    caza: 'person.cazaAddress'
                 },
             },
         };

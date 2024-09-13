@@ -26,6 +26,7 @@ import APIError from '../../global/response/apierror';
 import Template from "../../global/response";
 import { Response } from 'express';
 import { UserService } from '../../services/UserService';
+import { PersonOperation } from './personOperation';
 
 @Entity()
 @Unique(['email','username'])
@@ -108,6 +109,13 @@ export class User extends BaseEntity{
     }
   })
   rules!:Rule[]
+
+
+  @OneToMany(() => PersonOperation, (sf) => sf.assignTo)
+  assignOperation!: PersonOperation[];
+
+  @OneToMany(() => PersonOperation, (sf) => sf.reporter)
+  reporterOperation!: PersonOperation[];
 
   @AfterInsert()
   async afterInsertHandler() {

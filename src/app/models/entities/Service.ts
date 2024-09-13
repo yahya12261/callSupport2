@@ -7,6 +7,7 @@ import { EntityType } from "../../enum/EntityType";
 import { IRule } from "../Rule";
 import { IService } from "../Service";
 import { StatusFlow } from "./Statuses/StatusFlow";
+import { PersonOperation } from "./personOperation";
 
 @Entity()
 @Unique(['name'])
@@ -17,6 +18,9 @@ public name!:String;
 
 @OneToMany(() => StatusFlow, (sf) => sf.service)
 services!: StatusFlow[];
+
+@OneToMany(() => PersonOperation, (sf) => sf.service)
+personOperation!: PersonOperation[];
 
 constructor(){
   super();

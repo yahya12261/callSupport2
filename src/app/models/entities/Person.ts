@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "./baseEntity";
 import { IBaseEntity } from "../baseEntity";
 import { Length } from "class-validator";
@@ -7,6 +7,7 @@ import { Nationality } from "../../enum/Nationality";
 import { Government } from "./Location/Government";
 import { Caza } from "./Location/Caza";
 import { IPerson } from "../Person";
+import { PersonOperation } from "./personOperation";
 
 @Entity()
 // @Unique(['name'])
@@ -87,6 +88,9 @@ export class Person extends BaseEntity{
 
     @Column({nullable:true,default:false})
     public insuranceName!: string;
+
+    @OneToMany(() => PersonOperation, (sf) => sf.person)
+    personOperation!: PersonOperation[];
 
     public updateEntity(entity: BaseEntity): void {
         throw new Error("Method not implemented.");

@@ -12,5 +12,6 @@ export enum EntityType {
     STATUS = "status",
     STAUTSFLOW = "statusFlow",
     SERVICE = "service",
-    PERSON = "person"
+    PERSON = "person",
+    PERSONOPERATION = "personOperation"
   }
