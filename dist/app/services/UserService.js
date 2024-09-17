@@ -104,7 +104,7 @@ class UserService extends BaseService_1.default {
             try {
                 const user = yield userRepository.findOne({
                     where: { uuid: uuid },
-                    relations: ["rules"],
+                    relations: ["rules", "position"],
                 });
                 return user;
             }
@@ -385,6 +385,44 @@ class UserService extends BaseService_1.default {
             }
             catch (err) {
                 return Promise.reject(new apierror_1.default(err.message, errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    getUserPosition(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (userId) {
+                    const user = yield this.getRepository().findOne({ where: { id: userId },
+                        relations: ["position"] });
+                    if (!user || !user.position) {
+                        return Promise.reject(new apierror_1.default("لا يمكن الوصول", errorcode_1.default.UndefinedCode));
+                    }
+                    return user.position;
+                }
+                else {
+                    return Promise.reject(new apierror_1.default("خطأ", errorcode_1.default.UndefinedCode));
+                }
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("err", errorcode_1.default.UndefinedCode));
+            }
+        });
+    }
+    getUserByUUID(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = (0, typeorm_1.getRepository)(User_1.User);
+            try {
+                const user = yield userRepository.findOne({
+                    where: { uuid: uuid },
+                    relations: ["position"]
+                });
+                if (!user) {
+                    return Promise.reject(new apierror_1.default("check your email with new OTP", errorcode_1.default.IncorrectCurrPassword));
+                }
+                return { id: user.id, position: user.position, arabicLabel: (user.arabicLabel) ? user.arabicLabel : "", email: user.email };
+            }
+            catch (err) {
+                return Promise.reject(new apierror_1.default("An error occurred", errorcode_1.default.DatabaseError));
             }
         });
     }

@@ -27,6 +27,7 @@ import Template from "../../global/response";
 import { Response } from 'express';
 import { UserService } from '../../services/UserService';
 import { PersonOperation } from './personOperation';
+import { Service } from './Service';
 
 @Entity()
 @Unique(['email','username'])
@@ -92,6 +93,8 @@ export class User extends BaseEntity{
   @OneToMany(() => User, (user) => user.deletedBy)
   deletedUsers!: User[];
 
+  
+
   @ManyToOne(() => Position, (position) => position.users)
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
   position!: Position;
@@ -116,6 +119,9 @@ export class User extends BaseEntity{
 
   @OneToMany(() => PersonOperation, (sf) => sf.reporter)
   reporterOperation!: PersonOperation[];
+
+  @OneToMany(() => Service, (sf) => sf.reporter)
+  serviceReporters!:Service[];
 
   @AfterInsert()
   async afterInsertHandler() {

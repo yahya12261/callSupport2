@@ -29,5 +29,7 @@ router.post('/loginByOTP', upload.none(), UserController_1.default.loginByOTP);
 router.post('/resetRules', upload.none(), UserController_1.default.resetUserRules);
 router.post('/add-rule', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.OTHER), authMiddlewares_1.authMiddleware, upload.none(), Controller.addUserRule);
 router.post('/delete-rule', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.OTHER), authMiddlewares_1.authMiddleware, upload.none(), Controller.deleteUserRule);
+router.get('/selectOption', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.SELECT), authMiddlewares_1.authMiddleware, Controller.getSelectOption);
+router.get('/:uuid', (0, EndPointsActions_1.EndPointsActions)(EndPointsActionsEnum_1.EndPointsActionsEnum.SELECT), authMiddlewares_1.authMiddleware, UserController_1.default.getUserByUUID);
 exports.default = router;
 //# sourceMappingURL=user.js.map

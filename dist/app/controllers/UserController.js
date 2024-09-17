@@ -90,16 +90,6 @@ class UserController extends BaseController_1.BaseController {
             },
         };
         this.entity = EntityType_1.EntityType.USER;
-        //old method
-        // public static addUserRule =  (req: Request, res: Response, next: any) => {
-        //   const userId = req.body.userId ;
-        //   const ruleId = req.body.ruleId ;
-        //   service.addUserRule(Number(userId),Number(ruleId)).then(()=>{
-        //     res.json(Template.success("", 'rule added.'));
-        //   }).catch(err => {
-        //       next(new APIError(err.message, err.ErrorID));
-        //   })
-        // }
         this.getAll = (req, res, next) => {
             this.reqElm.page = Number(req.query.page);
             this.reqElm.pageSize = Number(req.query.pageSize);
@@ -299,6 +289,24 @@ UserController.login = (req, res, next) => {
         next(new apierror_1.default(err.message, err.ErrorID));
     });
 };
+UserController.getUserByUUID = (req, res, next) => {
+    const uuid = req.params.uuid;
+    service.getUserByUUID(uuid + "").then(result => {
+        if (result) {
+            res.json(response_1.default.success(result, ""));
+        }
+        else {
+            next(new apierror_1.default("خطأ", 0));
+        }
+    })
+        .catch((err) => {
+        console.log(err);
+        if (err.ErrorID == 2110) {
+            next(new apierror_1.default(err.message, err.ErrorID));
+        }
+        next(new custom_errors_1.ServerException("error occurred"));
+    });
+};
 UserController.loginByOTP = (req, res, next) => {
     service
         .loginByOTP(req.body)
@@ -306,6 +314,7 @@ UserController.loginByOTP = (req, res, next) => {
         if (data.JWT) {
             res.json(response_1.default.success(data, "تم التسجيل بنجاح"));
         }
+        res.json(response_1.default.error(data, "خطأ", 0));
     })
         .catch((err) => {
         console.log(err);

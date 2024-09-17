@@ -79,7 +79,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Status_1.Status, (status) => status.next),
     (0, typeorm_1.JoinTable)({
-        name: "next-status",
+        name: "next_status",
         joinColumn: {
             name: "nextStatusId",
             referencedColumnName: "id",

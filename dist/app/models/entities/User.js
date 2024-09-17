@@ -50,6 +50,8 @@ const EntityType_1 = require("../../enum/EntityType");
 const Position_1 = require("./Position");
 const Rule_1 = require("./Rule");
 const UserService_1 = require("../../services/UserService");
+const personOperation_1 = require("./personOperation");
+const Service_1 = require("./Service");
 let User = class User extends baseEntity_1.BaseEntity {
     updateEntity(entity) {
         throw new Error('Method not implemented.');
@@ -191,6 +193,18 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], User.prototype, "rules", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => personOperation_1.PersonOperation, (sf) => sf.assignTo),
+    __metadata("design:type", Array)
+], User.prototype, "assignOperation", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => personOperation_1.PersonOperation, (sf) => sf.reporter),
+    __metadata("design:type", Array)
+], User.prototype, "reporterOperation", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Service_1.Service, (sf) => sf.reporter),
+    __metadata("design:type", Array)
+], User.prototype, "serviceReporters", void 0);
 __decorate([
     (0, typeorm_1.AfterInsert)(),
     __metadata("design:type", Function),

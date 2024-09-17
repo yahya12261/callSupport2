@@ -45,6 +45,7 @@ public fillFromModel(modal:IStatus): void {
 }
 
 @OneToMany(() => StatusFlow, (sf) => sf.refStatus)
+@JoinColumn({ name: "id", referencedColumnName: "refStatusId" })
 refStatuses!: StatusFlow[];
 
 @OneToMany(() => PersonOperation, (sf) => sf.status)

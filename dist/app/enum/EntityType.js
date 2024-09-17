@@ -17,5 +17,6 @@ var EntityType;
     EntityType["STAUTSFLOW"] = "statusFlow";
     EntityType["SERVICE"] = "service";
     EntityType["PERSON"] = "person";
+    EntityType["PERSONOPERATION"] = "personOperation";
 })(EntityType || (exports.EntityType = EntityType = {}));
 //# sourceMappingURL=EntityType.js.map

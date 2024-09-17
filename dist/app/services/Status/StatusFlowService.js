@@ -25,11 +25,11 @@ class StatusFlowService extends BaseService_1.default {
     static addNextStatus(statusId, nextStatusId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const existingRelation = yield (0, typeorm_1.getRepository)("next-status").findOne({
+                const existingRelation = yield (0, typeorm_1.getRepository)("next_status").findOne({
                     where: { statusId, nextStatusId },
                 });
                 if (!existingRelation) {
-                    yield (0, typeorm_1.getRepository)("next-status").insert({ nextStatusId, statusId });
+                    yield (0, typeorm_1.getRepository)("next_status").insert({ nextStatusId, statusId });
                 }
             }
             catch (err) {
@@ -40,7 +40,7 @@ class StatusFlowService extends BaseService_1.default {
     static removeNextStatus(nextStatusId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield (0, typeorm_1.getRepository)("next-status").delete({ nextStatusId });
+                yield (0, typeorm_1.getRepository)("next_status").delete({ nextStatusId });
             }
             catch (err) {
                 return Promise.reject(new apierror_1.default("an error : " + err, errorcode_1.default.UndefinedCode));

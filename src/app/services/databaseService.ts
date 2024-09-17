@@ -15,6 +15,7 @@ import { Status } from '../models/entities/Statuses/Status';
 import {StatusFlow} from '../models/entities/Statuses/StatusFlow';
 import { Service } from '../models/entities/Service';
 import { Person } from '../models/entities/Person';
+import { PersonOperation } from '../models/entities/personOperation';
 class DatabaseService {
   public static emitter: EventEmitter = new EventEmitter();
   public static isConnected = false;
@@ -35,7 +36,7 @@ class DatabaseService {
       password: dbConfig.password,
       database: dbConfig.database,
       entities: [
-        User,Department,Position,Rule,Government,Caza,Town,Status,StatusFlow,Service,Person
+        User,Department,Position,Rule,Government,Caza,Town,Status,StatusFlow,Service,Person,PersonOperation
       ],
       logging:true,
       synchronize:true,

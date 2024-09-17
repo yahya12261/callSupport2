@@ -16,6 +16,8 @@ router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Co
 
 router.get('/status/:statusId',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getNextStatusesByStatusId);
 
+router.get('/:currentStatus/:serviceId',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getFlowByOperationAndSelectedUser);
+
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
 
 router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);

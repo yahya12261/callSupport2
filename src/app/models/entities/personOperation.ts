@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseEntity } from "./baseEntity";
 import { IBaseEntity } from "../baseEntity";
 import { Length } from "class-validator";
@@ -12,6 +12,12 @@ import { Person } from "./Person";
 import { Status } from "./Statuses/Status";
 import { User } from "./User";
 import { IPersonOperation } from "../PersonOperation";
+import { PersonService } from "../../services/personService";
+import ServiceController from "../../controllers/ServiceController";
+import { IService } from "../Service";
+import {  ServiceService } from "../../services/ServiceService";
+import { StatusService } from "../../services/Status/StatusService";
+const personServices = new PersonService(Person);
 
 @Entity()
 // @Unique(['name'])
@@ -38,6 +44,42 @@ export class PersonOperation extends BaseEntity{
     @JoinColumn({ name: 'reporterId', referencedColumnName: 'id' })
     reporter!:User;
 
+    @BeforeInsert()
+    async beforeInsert() {
+// create new Person
+        if(!this.person.id){
+            await PersonService.createPerson(this.person).then(person=>{
+                if(person){
+                    this.person = person;
+                    console.log("new Person Created")
+                }
+              })
+        }
+        const statusService = new StatusService(Status);
+        // set New Service
+            await statusService.getOrCreateOpenStatusByName().then(sts=>{
+           if(sts){
+            this.status = sts;
+           }
+        })
+        
+        // if(this.createdBy){
+        //     this.assignTo = this.createdBy;
+        // }
+
+            //set Reporter
+        if(this.service.id){
+            const serviceService = new ServiceService(Service)
+           const fetchedService  =  await serviceService.getById(this.service.id,["reporter"])
+          
+           if(fetchedService){
+            console.log(fetchedService);
+            this.reporter = fetchedService.reporter;
+           }
+        }
+
+    }
+        
     public updateEntity(entity: BaseEntity): void {
         throw new Error("Method not implemented.");
     }

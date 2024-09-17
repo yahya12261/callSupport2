@@ -87,7 +87,7 @@ export class UserService extends BaseService<User, IUser> implements IUserReposi
     try {
       const user = await userRepository.findOne({
         where: { uuid: uuid },
-        relations: ["rules"],
+        relations: ["rules","position"],
       });
       return user;
     } catch (err: any) {
@@ -383,4 +383,48 @@ export class UserService extends BaseService<User, IUser> implements IUserReposi
       return Promise.reject(new APIError(err.message, Err.UndefinedCode));
     }
   }
+
+ async getUserPosition(userId:number): Promise<Position>{
+  try{
+    if(userId){
+        const user = await this.getRepository().findOne(   
+          {where: { id:userId },
+          relations: ["position"]}
+        );
+          if(!user||!user.position){
+            return Promise.reject(new APIError("لا يمكن الوصول", Err.UndefinedCode));
+          }
+          return user.position;
+    }else{
+      return Promise.reject(new APIError("خطأ", Err.UndefinedCode));
+    }  
+
+  }catch(err){
+    return Promise.reject(new APIError("err", Err.UndefinedCode));
+  } 
+ }
+
+ async getUserByUUID(uuid:string):Promise<{ id: number; position:Position,arabicLabel:string,email:string}> {
+  const userRepository = getRepository(User);
+  try {
+      const user = await userRepository.findOne({
+        where: { uuid: uuid },
+        relations:["position"]
+      });
+      if (!user) {
+        return Promise.reject(
+          new APIError(
+            "check your email with new OTP",
+            Err.IncorrectCurrPassword
+          )
+        );
+      }
+          return { id:user.id, position: user.position,arabicLabel:(user.arabicLabel)?user.arabicLabel:"",email:user.email };
+        }
+   catch (err) {
+    return Promise.reject(
+      new APIError("An error occurred", Err.DatabaseError)
+    );
+  }
+ }
 }

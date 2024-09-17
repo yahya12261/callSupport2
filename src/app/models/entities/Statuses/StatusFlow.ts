@@ -18,7 +18,7 @@ export class StatusFlow extends BaseEntity {
 
   @ManyToMany(() => Status, (status) =>status.next)
   @JoinTable({
-    name: "next-status",
+    name: "next_status",
     joinColumn: {
       name: "nextStatusId",
       referencedColumnName: "id",

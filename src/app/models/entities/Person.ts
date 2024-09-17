@@ -95,6 +95,7 @@ export class Person extends BaseEntity{
     public updateEntity(entity: BaseEntity): void {
         throw new Error("Method not implemented.");
     }
+
     public fillFromModel(model: IPerson): void {
         this.fillEntityFromModel(model);
         this.firstAr = model.firstAr;

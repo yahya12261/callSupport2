@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const baseEntity_1 = require("../baseEntity");
 const EntityType_1 = require("../../../enum/EntityType");
 const StatusFlow_1 = require("./StatusFlow");
+const personOperation_1 = require("../personOperation");
 let Status = class Status extends baseEntity_1.BaseEntity {
     constructor() {
         super();
@@ -44,8 +45,13 @@ __decorate([
 ], Status.prototype, "next", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => StatusFlow_1.StatusFlow, (sf) => sf.refStatus),
+    (0, typeorm_1.JoinColumn)({ name: "id", referencedColumnName: "refStatusId" }),
     __metadata("design:type", Array)
 ], Status.prototype, "refStatuses", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => personOperation_1.PersonOperation, (sf) => sf.status),
+    __metadata("design:type", Array)
+], Status.prototype, "personOperation", void 0);
 exports.Status = Status = __decorate([
     (0, typeorm_1.Entity)(),
     (0, typeorm_1.Unique)(['name']),

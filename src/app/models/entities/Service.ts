@@ -22,6 +22,10 @@ services!: StatusFlow[];
 @OneToMany(() => PersonOperation, (sf) => sf.service)
 personOperation!: PersonOperation[];
 
+@ManyToOne(() => User, (user) => user.serviceReporters)
+@JoinColumn({ name: "reporterId", referencedColumnName: "id" })
+reporter!:User;
+
 constructor(){
   super();
   this.type = EntityType.SERVICE;

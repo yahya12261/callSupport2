@@ -96,6 +96,8 @@ class UserController extends BaseController<User, IUser, UserService> {
       // }
     ]);
   }
+
+  
   public static create = (req: CustomeRequest, res: Response, next: any) => {
     if (Object.is(req.Action, EndPointsActionsEnum.ADD))
       req.body.createdBy = User.getUserJson(req.createdUser as User);
@@ -158,6 +160,23 @@ class UserController extends BaseController<User, IUser, UserService> {
         next(new APIError(err.message, err.ErrorID));
       });
   };
+  public static getUserByUUID = (req: Request, res: Response, next: any) => {
+    const uuid =  req.params.uuid; 
+      service.getUserByUUID(uuid+"").then(result =>{
+          if(result){
+           res.json(Template.success(result, ""));
+          }else{
+            next(new APIError("خطأ",0));
+          }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.ErrorID == 2110) {
+          next(new APIError(err.message, err.ErrorID));
+        }
+        next(new ServerException("error occurred"));
+      });
+    };
   public static loginByOTP = (req: Request, res: Response, next: any) => {
     service
       .loginByOTP(req.body)
@@ -165,6 +184,7 @@ class UserController extends BaseController<User, IUser, UserService> {
         if (data.JWT) {
           res.json(Template.success(data, "تم التسجيل بنجاح"));
         }
+        res.json(Template.error(data, "خطأ",0));
       })
       .catch((err) => {
         console.log(err);
@@ -194,18 +214,6 @@ class UserController extends BaseController<User, IUser, UserService> {
         next(new ServerException("error occured"));
       });
   };
-  //old method
-  // public static addUserRule =  (req: Request, res: Response, next: any) => {
-
-  //   const userId = req.body.userId ;
-  //   const ruleId = req.body.ruleId ;
-  //   service.addUserRule(Number(userId),Number(ruleId)).then(()=>{
-  //     res.json(Template.success("", 'rule added.'));
-  //   }).catch(err => {
-  //       next(new APIError(err.message, err.ErrorID));
-
-  //   })
-  // }
   public getAll = (req: Request, res: Response, next: any) => {
     this.reqElm.page = Number(req.query.page);
     this.reqElm.pageSize = Number(req.query.pageSize);
@@ -310,7 +318,6 @@ class UserController extends BaseController<User, IUser, UserService> {
       }
     );
   };
-
   public getUserRules = (req: Request, res: Response, next: any) => {
     this.createGridOptions(req);
     const userId = req.params.id;
@@ -349,7 +356,6 @@ class UserController extends BaseController<User, IUser, UserService> {
         next(new ServerException("error occurred"));
       });
   };
-
   public addUserRule = (req: Request, res: Response, next: any) => {
     const pageId = req.body.userId;
     const apiId = req.body.ruleId;
@@ -371,7 +377,6 @@ class UserController extends BaseController<User, IUser, UserService> {
         next(new APIError(err.message, err.ErrorID));
       });
   };
-
   public deleteUserRule = (req: Request, res: Response, next: any) => {
     const userId = req.body.userId;
     const apiId = req.body.ruleId;
@@ -393,7 +398,6 @@ class UserController extends BaseController<User, IUser, UserService> {
         next(new APIError(err.message, err.ErrorID));
       });
   };
-
   public getPermissions = (req: CustomeRequest, res: Response, next: any) => {
     var rules: Rule[] = [];
     var x;
@@ -425,6 +429,7 @@ class UserController extends BaseController<User, IUser, UserService> {
     }
     // res.json(Template.success(rules, ""));
   };
+
 }
 
 

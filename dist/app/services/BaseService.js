@@ -17,8 +17,24 @@ const apierror_1 = __importDefault(require("../global/response/apierror"));
 const errorcode_1 = __importDefault(require("../global/response/errorcode"));
 const WhereOperations_1 = require("../enum/WhereOperations");
 class BaseService {
-    getById(id) {
-        throw new Error("Method not implemented.");
+    getById(id, joinParams) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                const query = repository.createQueryBuilder('entity')
+                    .where('entity.id = :id', { id });
+                if (joinParams) {
+                    joinParams.forEach(join => {
+                        query.leftJoinAndSelect(`entity.${join}`, join);
+                    });
+                }
+                const object = yield query.getOne();
+                return object;
+            }
+            catch (e) {
+                return Promise.reject(new apierror_1.default(e.message, errorcode_1.default.UndefinedCode));
+            }
+        });
     }
     findByUUID(uuid) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -366,6 +382,19 @@ class BaseService {
                 entity.fillFromModel(model);
                 console.log(model);
                 const saveEntity = yield repository.save(entity);
+                return saveEntity;
+            }
+            catch (e) {
+                console.error("Error adding entity:", e);
+                return Promise.reject(new apierror_1.default("Already exists", errorcode_1.default.DuplicateRequest));
+            }
+        });
+    }
+    addObject(object) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repository = this.getRepository();
+            try {
+                const saveEntity = yield repository.save(object);
                 return saveEntity;
             }
             catch (e) {

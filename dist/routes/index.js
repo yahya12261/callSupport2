@@ -18,6 +18,7 @@ const StatusFlow_1 = __importDefault(require("./Status/StatusFlow"));
 const Service_1 = __importDefault(require("./Service"));
 const EndPoints_1 = require("../app/extra/EndPoints");
 const Person_1 = __importDefault(require("./Person"));
+const personOperation_1 = __importDefault(require("./personOperation"));
 const routes = (0, express_1.Router)();
 exports.routes = routes;
 const routers = new Map();
@@ -33,6 +34,7 @@ routers.set('/v1/status', Status_1.default);
 routes.use('/v1/status-flow', StatusFlow_1.default);
 routes.use('/v1/service', Service_1.default);
 routes.use('/v1/person', Person_1.default);
+routes.use('/v1/person-operation', personOperation_1.default);
 const endPoint = new EndPoints_1.EndPoints(routers);
 exports.endPoint = endPoint;
 // console.log(endPoint.getAllRoutes())
@@ -48,4 +50,5 @@ routes.use('/v1/status', Status_1.default);
 routes.use('/v1/service', Service_1.default);
 routes.use('/v1/status-flow', StatusFlow_1.default);
 routes.use('/v1/person', Person_1.default);
+routes.use('/v1/person-operation', personOperation_1.default);
 //# sourceMappingURL=index.js.map

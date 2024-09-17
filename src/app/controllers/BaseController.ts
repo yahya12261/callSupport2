@@ -17,11 +17,15 @@ import { validateOrderOperation } from "../enum/OrderByOperation";
 import { SearchFields } from "../interface/SearchFields";
 import { FieldTypes } from "../enum/FieldTypes";
 import { getQueryOperatorFromString, QueryOperator } from "../enum/WhereOperations";
-      class UserSerializer {
+      export class UserSerializer {
+
+
         serialize(user: User): SerializedUser {
+
           return {
             id: user.id,
             name: user.first,
+            arabicLabel:user.arabicLabel?user.arabicLabel:"",
             email: user.email,
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt.toISOString(),
@@ -30,21 +34,23 @@ import { getQueryOperatorFromString, QueryOperator } from "../enum/WhereOperatio
         }
       }
       
-      interface SerializedUser {
+      export interface SerializedUser {
         id: number;
         name: string;
         email: string;
+        arabicLabel:string;
         createdAt: string;
         updatedAt: string;
         position:Position|null;
       }
+
 export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity, S extends BaseService<T, M>> {
     protected service: S;
     
     abstract entity:EntityType;
     abstract option:TypeormOptions;
 
-    private userSerializer: UserSerializer;
+    public userSerializer: UserSerializer;
     protected reqElm :RequestElement = {} as RequestElement ;
     protected childSearchableFields:SearchFields[]={} as SearchFields[] ;
     constructor(service: S,searchFields?:SearchFields[]) {
@@ -137,6 +143,8 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           next(new ServerException("error occurred"));
         });
       }
+
+
       protected serializeFields(data: any[]) {
         for (const item of data) {
           this.serializeField(item, 'createdBy');
@@ -144,11 +152,14 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
           this.serializeField(item, 'deletedBy');
         }
       }
-      private serializeField(item: any, fieldName: string) {
-        if (item[fieldName]) {
+
+
+      protected serializeField(item: any, fieldName: string) {
+        if (item[fieldName]) { 
           item[fieldName] = this.userSerializer.serialize(item[fieldName]);
         }
       }
+
       protected fillSearchableFieldFromRequest(req: Request): void {
         console.log(  this.searchFields)
         this.searchFields=this.getDefaultSearchableFields();
@@ -284,5 +295,7 @@ export abstract class BaseController<T extends BaseEntity, M extends IBaseEntity
         });
       }
 
-    
+    protected getKeyName(obj: object, key: string): string  {
+      return obj.hasOwnProperty(key) ? key : "";
+    }
 }

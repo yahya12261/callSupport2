@@ -15,6 +15,8 @@ const Controller = new UserController();
 // Get all users
 router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getAll);
 
+
+
 router.get('/getUserRules/:id',EndPointsActions(EndPointsActionsEnum.SELECT),authMiddleware, Controller.getUserRules);
 
 router.get('/getPermissions',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,Controller.getPermissions);
@@ -38,5 +40,9 @@ router.post('/resetRules',upload.none(),UserController.resetUserRules);
 router.post('/add-rule',EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware,upload.none(),Controller.addUserRule);
 
 router.post('/delete-rule',EndPointsActions(EndPointsActionsEnum.OTHER),authMiddleware,upload.none(),Controller.deleteUserRule);
+
+router.get('/selectOption',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getSelectOption);
+
+router.get('/:uuid',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware,UserController.getUserByUUID);
 
 export default router;

@@ -16,9 +16,9 @@ router.get('/',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Co
 
 router.post('/',EndPointsActions(EndPointsActionsEnum.ADD),authMiddleware, upload.none(), Controller.add);
 
+router.patch('/change-status',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.changeStatus);
 
-// cannot update 
-// router.patch('/',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.update);
+router.patch('/change-assign',EndPointsActions(EndPointsActionsEnum.UPDATE),authMiddleware, upload.none(), Controller.changeAssign);
 
 router.get('/selectOption',EndPointsActions(EndPointsActionsEnum.SELECT), authMiddleware, Controller.getSelectOption);
 

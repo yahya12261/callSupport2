@@ -19,9 +19,26 @@ import { ErrorCallback } from "typescript";
 abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
   implements BaseRepository<T, M>
 {
-  getById(id: number): Promise<T | null> {
-    throw new Error("Method not implemented.");
-  }
+  async getById(id: number, joinParams?: string[]): Promise<T | null> {
+    const repository: Repository<T> = this.getRepository();
+    try {
+        const query = repository.createQueryBuilder('entity')
+            .where('entity.id = :id', { id });
+
+        if (joinParams) {
+            joinParams.forEach(join => {
+                query.leftJoinAndSelect(`entity.${join}`, join);
+            });
+        }
+
+        const object = await query.getOne();
+        return object as T;
+    } catch (e: any) {
+        return Promise.reject(
+            new APIError(e.message, Err.UndefinedCode)
+        );
+    }
+}
 
   async findByUUID(uuid: string): Promise<T | null> {
     const repository: Repository<T> = this.getRepository();
@@ -413,7 +430,7 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
     });
     return order;
   }
-  async add(model: M): Promise<T | null> {
+   async add(model: M): Promise<T | null> {
     const repository: Repository<T> = this.getRepository();
     try {
       const entity = new this.entityConstructor();
@@ -421,6 +438,18 @@ abstract class BaseService<T extends BaseEntity, M extends IBaseEntity>
       entity.fillFromModel(model);
       console.log(model);
       const saveEntity = await repository.save(entity as DeepPartial<T>);
+      return saveEntity;
+    } catch (e) {
+      console.error("Error adding entity:", e);
+      return Promise.reject(
+        new APIError("Already exists", Err.DuplicateRequest)
+      );
+    }
+  }
+  async addObject(object: T): Promise<T | null> {
+    const repository: Repository<T> = this.getRepository();
+    try {
+      const saveEntity = await repository.save(object as DeepPartial<T>);
       return saveEntity;
     } catch (e) {
       console.error("Error adding entity:", e);

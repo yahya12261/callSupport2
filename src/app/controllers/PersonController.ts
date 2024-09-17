@@ -28,68 +28,67 @@ class PersonController extends BaseController<Person,IPerson,PersonService>{
   entity: EntityType = EntityType.PERSON;
   constructor() {
    const IPersonKeys = createKeys<IPerson>();
+   
     super(service,
       [
              {
-          name: IPersonKeys.firstAr.toString(),
+          name:"firstAr",
           type: FieldTypes.TEXT
         },
-            {
-            name: IPersonKeys.firstAr.toString(),
+          {
+            name: "middleAr",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.middleAr.toString(),
+            name: "lastAr",
+            type: FieldTypes.TEXT
+          },        
+          {
+            name: "firstEn",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.lastAr.toString(),
-            type: FieldTypes.TEXT
-          },        {
-            name: IPersonKeys.firstEn.toString(),
+            name: "middleEn",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.middleEn.toString(),
+            name:"lastEn",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.lastEn.toString(),
+            name:"Gender",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.Gender.toString(),
-            type: FieldTypes.TEXT
-          },
-          {
-            name: IPersonKeys.dob.toString(),
+            name:"dob",
             type: FieldTypes.DATE
           },
           {
-            name: IPersonKeys.fromMedical.toString(),
+            name: "fromMedical",
             type: FieldTypes.BOOLEAN
-          },        {
-            name: IPersonKeys.nationality.toString(),
+          },        
+          {
+            name: "nationality",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.phoneNumber.toString(),
+            name: "phoneNumber",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.phoneNumberCode.toString(),
+            name:"phoneNumberCode",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.townAddress.toString(),
+            name:"townAddress",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.governmentAddress.toString(),
+            name:"governmentAddress",
             type: FieldTypes.TEXT
           },
           {
-            name: IPersonKeys.cazaAddress.toString(),
+            name:"cazaAddress",
             type: FieldTypes.TEXT
           },
       ],

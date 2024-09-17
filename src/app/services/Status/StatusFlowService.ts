@@ -13,11 +13,11 @@ class StatusFlowService extends BaseService<StatusFlow,IStatusFlow> {
 
  static async addNextStatus(statusId: number, nextStatusId: number): Promise<void> {
     try {
-      const existingRelation = await getRepository("next-status").findOne({
+      const existingRelation = await getRepository("next_status").findOne({
         where: { statusId, nextStatusId },
       });
       if (!existingRelation) {
-        await getRepository("next-status").insert({nextStatusId ,statusId});
+        await getRepository("next_status").insert({nextStatusId ,statusId});
       }
     } catch (err) {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
@@ -26,12 +26,13 @@ class StatusFlowService extends BaseService<StatusFlow,IStatusFlow> {
 
   static async removeNextStatus( nextStatusId: number): Promise<void> {
     try {
-        await getRepository("next-status").delete({nextStatusId});
+        await getRepository("next_status").delete({nextStatusId});
  
     } catch (err) {
       return Promise.reject(new APIError("an error : " + err, Err.UndefinedCode));
     }
   }
 }
+
 
 export { StatusFlowService };

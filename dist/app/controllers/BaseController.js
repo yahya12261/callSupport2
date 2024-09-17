@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseController = void 0;
+exports.BaseController = exports.UserSerializer = void 0;
 const response_1 = __importDefault(require("../global/response"));
 const apierror_1 = __importDefault(require("../global/response/apierror"));
 const custom_errors_1 = require("../../lib/custom-errors");
@@ -28,6 +28,7 @@ class UserSerializer {
         return {
             id: user.id,
             name: user.first,
+            arabicLabel: user.arabicLabel ? user.arabicLabel : "",
             email: user.email,
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt.toISOString(),
@@ -35,6 +36,7 @@ class UserSerializer {
         };
     }
 }
+exports.UserSerializer = UserSerializer;
 class BaseController {
     constructor(service, searchFields) {
         this.reqElm = {};
@@ -260,6 +262,9 @@ class BaseController {
             const _a = itemWithIndex, _b = fieldName, _ = _a[_b], rest = __rest(_a, [typeof _b === "symbol" ? _b : _b + ""]);
             data[index] = rest;
         });
+    }
+    getKeyName(obj, key) {
+        return obj.hasOwnProperty(key) ? key : "";
     }
 }
 exports.BaseController = BaseController;

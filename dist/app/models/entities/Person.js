@@ -17,6 +17,7 @@ const Gender_1 = require("../../enum/Gender");
 const Nationality_1 = require("../../enum/Nationality");
 const Government_1 = require("./Location/Government");
 const Caza_1 = require("./Location/Caza");
+const personOperation_1 = require("./personOperation");
 let Person = class Person extends baseEntity_1.BaseEntity {
     updateEntity(entity) {
         throw new Error("Method not implemented.");
@@ -137,6 +138,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true, default: false }),
     __metadata("design:type", String)
 ], Person.prototype, "insuranceName", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => personOperation_1.PersonOperation, (sf) => sf.person),
+    __metadata("design:type", Array)
+], Person.prototype, "personOperation", void 0);
 exports.Person = Person = __decorate([
     (0, typeorm_1.Entity)()
     // @Unique(['name'])

@@ -29,6 +29,7 @@ const Status_1 = require("../models/entities/Statuses/Status");
 const StatusFlow_1 = require("../models/entities/Statuses/StatusFlow");
 const Service_1 = require("../models/entities/Service");
 const Person_1 = require("../models/entities/Person");
+const personOperation_1 = require("../models/entities/personOperation");
 class DatabaseService {
     static getConnection() {
         return __awaiter(this, arguments, void 0, function* (callback = null, wait = false) {
@@ -48,7 +49,7 @@ class DatabaseService {
                 password: dbConfig.password,
                 database: dbConfig.database,
                 entities: [
-                    User_1.User, Department_1.Department, Position_1.Position, Rule_1.Rule, Government_1.Government, Caza_1.Caza, Town_1.Town, Status_1.Status, StatusFlow_1.StatusFlow, Service_1.Service, Person_1.Person
+                    User_1.User, Department_1.Department, Position_1.Position, Rule_1.Rule, Government_1.Government, Caza_1.Caza, Town_1.Town, Status_1.Status, StatusFlow_1.StatusFlow, Service_1.Service, Person_1.Person, personOperation_1.PersonOperation
                 ],
                 logging: true,
                 synchronize: true,

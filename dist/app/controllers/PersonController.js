@@ -12,65 +12,63 @@ class PersonController extends BaseController_1.BaseController {
         const IPersonKeys = (0, baseEntity_1.createKeys)();
         super(service, [
             {
-                name: IPersonKeys.firstAr,
+                name: "firstAr",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.firstAr,
+                name: "middleAr",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.middleAr,
+                name: "lastAr",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.lastAr,
-                type: FieldTypes_1.FieldTypes.TEXT
-            }, {
-                name: IPersonKeys.firstEn,
+                name: "firstEn",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.middleEn,
+                name: "middleEn",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.lastEn,
+                name: "lastEn",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.Gender,
+                name: "Gender",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.dob,
+                name: "dob",
                 type: FieldTypes_1.FieldTypes.DATE
             },
             {
-                name: IPersonKeys.fromMedical,
+                name: "fromMedical",
                 type: FieldTypes_1.FieldTypes.BOOLEAN
-            }, {
-                name: IPersonKeys.nationality,
+            },
+            {
+                name: "nationality",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.phoneNumber,
+                name: "phoneNumber",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.phoneNumberCode,
+                name: "phoneNumberCode",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.townAddress,
+                name: "townAddress",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.governmentAddress,
+                name: "governmentAddress",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
             {
-                name: IPersonKeys.cazaAddress,
+                name: "cazaAddress",
                 type: FieldTypes_1.FieldTypes.TEXT
             },
         ]);
